@@ -4,7 +4,7 @@ import HouseHolds from "../components/Households";
 import Notes from "../components/Notes";
 import Map from "../components/Map";
 import MandatoryFields from "../components/MandatoryFields";
-import { loadHouses, loadHouseCensusTract, calculateZoomLevel, getSouthwestLatitude, getSouthwestLongitude, getNortheastLatitude, getNortheastLongitude, getHouses } from "../util/util";
+import { loadHouseCensusTract, loadContactInfo } from "../util/util";
 import L from 'leaflet';
 import GeneralInfo from "./GeneralInfo";
 // import { houses } from "../assets/households"
@@ -129,6 +129,7 @@ function MainView(props) {
                 <div>
                     <GeneralInfo 
                     ATTOMID={ATTOMID}
+                    selectedAddr={selectedAddr}
                     />
                 </div>
             </div>

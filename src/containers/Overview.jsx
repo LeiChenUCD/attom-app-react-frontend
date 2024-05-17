@@ -1,4 +1,4 @@
-import { loadCensusTract, getCensusTractInfo } from "../util/util"
+import { loadCensusTract, loadContactInfo, getCensusTractInfo, getContactInfo } from "../util/util"
 import CensusTractEntry from "../components/CensusTractEntry"
 import CensusTractHeader from "../components/CensusTractHeader"
 import React from "react"
@@ -17,6 +17,8 @@ function Overview(props) {
             const censusTractRes = await loadCensusTract()
             setCensusTractInfo(censusTractRes)
             const response = await getCensusTractInfo()
+            await loadContactInfo()
+            console.log(getContactInfo)
             // console.log(response.data.items)
             setCensusTractOverviewInfo(response.data.items)
             setLoaded(true)

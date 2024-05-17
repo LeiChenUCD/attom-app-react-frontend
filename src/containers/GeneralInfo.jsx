@@ -3,7 +3,7 @@ import InfoDbSelection from "../components/InfoDbSelection"
 import React from "react"
 
 function GeneralInfo(props) {
-    const {ATTOMID} = props
+    const {ATTOMID, selectedAddr} = props
     const [db, setDb] = React.useState("amortizedequity")
     const [numberOfOptions, setNumberOfOptions] = React.useState(4);
     // multiple records with the same id from recorder table
@@ -27,6 +27,7 @@ function GeneralInfo(props) {
             db={db}
             setNumberOfOptions={setNumberOfOptions}
             curRecordIdx={curRecordIdx}
+            selectedAddr={selectedAddr}
             />
         }
         

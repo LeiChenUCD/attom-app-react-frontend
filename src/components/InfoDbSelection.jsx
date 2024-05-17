@@ -5,6 +5,7 @@ function InfoDbSelection(props) {
         <InfoDbSelectionTab tab={"amortizedequity"} setDb={setDb} db={db} setCurRecordIdx={setCurRecordIdx}/>
         <InfoDbSelectionTab tab={"recorder"} setDb={setDb} db={db} setCurRecordIdx={setCurRecordIdx}/>
         <InfoDbSelectionTab tab={"taxassessor"} setDb={setDb} db={db} setCurRecordIdx={setCurRecordIdx}/>
+        <InfoDbSelectionTab tab={"contactinfo"} setDb={setDb} db={db} setCurRecordIdx={setCurRecordIdx}/>
     </div>
 }
 

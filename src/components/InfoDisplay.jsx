@@ -1,15 +1,21 @@
-import { queryRecord } from "../util/util"
+import { queryRecord, getContactInfo } from "../util/util"
 import InfoEntry from "./InfoEntry"
 import React from "react"
 function InfoDisplay(props) {
-    const { ATTOMID, db, setNumberOfOptions, curRecordIdx } = props
+    const { ATTOMID, db, setNumberOfOptions, curRecordIdx, selectedAddr } = props
     const [record, setRecord] = React.useState([])
     React.useEffect(() => {
         async function loadData(ATTOMID, db) {
-            const data = await queryRecord(ATTOMID, db)
-            console.log(data)
-            setRecord(data)
-            setNumberOfOptions(data.length)
+            if (db === "contactinfo") {
+                const data = getContactInfo()[selectedAddr] === undefined ? [] : getContactInfo()[selectedAddr]
+                setRecord(data)
+                setNumberOfOptions(data.length)
+            } else {
+                const data = await queryRecord(ATTOMID, db)
+                console.log(data)
+                setRecord(data)
+                setNumberOfOptions(data.length)
+            }
         }
         loadData(ATTOMID, db)
     }, [ATTOMID, db])

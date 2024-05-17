@@ -1,6 +1,6 @@
 import { households } from "../assets/households";
-// const endpoint = "http://localhost:3001/"
-const endpoint = "https://attom-app-react-backend.onrender.com/"
+const endpoint = "http://localhost:3001/"
+// const endpoint = "https://attom-app-react-backend.onrender.com/"
 
 export function execPostgresQuery(query) {
     const obj = {
@@ -540,4 +540,39 @@ export function calculateZoomLevel(bounds) {
         Math.log2(worldSize * factor / Math.max(width / screenSize[0], height / screenSize[1]))
     );
     return zoomLevel;
+}
+
+var contactInfo = new Map()
+
+export async function loadContactInfo() {
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    return fetch(endpoint + "contactInfo", requestOptions)
+    .then(res => {
+        // Check if the response is ok (status code 200)
+        // console.log(res)
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        // Parse the JSON response and return it (returns a Promise)
+        return res.json();
+      })
+    .then(res => {
+        // console.log(res)
+        contactInfo = res
+        console.log(contactInfo)
+        return res})
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+      });
+}
+
+export function getContactInfo() {
+    return contactInfo
 }
