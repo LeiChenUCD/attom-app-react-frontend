@@ -346,7 +346,10 @@ async function loadHousesFromATTOMPostgresTract(tract) {
         AreaLotSF, \
         PropertyLatitude, \
         PropertyLongitude, \
-        "[attom id]" \
+        "[attom id]", \
+        zonedcodelocal, \
+        bedroomscount, \
+        bathcount \
     FROM \
         taxassessor \
     where \
@@ -359,8 +362,10 @@ async function loadHousesFromATTOMPostgresTract(tract) {
      `)
 
     // console.log(houseRes)
+    // first false: has comments or not
+    // second false: has contact info or not
     houses = houseRes.map(house => 
-        [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, false, house['[attom id]']]
+        [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount]
     )
     // return houses
 }
@@ -386,6 +391,10 @@ export async function loadHouseCensusTract(tract) {
     // assemble house with notes
     houses = houses.map(house => {
         house[4] = notedATTOMIDSet.has(house[5])
+        return house
+    })
+    houses = houses.map(house => {
+        house[6] = contactInfo[house[0]] !== undefined ? true : false
         return house
     })
 }
@@ -565,7 +574,6 @@ export async function loadContactInfo() {
     .then(res => {
         // console.log(res)
         contactInfo = res
-        console.log(contactInfo)
         return res})
     .catch((error) => {
         // alert(error);

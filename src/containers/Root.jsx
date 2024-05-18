@@ -13,6 +13,7 @@ function Root() {
         setAuthorName={setAuthorName}
         /> : 
         <MainView 
+        setCensusTract={setCensusTract}
         censusTract={censusTract}
         authorName={authorName}
         setAuthorName={setAuthorName}

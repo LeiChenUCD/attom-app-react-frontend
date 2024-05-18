@@ -2,9 +2,10 @@ import { insertNote } from "../util/util"
 import { splitter, noteSplitter } from "../util/util"
 import { setAddrNoted, setATTOMIDNoted, parseTime } from "../util/util"
 function HouseEntry(props) {
-    const {houseEntry, setSelectedAddr, selectedAddr, setHouseEntry, setCenter, authorName, prevNotesFull, id, censusTract, setZoom, zoom, setATTOMID, ATTOMID} = props
+    const {houseEntry, setSelectedAddr, selectedAddr, setHouseEntry, setCenter, authorName, prevNotesFull, id, censusTract, setZoom, zoom, setATTOMID, ATTOMID, setCurRecordIdx} = props
+    console.log(houseEntry)
     const bold = houseEntry[5] === ATTOMID ? "bold" : ""
-    return <div className="bottom right left" style={{minHeight: "30px", display: "flex", flexDirection: "row", fontWeight: bold}}>
+    return <div className="bottom right left" style={{minHeight: "30px", display: "flex", flexDirection: "row", fontWeight: bold, fontSize: "14px"}}>
         
         <div style={{width: "300px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}
         onClick={e => {
@@ -22,6 +23,7 @@ function HouseEntry(props) {
                 setCenter([houseEntry[2], houseEntry[3]])
                 setSelectedAddr(houseEntry[0])
                 setZoom(Math.max(18, zoom))
+                setCurRecordIdx(0)
                 return
             }
             
@@ -41,13 +43,20 @@ function HouseEntry(props) {
             setCenter([houseEntry[2], houseEntry[3]])
             setSelectedAddr(houseEntry[0])
             setZoom(Math.max(18, zoom))
+            setCurRecordIdx(0)
 
             if (document.getElementById("note") !== null) {
                 document.getElementById("note").innerHTML = ""
             }
         }}>{houseEntry[0]}</div>
 
-        <div style={{width: "100px", alignContent: "center", textAlign: "center"}}>{houseEntry[1]}</div>
+        <div style={{width: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[1]}</div>
+
+        <div style={{width: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[7]}</div>
+
+        <div style={{width: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[8]}</div>
+
+        <div style={{width: "100px", alignContent: "center", textAlign: "center"}}>{houseEntry[9]}</div>
         
     </div>
 }

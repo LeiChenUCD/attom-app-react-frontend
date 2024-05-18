@@ -19,7 +19,7 @@ function MyComponent(props) {
     //     map.setView(center, zoom);
     // }, [center, zoom, map]);
     React.useEffect(() => {
-        console.log("here: rendered", center, zoom)
+        // console.log("here: rendered", center, zoom)
         map.setView([houseEntry[2], houseEntry[3]], zoom);
     }, [houseEntry]);
     return null

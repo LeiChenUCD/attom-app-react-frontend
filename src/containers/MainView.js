@@ -11,7 +11,7 @@ import GeneralInfo from "./GeneralInfo";
 
 function MainView(props) {
 
-    const {censusTract, authorName, setAuthorName} = props
+    const {censusTract, authorName, setAuthorName, setCensusTract} = props
     const [LotAreaLower, setLotAreaLower] = React.useState(0)
     const [LotAreaUpper, setLotAreaUpper] = React.useState(Number.MAX_SAFE_INTEGER)
     const [addrFilter, setAddrFilter] = React.useState("")
@@ -26,9 +26,11 @@ function MainView(props) {
     
     const [loaded, setLoaded] = React.useState(false)
     const [notedSubset, setNotedSubset] = React.useState("Both")
+    const [contactInfoSubset, setContactInfoSubset] = React.useState("Both")
     // all prev note, author, time in a big string
     const [prevNotesFull, setPrevNotesFull] = React.useState("")
     const [ATTOMID, setATTOMID] = React.useState("")
+    const [curRecordIdx, setCurRecordIdx] = React.useState(0);
 
     React.useEffect(() => {
         async function loading() {
@@ -49,7 +51,13 @@ function MainView(props) {
             loaded ? 
         <>
             <div>
-            
+                <div 
+                className="switch_page" 
+                style={{fontSize: "20px", paddingLeft: "0"}}
+                onClick={e => setCensusTract(-1)}
+                >
+                    &#8249;
+                </div>
                 <MandatoryFields
                 censusTract={censusTract}
                 setAuthorName={setAuthorName}
@@ -63,6 +71,7 @@ function MainView(props) {
                 setSortMethod={setSortMethod}
                 setCurPage={setCurPage}
                 setNotedSubset={setNotedSubset}
+                setContactInfoSubset={setContactInfoSubset}
                 />
             </div>
                 
@@ -95,6 +104,8 @@ function MainView(props) {
                     zoom={zoom}
                     setATTOMID={setATTOMID}
                     ATTOMID={ATTOMID}
+                    contactInfoSubset={contactInfoSubset}
+                    setCurRecordIdx={setCurRecordIdx}
                     />
                 </div>
 
@@ -130,6 +141,8 @@ function MainView(props) {
                     <GeneralInfo 
                     ATTOMID={ATTOMID}
                     selectedAddr={selectedAddr}
+                    curRecordIdx={curRecordIdx}
+                    setCurRecordIdx={setCurRecordIdx}
                     />
                 </div>
             </div>

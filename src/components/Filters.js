@@ -1,5 +1,5 @@
 function Filters(props) {
-    const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset} = props
+    const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset, setContactInfoSubset} = props
     const inputStyle = {
         width: "60px"
     }
@@ -40,6 +40,16 @@ function Filters(props) {
             <option>Both</option>
             <option>Noted Addresses</option>
             <option>Not Noted Addresses</option>
+        </select>
+
+        Contact Info?
+        <select onChange={e => {
+            setContactInfoSubset(e.target.value)
+            setCurPage(0)
+            }}>
+            <option>Both</option>
+            <option>With Contact Info</option>
+            <option>Without Contact Info</option>
         </select>
     </div>
     // <div style={{width: "100px"}}></div>

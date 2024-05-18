@@ -7,7 +7,7 @@ import { sortHouseHold } from "../util/util"
 
 function HouseHolds(props) {
 
-    const {LotAreaLower, LotAreaUpper, addrFilter, setSelectedAddr, id, selectedAddr, sortMethod, curPage, setCurPage, setHouseEntry, sortedSubset, setSortedSubset, setCenter, authorName, prevNotesFull, notedSubset, censusTract, setZoom, zoom, setATTOMID, ATTOMID} = props
+    const {LotAreaLower, LotAreaUpper, addrFilter, setSelectedAddr, id, selectedAddr, sortMethod, curPage, setCurPage, setHouseEntry, sortedSubset, setSortedSubset, setCenter, authorName, prevNotesFull, notedSubset, censusTract, setZoom, zoom, setATTOMID, ATTOMID, contactInfoSubset, setCurRecordIdx} = props
     const [pageSize, setPageSize] = React.useState(10)
     const [filteredSubset, setFilteredSubset] = React.useState([]);
 
@@ -27,8 +27,14 @@ function HouseHolds(props) {
             filteredData = filteredData.filter(house => house[4] === false)
         }
 
+        if (contactInfoSubset === "With Contact Info") {
+            filteredData = filteredData.filter(house => house[6] === true)
+        } else if (contactInfoSubset === "Without Contact Info") {
+            filteredData = filteredData.filter(house => house[6] === false)
+        }
+
         setFilteredSubset(filteredData);
-    }, [LotAreaLower, LotAreaUpper, addrFilter, notedSubset]);
+    }, [LotAreaLower, LotAreaUpper, addrFilter, notedSubset, contactInfoSubset]);
 
     // Sort the filteredSubset based on sortMethod
     React.useEffect(() => {
@@ -74,6 +80,7 @@ function HouseHolds(props) {
         zoom={zoom}
         setATTOMID={setATTOMID}
         ATTOMID={ATTOMID}
+        setCurRecordIdx={setCurRecordIdx}
         />
         )}
     </div>

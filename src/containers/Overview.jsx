@@ -18,7 +18,6 @@ function Overview(props) {
             setCensusTractInfo(censusTractRes)
             const response = await getCensusTractInfo()
             await loadContactInfo()
-            console.log(getContactInfo)
             // console.log(response.data.items)
             setCensusTractOverviewInfo(response.data.items)
             setLoaded(true)

@@ -18,13 +18,13 @@ async function submitOneNote(e, address, note, author, id, prevNotesFull, setId,
     document.getElementById("submit").innerHTML = "Submitting..."
     // const res = await insertOneNote(address, note, author)
     setATTOMIDNoted(ATTOMID)
-    console.log(note + splitter + author + splitter + Date.now())
+    // console.log(note + splitter + author + splitter + Date.now())
     const ending = prevNotesFull.length > 0 && prevNotesFull[prevNotesFull.length - 1] !== '\n' ? '\n' : ''
     const noteCombined = `${prevNotesFull}${ending}[${parseTime(Date.now())}] ${author}: ${note}`
     // id, address, note)
     setPrevNotesFull(noteCombined)
     const idRet = await insertNote(id, address, noteCombined, censusTract, author, ATTOMID)
-    console.log("id:", idRet.data.record.id)
+    // console.log("id:", idRet.data.record.id)
     setId(idRet.data.record.id)
     document.getElementById("submit").innerHTML = "Submit"
 }
@@ -32,7 +32,7 @@ async function submitOneNote(e, address, note, author, id, prevNotesFull, setId,
 function Notes(props) {
     const {selectedAddr, authorName, setId, id, setPrevNotesFull, prevNotesFull, houseEntry, censusTract, ATTOMID} = props
     const hideClass = selectedAddr === "" ? "hide" : ""
-    console.log("attom id", ATTOMID)
+    // console.log("attom id", ATTOMID)
     const [prevNotes, setPrevNotes] = React.useState("")
     function appendText(text) {
         document.getElementById("note").innerHTML += text

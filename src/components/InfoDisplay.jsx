@@ -12,7 +12,6 @@ function InfoDisplay(props) {
                 setNumberOfOptions(data.length)
             } else {
                 const data = await queryRecord(ATTOMID, db)
-                console.log(data)
                 setRecord(data)
                 setNumberOfOptions(data.length)
             }
