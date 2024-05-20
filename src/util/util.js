@@ -1,6 +1,6 @@
 import { households } from "../assets/households";
-const endpoint = "http://localhost:3001/"
-// const endpoint = "https://attom-app-react-backend.onrender.com/"
+// const endpoint = "http://localhost:3001/"
+const endpoint = "https://attom-app-react-backend.onrender.com/"
 
 export function execPostgresQuery(query) {
     const obj = {
