@@ -5,6 +5,7 @@ import MainView from "./MainView"
 function Root() {
     const [censusTract, setCensusTract] = React.useState(-1)
     const [authorName, setAuthorName] = React.useState("")
+    console.log(process.env.REACT_APP_ENDPOINT)
     return <div>
         {censusTract < 0 ? 
         <Overview 
