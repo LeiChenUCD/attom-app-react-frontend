@@ -225,7 +225,10 @@ function Map(props) {
     const bounds = L.latLngBounds(border);
     // console.log(houseEntry[4])
     return (
-        <div style={{ width: "450px", height: "450px", marginLeft: "10px", marginBottom: "10px" }}>
+        <div style={{ 
+            width: window.innerWidth > 450 ? "450px" : window.innerWidth, height: "450px", 
+            marginLeft: window.innerWidth > 768 ? "10px" : "0", 
+            marginBottom: "10px" }}>
             <MapContainer 
             bounds={bounds}
             // center={center} 

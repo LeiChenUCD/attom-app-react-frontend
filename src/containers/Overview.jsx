@@ -24,32 +24,37 @@ function Overview(props) {
         }
         loadInfo()
     }, [])
-    
-    return <div style={{display: "flex", flexDirection: "column"}}>
+    return <div style={{display: "flex", justifyContent: window.innerWidth > 768 ? "" : "center"}}>
         {loaded ? 
-        
-        <div className="centerText" style={{marginTop: "30px"}}>
-            <div style={{paddingRight: "750px", paddingBottom: "30px"}}
-            onInput={e => {
-                setAuthorName(e.target.value)
-            }}>
-                User: <input placeholder={"Please enter your name"} 
-                style={{border: "none", borderBottom: "1px black solid", outline: "none"}}></input>
+        <div style={{display: "flex", 
+        overflowX: "auto",
+        flexDirection: window.innerWidth > 768 ? "column": ""}}>
+            <div className="centerText" style={{marginTop: "30px"}}>
+                <div 
+                style={{paddingRight: window.innerWidth > 768 ? "750px" : "690px", 
+                paddingBottom: "30px"}}
+                >
+                    User: <input placeholder={"Please enter your name"} onChange={e => {
+                        setAuthorName(e.target.value)
+                    }}
+                    value={authorName !== '' ? authorName : ''}
+                    style={{border: "none", borderBottom: "1px black solid", outline: "none"}}></input>
+                </div>
+                <CensusTractHeader/>
+                {censusTractInfo && censusTractInfo.map(
+                    (info, idx) => {
+                        return <CensusTractEntry 
+                        authorName={authorName}
+                        key={idx} 
+                        info={info} 
+                        setCensusTract={setCensusTract}
+                        censusTractOverviewInfo={censusTractOverviewInfo.filter(overviewInfo => {
+                            return overviewInfo.fields['Census Tract'] === info.censustract
+                        })}
+                        />
+                    }
+                )}
             </div>
-            <CensusTractHeader/>
-            {censusTractInfo && censusTractInfo.map(
-                (info, idx) => {
-                    return <CensusTractEntry 
-                    authorName={authorName}
-                    key={idx} 
-                    info={info} 
-                    setCensusTract={setCensusTract}
-                    censusTractOverviewInfo={censusTractOverviewInfo.filter(overviewInfo => {
-                        return overviewInfo.fields['Census Tract'] === info.censustract
-                    })}
-                    />
-                }
-            )}
         </div>
             :
         <div className="centerText" style={{marginTop: "30px"}}>

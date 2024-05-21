@@ -46,7 +46,8 @@ function MainView(props) {
         loading()
     }, [])
     
-    return <div style={{display: "flex", flexDirection: "row", justifyContent: "center", paddingTop: "30px"}}>
+    return <div style={{display: "flex", 
+    flexDirection: window.innerWidth > 768 ? "row" : "column", justifyContent: "center", paddingTop: "30px"}}>
         {
             loaded ? 
         <>
@@ -80,7 +81,7 @@ function MainView(props) {
 
             <div>
                 
-                <div style={{display: "flex"}}>
+                <div style={{display: "flex", overflowX: window.innerWidth > 768 ? "" : "auto"}}>
 
                     <HouseHolds 
                     curPage={curPage}
@@ -109,19 +110,11 @@ function MainView(props) {
                     />
                 </div>
 
-                <div style={{display: "flex", flexDirection: "row", paddingTop: "30px"}}>
+                <div style={{display: "flex", 
+                flexDirection: window.innerWidth > 768 ? "row" : "column", 
+                paddingTop: "30px",
+                }}>
                 
-                    {selectedAddr === "" ? null : 
-                    <Notes selectedAddr={selectedAddr} 
-                    id={id} 
-                    setId={setId}
-                    authorName={authorName}
-                    setPrevNotesFull={setPrevNotesFull}
-                    prevNotesFull={prevNotesFull}
-                    houseEntry={houseEntry}
-                    censusTract={censusTract}
-                    ATTOMID={ATTOMID}
-                    />} 
                     <Map houseEntry={houseEntry}
                     sortedSubset={sortedSubset}
                     center={center}
@@ -135,6 +128,18 @@ function MainView(props) {
                     id={id}
                     addrFilter={addrFilter}
                     />
+                    {selectedAddr === "" ? null : 
+                    <Notes selectedAddr={selectedAddr} 
+                    id={id} 
+                    setId={setId}
+                    authorName={authorName}
+                    setPrevNotesFull={setPrevNotesFull}
+                    prevNotesFull={prevNotesFull}
+                    houseEntry={houseEntry}
+                    censusTract={censusTract}
+                    ATTOMID={ATTOMID}
+                    />} 
+
                 </div>
 
                 <div>

@@ -171,7 +171,11 @@ export function getNote(ATTOMID) {
       });
 }
 
+var censusTractInfo = {}
 export function getCensusTractInfo() {
+    if (Object.keys(censusTractInfo).length > 0) {
+        return censusTractInfo
+    }
     const requestOptions = {
         // mode: 'no-cors',
         method: "GET",
@@ -191,6 +195,7 @@ export function getCensusTractInfo() {
         return res.json();
       })
     .then(res => {
+        censusTractInfo = res
         return res})
     .catch((error) => {
         // alert(error);
@@ -436,8 +441,13 @@ export async function queryRecord(attom_id, db) {
 }
 
 // load census tract info
+var censusTractRes = []
 export async function loadCensusTract() {
-    const censusTractRes = await execPostgresQuery("\
+    console.log(censusTractRes.length)
+    if (censusTractRes.length > 0) {
+        return censusTractRes
+    }
+    censusTractRes = await execPostgresQuery("\
     SELECT \
         CensusTract, \
         count(1), \

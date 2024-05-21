@@ -50,13 +50,13 @@ function HouseEntry(props) {
             }
         }}>{houseEntry[0]}</div>
 
-        <div style={{width: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[1]}</div>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[1]}</div>
 
-        <div style={{width: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[7]}</div>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[7]}</div>
 
-        <div style={{width: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[8]}</div>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[8]}</div>
 
-        <div style={{width: "100px", alignContent: "center", textAlign: "center"}}>{houseEntry[9]}</div>
+        <div style={{minWidth: "100px", alignContent: "center", textAlign: "center"}}>{houseEntry[9]}</div>
         
     </div>
 }

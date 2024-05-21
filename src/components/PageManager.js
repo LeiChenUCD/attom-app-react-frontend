@@ -39,7 +39,7 @@ function PageManager(props) {
             }
             }} style={{border: "none", borderBottom: "1px solid black", width: "30px", textAlign: "center"}}></input>
         <div style={{width: "10px"}}></div>
-        <a href="https://z1wxnr4c1l.larksuite.com/base/ZJYxbUZW0ah85TssgMqupEZJsB8?table=tbliAQ068PH77Eli&view=vewM7zhIkl" target="_blank"
+        <a href={process.env.REACT_APP_TABLE} target="_blank"
         rel="noreferrer"
         >
             Lark Table

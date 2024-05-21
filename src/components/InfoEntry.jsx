@@ -12,7 +12,7 @@ function InfoEntry(props) {
         justifyContent: "center"
     }
 
-    return <div style={{display: "flex", flexDirection: "row", width: "49.75%", border: "1px solid black"}}>
+    return <div style={{display: "flex", flexDirection: "row", width: "49.97%", border: "1px solid black"}}>
         <div style={entryStyle}>
             {fieldName}
         </div>

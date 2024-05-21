@@ -19,7 +19,7 @@ function InfoDisplay(props) {
         loadData(ATTOMID, db)
     }, [ATTOMID, db])
 
-    return <div style={{width: "900px", display: 'flex', flexFlow: "wrap"}}>
+    return <div style={{width: window.innerWidth > 450 ? "900px" : window.innerWidth * 2, display: 'flex', flexFlow: "wrap"}}>
         {record && record.length > 0 && Object.entries(record[curRecordIdx]).map(
             ([fieldName, fieldValue]) => 
             <InfoEntry 

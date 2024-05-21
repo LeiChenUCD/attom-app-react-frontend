@@ -8,7 +8,7 @@ function GeneralInfo(props) {
     const [numberOfOptions, setNumberOfOptions] = React.useState(4);
     // multiple records with the same id from recorder table
     
-    return <div>
+    return <div style={{overflowX: window.innerWidth > 768 ? "" : "auto"}}>
         <InfoDbSelection
         setDb={setDb}
         db={db}

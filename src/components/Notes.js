@@ -71,7 +71,11 @@ function Notes(props) {
         fetchData(ATTOMID)
     }, [ATTOMID, houseEntry])
 
-    return <div style={{width: "450px", display: "flex", flexDirection: "column"}}>
+    return <div style={{width: window.innerWidth > 450 ? "450px" : window.innerWidth, 
+    display: "flex", 
+    flexDirection: "column", 
+    marginTop: window.innerWidth > 768 ? "" : "20px"
+    }}>
 
         
         <div style={{className: "top", height: "30px"}} className="centerText left bottom right top">
