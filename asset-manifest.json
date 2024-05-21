@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/attom-app-react-frontend/static/css/main.6d6c4d86.css",
-    "main.js": "/attom-app-react-frontend/static/js/main.8f2bac4c.js",
+    "main.css": "/attom-app-react-frontend/static/css/main.4c2ea941.css",
+    "main.js": "/attom-app-react-frontend/static/js/main.78a5672e.js",
     "static/js/453.837d5486.chunk.js": "/attom-app-react-frontend/static/js/453.837d5486.chunk.js",
     "index.html": "/attom-app-react-frontend/index.html",
-    "main.6d6c4d86.css.map": "/attom-app-react-frontend/static/css/main.6d6c4d86.css.map",
-    "main.8f2bac4c.js.map": "/attom-app-react-frontend/static/js/main.8f2bac4c.js.map",
+    "main.4c2ea941.css.map": "/attom-app-react-frontend/static/css/main.4c2ea941.css.map",
+    "main.78a5672e.js.map": "/attom-app-react-frontend/static/js/main.78a5672e.js.map",
     "453.837d5486.chunk.js.map": "/attom-app-react-frontend/static/js/453.837d5486.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6d6c4d86.css",
-    "static/js/main.8f2bac4c.js"
+    "static/css/main.4c2ea941.css",
+    "static/js/main.78a5672e.js"
   ]
 }
