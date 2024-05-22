@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/attom-app-react-frontend/static/css/main.4c2ea941.css",
-    "main.js": "/attom-app-react-frontend/static/js/main.20007d1b.js",
+    "main.js": "/attom-app-react-frontend/static/js/main.19a54cfe.js",
     "static/js/453.837d5486.chunk.js": "/attom-app-react-frontend/static/js/453.837d5486.chunk.js",
     "index.html": "/attom-app-react-frontend/index.html",
     "main.4c2ea941.css.map": "/attom-app-react-frontend/static/css/main.4c2ea941.css.map",
-    "main.20007d1b.js.map": "/attom-app-react-frontend/static/js/main.20007d1b.js.map",
+    "main.19a54cfe.js.map": "/attom-app-react-frontend/static/js/main.19a54cfe.js.map",
     "453.837d5486.chunk.js.map": "/attom-app-react-frontend/static/js/453.837d5486.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4c2ea941.css",
-    "static/js/main.20007d1b.js"
+    "static/js/main.19a54cfe.js"
   ]
 }
