@@ -71,18 +71,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 # Structure
 
-master - write on old record, write on new record
+master - v1
 
-    data in memory + filter + bubble + comment on new record
+    note load on each note, toggled switches
 
-write on new record
+v1
 
-    same as master
-
-write on old record - two page structure
-
-    query data from database
-
-two page structure
-
-    landing page for census track selection
+    all notes load together as a whole, priority dropdown instead toggled switches

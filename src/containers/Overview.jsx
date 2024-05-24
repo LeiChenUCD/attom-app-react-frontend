@@ -47,24 +47,10 @@ function Overview(props) {
                     style={{border: "none", borderBottom: "1px black solid", outline: "none"}}></input>
                 </div>
                 <CensusTractHeader/>
-                {censusTractInfo && censusTractInfo.map(
-                    (info, idx) => {
-                        return <CensusTractEntry 
-                        authorName={authorName}
-                        key={idx} 
-                        info={info} 
-                        setCensusTract={setCensusTract}
-                        censusTractOverviewInfo={censusTractOverviewInfo.filter(overviewInfo => {
-                            return overviewInfo.fields['Census Tract'] === info.censustract
-                        })}
-                        />
-                    }
-                )}
-
 
                 <div style={{display: "flex", flexDirection: "row", placeContent: "center"}}>
                     <div style={{minWidth: "100px", height: "30px", border: "1px solid black"}} className="centerText">
-                        Total
+                        All
                     </div>
 
                     <div style={{minWidth: "100px", height: "30px", border: "1px solid black"}} className="centerText">
@@ -92,7 +78,19 @@ function Overview(props) {
                     </div>
                 </div>
 
-
+                {censusTractInfo && censusTractInfo.map(
+                    (info, idx) => {
+                        return <CensusTractEntry 
+                        authorName={authorName}
+                        key={idx} 
+                        info={info} 
+                        setCensusTract={setCensusTract}
+                        censusTractOverviewInfo={censusTractOverviewInfo.filter(overviewInfo => {
+                            return overviewInfo.fields['Census Tract'] === info.censustract
+                        })}
+                        />
+                    }
+                )}
 
             </div>
         </div>
