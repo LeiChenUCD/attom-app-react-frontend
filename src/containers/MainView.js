@@ -4,7 +4,7 @@ import HouseHolds from "../components/Households";
 import Notes from "../components/Notes";
 import Map from "../components/Map";
 import MandatoryFields from "../components/MandatoryFields";
-import { loadHouseCensusTract, loadContactInfo } from "../util/util";
+import { loadHouseCensusTract, loadContactInfo, loadToggleInfoCensusTract } from "../util/util";
 import L from 'leaflet';
 import GeneralInfo from "./GeneralInfo";
 // import { houses } from "../assets/households"
@@ -14,7 +14,12 @@ function MainView(props) {
     const {censusTract, authorName, setAuthorName, setCensusTract} = props
     const [LotAreaLower, setLotAreaLower] = React.useState(0)
     const [LotAreaUpper, setLotAreaUpper] = React.useState(Number.MAX_SAFE_INTEGER)
+    const [bedroomLower, setBedroomLower] = React.useState(0)
+    const [bedroomUpper, setBedroomUpper] = React.useState(Number.MAX_SAFE_INTEGER)
+    const [bathroomLower, setBathroomLower] = React.useState(0)
+    const [bathroomUpper, setBathroomUpper] = React.useState(Number.MAX_SAFE_INTEGER)
     const [addrFilter, setAddrFilter] = React.useState("")
+    const [zoneFilter, setZoneFilter] = React.useState("All")
     const [selectedAddr, setSelectedAddr] = React.useState("")
     const [id, setId] = React.useState("")
     const [sortMethod, setSortMethod] = React.useState("Default")
@@ -25,6 +30,8 @@ function MainView(props) {
     const [zoom, setZoom] = React.useState(17)
     
     const [loaded, setLoaded] = React.useState(false)
+    const [keptSubset, setKeptSubset] = React.useState("Both")
+    const [selectiveSubset, setSelectiveSubset] = React.useState("Both")
     const [notedSubset, setNotedSubset] = React.useState("Both")
     const [contactInfoSubset, setContactInfoSubset] = React.useState("Both")
     // all prev note, author, time in a big string
@@ -36,6 +43,7 @@ function MainView(props) {
         async function loading() {
             // await loadHouses()
             await loadHouseCensusTract(censusTract)
+            await loadToggleInfoCensusTract(censusTract)
             setLoaded(true)
             // const southwest = [getSouthwestLatitude(getHouses()), getSouthwestLongitude(getHouses())];
             // const northeast = [getNortheastLatitude(getHouses()), getNortheastLongitude(getHouses())];
@@ -46,11 +54,14 @@ function MainView(props) {
         loading()
     }, [])
     
-    return <div style={{display: "flex", 
-    flexDirection: window.innerWidth > 768 ? "row" : "column", justifyContent: "center", paddingTop: "30px"}}>
+    return <div style={{}}
+    // style={{display: "flex", 
+    // flexDirection: window.innerWidth > 768 ? "row" : "column", justifyContent: "center", paddingTop: "30px"}}
+    >
         {
             loaded ? 
-        <>
+        <div style={{display: "flex", 
+        flexDirection: window.innerWidth > 768 ? "row" : "column", justifyContent: "center", paddingTop: "30px"}}>
             <div>
                 <div 
                 className="switch_page" 
@@ -68,11 +79,18 @@ function MainView(props) {
                 <Filters 
                 setLotAreaLower={setLotAreaLower} 
                 setLotAreaUpper={setLotAreaUpper} 
+                setBedroomLower={setBedroomLower}
+                setBedroomUpper={setBedroomUpper}
+                setBathroomLower={setBathroomLower}
+                setBathroomUpper={setBathroomUpper}
                 setAddrFilter={setAddrFilter}
                 setSortMethod={setSortMethod}
                 setCurPage={setCurPage}
+                setKeptSubset={setKeptSubset}
+                setSelectiveSubset={setSelectiveSubset}
                 setNotedSubset={setNotedSubset}
                 setContactInfoSubset={setContactInfoSubset}
+                setZoneFilter={setZoneFilter}
                 />
             </div>
                 
@@ -81,13 +99,20 @@ function MainView(props) {
 
             <div>
                 
-                <div style={{display: "flex", overflowX: window.innerWidth > 768 ? "" : "auto"}}>
+                <div style={{display: "flex", 
+                overflowX: window.innerWidth > 768 ? "" : "auto",
+                marginTop: window.innerWidth > 768 ? "" : "20px",
+                }}>
 
                     <HouseHolds 
                     curPage={curPage}
                     setCurPage={setCurPage}
                     LotAreaLower={LotAreaLower} 
                     LotAreaUpper={LotAreaUpper} 
+                    bedroomLower={bedroomLower}
+                    bedroomUpper={bedroomUpper}
+                    bathroomLower={bathroomLower}
+                    bathroomUpper={bathroomUpper}
                     addrFilter={addrFilter} 
                     setSelectedAddr={setSelectedAddr}
                     id={id}
@@ -107,6 +132,9 @@ function MainView(props) {
                     ATTOMID={ATTOMID}
                     contactInfoSubset={contactInfoSubset}
                     setCurRecordIdx={setCurRecordIdx}
+                    zoneFilter={zoneFilter}
+                    keptSubset={keptSubset}
+                    selectiveSubset={selectiveSubset}
                     />
                 </div>
 
@@ -150,11 +178,11 @@ function MainView(props) {
                     setCurRecordIdx={setCurRecordIdx}
                     />
                 </div>
-            </div>
-        </> :
-        <>
+            </div>    
+        </div> :
+        <div className="centerText" style={{marginTop: "30px"}}>
             Loading...
-        </>
+        </div>
         }
     </div>
 }

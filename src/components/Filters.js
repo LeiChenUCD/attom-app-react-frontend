@@ -1,14 +1,18 @@
+import { getHouses } from "../util/util"
 function Filters(props) {
-    const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset, setContactInfoSubset} = props
+    const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset, 
+        setContactInfoSubset, setZoneFilter, setBedroomUpper, setBedroomLower, setBathroomLower, setBathroomUpper, setKeptSubset, setSelectiveSubset} = props
     const inputStyle = {
         width: "60px"
     }
+    // console.log([...new Set(getHouses().filter(house => house[7] !== null).map(house => house[7]))])
     return <div style={{display: "flex", flexDirection: "column"}}>
         Address
         <input onInput={e => {
             setAddrFilter(e.target.value.trim())
             setCurPage(0)
         }}></input>
+
         AreaLotSF
         <div>
         <input style={inputStyle} onInput={e => {
@@ -21,6 +25,44 @@ function Filters(props) {
             setCurPage(0)
             }}></input>
         </div>
+
+        zonedcodelocal
+        <select onChange={e => {
+            console.log(e.target.value)
+            setZoneFilter(e.target.value)
+            setCurPage(0)
+            }}>
+                <option>All</option>
+                {[...new Set(getHouses().filter(house => house[7] !== null).map(house => house[7]))]
+                .map((code, idx) => <option key={idx}>{code}</option>)}
+        </select>
+
+        bedroomscount
+        <div>
+        <input style={inputStyle} onInput={e => {
+            setBedroomLower(e.target.value.trim() === "" ? 0 : parseInt(e.target.value))
+            setCurPage(0)
+            }}></input>
+        ————
+        <input style={inputStyle} onInput={e => {
+            setBedroomUpper(e.target.value.trim() === "" ? Number.MAX_SAFE_INTEGER : parseInt(e.target.value))
+            setCurPage(0)
+            }}></input>
+        </div>
+
+        bathcount
+        <div>
+        <input style={inputStyle} onInput={e => {
+            setBathroomLower(e.target.value.trim() === "" ? 0 : parseInt(e.target.value))
+            setCurPage(0)
+            }}></input>
+        ————
+        <input style={inputStyle} onInput={e => {
+            setBathroomUpper(e.target.value.trim() === "" ? Number.MAX_SAFE_INTEGER : parseInt(e.target.value))
+            setCurPage(0)
+            }}></input>
+        </div>
+
         Order By
         <select onChange={e => {
             setSortMethod(e.target.value)
@@ -31,7 +73,32 @@ function Filters(props) {
             <option>PropertyAddressFull (Z-A)</option>
             <option>Smallest AreaLotSF</option>
             <option>Biggest AreaLotSF</option>
+            <option>Fewest Bedroomscount</option>
+            <option>Most Bedroomscount</option>
+            <option>Fewest Bathcount</option>
+            <option>Most Bathcount</option>
         </select>
+
+        Kept Houses?
+        <select onChange={e => {
+            setKeptSubset(e.target.value)
+            setCurPage(0)
+            }}>
+            <option>Both</option>
+            <option>Kept Houses</option>
+            <option>Eliminated Houses</option>
+        </select>
+
+        Selective Houses?
+        <select onChange={e => {
+            setSelectiveSubset(e.target.value)
+            setCurPage(0)
+            }}>
+            <option>Both</option>
+            <option>Selective Houses</option>
+            <option>Non-Selective Houses</option>
+        </select>
+
         Noted?
         <select onChange={e => {
             setNotedSubset(e.target.value)

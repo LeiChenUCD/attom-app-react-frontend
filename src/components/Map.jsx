@@ -227,7 +227,6 @@ function Map(props) {
     return (
         <div style={{ 
             width: window.innerWidth > 450 ? "450px" : window.innerWidth, height: "450px", 
-            marginLeft: window.innerWidth > 768 ? "10px" : "0", 
             marginBottom: "10px" }}>
             <MapContainer 
             bounds={bounds}
@@ -328,7 +327,7 @@ function Map(props) {
                 </>
                 :
                 <>
-                <Polygon positions={convexHull(subsetOnMap.map(house => [house[2], house[3]]))}/>
+                <Polygon positions={convexHull(subsetOnMap.map((house, idx) => [house[2], house[3]]))}/>
                 {/* <div>hi</div> */}
                 </>
                 }

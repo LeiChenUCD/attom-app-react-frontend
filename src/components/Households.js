@@ -7,7 +7,7 @@ import { sortHouseHold } from "../util/util"
 
 function HouseHolds(props) {
 
-    const {LotAreaLower, LotAreaUpper, addrFilter, setSelectedAddr, id, selectedAddr, sortMethod, curPage, setCurPage, setHouseEntry, sortedSubset, setSortedSubset, setCenter, authorName, prevNotesFull, notedSubset, censusTract, setZoom, zoom, setATTOMID, ATTOMID, contactInfoSubset, setCurRecordIdx} = props
+    const {LotAreaLower, LotAreaUpper, addrFilter, setSelectedAddr, id, selectedAddr, sortMethod, curPage, setCurPage, setHouseEntry, sortedSubset, setSortedSubset, setCenter, authorName, prevNotesFull, notedSubset, censusTract, setZoom, zoom, setATTOMID, ATTOMID, contactInfoSubset, setCurRecordIdx, zoneFilter, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, keptSubset, selectiveSubset} = props
     const [pageSize, setPageSize] = React.useState(10)
     const [filteredSubset, setFilteredSubset] = React.useState([]);
 
@@ -15,10 +15,30 @@ function HouseHolds(props) {
     React.useEffect(() => {
         let filteredData = getHouses()
             .filter(house => house[1] >= LotAreaLower)
-            .filter(house => house[1] <= LotAreaUpper);
+            .filter(house => house[1] <= LotAreaUpper)
+            .filter(house => house[8] >= bedroomLower)
+            .filter(house => house[8] <= bedroomUpper)
+            .filter(house => house[9] >= bathroomLower)
+            .filter(house => house[9] <= bathroomUpper);
 
         if (addrFilter !== "") {
             filteredData = filteredData.filter(house => house[0].toLowerCase().includes(addrFilter.toLowerCase()));
+        }
+
+        if (zoneFilter !== "All") {
+            filteredData = filteredData.filter(house => house[7] === zoneFilter)
+        }
+
+        if (keptSubset === "Kept Houses") {
+            filteredData = filteredData.filter(house => house[11] === true)
+        } else if (keptSubset === "Eliminated Houses") {
+            filteredData = filteredData.filter(house => house[11] === false)
+        }
+
+        if (selectiveSubset === "Selective Houses") {
+            filteredData = filteredData.filter(house => house[12] === true)
+        } else if (selectiveSubset === "Non-Selective Houses") {
+            filteredData = filteredData.filter(house => house[12] === false)
         }
 
         if (notedSubset === "Noted Addresses") {
@@ -34,7 +54,7 @@ function HouseHolds(props) {
         }
 
         setFilteredSubset(filteredData);
-    }, [LotAreaLower, LotAreaUpper, addrFilter, notedSubset, contactInfoSubset]);
+    }, [LotAreaLower, LotAreaUpper, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, addrFilter, notedSubset, contactInfoSubset, zoneFilter, keptSubset, selectiveSubset]);
 
     // Sort the filteredSubset based on sortMethod
     React.useEffect(() => {

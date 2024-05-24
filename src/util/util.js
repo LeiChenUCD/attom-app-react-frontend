@@ -97,6 +97,98 @@ export function insertOneNote(address, note, author) {
       });
 }
 
+export function insertToggleInfo(id, ATTOMID, keepHouse, selectiveHouse, censusTract) {
+    const obj = {
+        id,
+        fields: {
+            fields: {
+                ATTOMID,
+                "Keep House": keepHouse ? "true" : "false",
+                "Selective House": selectiveHouse ? "true" : "false",
+                "Census Tract": censusTract
+            }
+        }
+    }
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "insertToggleInfo", requestOptions)
+    .then(res => res.json())
+    .then(data => {return data})
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+      });
+}
+
+export function deleteToggleInfo(id) {
+    const obj = {
+        id
+    }
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "deleteToggleInfo", requestOptions)
+    .then(res => res.json())
+    .then(data => {return data})
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
+}
+
+export function loadToggleInfoCensusTract(censusTract) {
+    const obj = {
+        censusTract
+    }
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "getToggleInfoCensusTract", requestOptions)
+    .then(res => res.json())
+    .then(data => {
+        // house[5] is attom id
+        // console.log(data.data.items)
+        var toggleDict = {}
+        for (var item of data.data.items) {
+            toggleDict[item.fields.ATTOMID[0].text] = [item.record_id, item.fields["Keep House"][0].text, item.fields["Selective House"][0].text]
+        }
+        // console.log(toggleDict)
+        houses = houses.map(house => {
+            if (house[5] in toggleDict) {
+                house[10] = toggleDict[house[5]][0]
+                house[11] = toggleDict[house[5]][1] === "true" ? true : false
+                house[12] = toggleDict[house[5]][2] === "true" ? true : false
+            }
+            return house
+        })
+        // console.log(houses)
+        return data
+    })
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
+}
+
 function getNotedAddress() {
     const requestOptions = {
         // mode: 'no-cors',
@@ -173,9 +265,9 @@ export function getNote(ATTOMID) {
 
 var censusTractInfo = {}
 export function getCensusTractInfo() {
-    if (Object.keys(censusTractInfo).length > 0) {
-        return censusTractInfo
-    }
+    // if (Object.keys(censusTractInfo).length > 0) {
+    //     return censusTractInfo
+    // }
     const requestOptions = {
         // mode: 'no-cors',
         method: "GET",
@@ -263,6 +355,46 @@ export function sortHouseHold(sortedData, sortMethod) {
                 return 1;
             }
             if (a[1] > b[1]) {
+                return -1;
+            }
+            return 0;
+        });
+    } else if (sortMethod === "Fewest Bedroomscount") {
+        sortedData.sort((a, b) => {
+            if (a[8] < b[8]) {
+                return 1;
+            }
+            if (a[8] > b[8]) {
+                return -1;
+            }
+            return 0;
+        });
+    } else if (sortMethod === "Most Bedroomscount") {
+        sortedData.sort((a, b) => {
+            if (a[8] < b[8]) {
+                return 1;
+            }
+            if (a[8] > b[8]) {
+                return -1;
+            }
+            return 0;
+        });
+    } else if (sortMethod === "Fewest Bathcount") {
+        sortedData.sort((a, b) => {
+            if (a[9] < b[9]) {
+                return 1;
+            }
+            if (a[9] > b[9]) {
+                return -1;
+            }
+            return 0;
+        });
+    } else if (sortMethod === "Most Bathcount") {
+        sortedData.sort((a, b) => {
+            if (a[9] < b[9]) {
+                return 1;
+            }
+            if (a[9] > b[9]) {
                 return -1;
             }
             return 0;
@@ -370,8 +502,21 @@ async function loadHousesFromATTOMPostgresTract(tract) {
     // console.log(houseRes)
     // first false: has comments or not
     // second false: has contact info or not
+    // 0 house.propertyaddressfull
+    // 1 house.arealotsf
+    // 2 house.propertylatitude
+    // 3 house.propertylongitude
+    // 4 have notes - false
+    // 5 house['[attom id]']
+    // 6 have contact info - false
+    // 7 house.zonedcodelocal
+    // 8 house.bedroomscount
+    // 9 house.bathcount
+    // 10 id for greyout / selective house table
+    // 11 keep or not (greyout for not keeping)
+    // 12 selective house?
     houses = houseRes.map(house => 
-        [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount]
+        [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, "", true, false]
     )
     // return houses
 }

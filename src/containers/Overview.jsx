@@ -24,7 +24,13 @@ function Overview(props) {
         }
         loadInfo()
     }, [])
-    return <div style={{display: "flex", justifyContent: window.innerWidth > 768 ? "" : "center"}}>
+    
+    const totalHomeCount = censusTractInfo.map(info => parseInt(info.count)).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    const totalCommentedHouseCount = censusTractOverviewInfo.map(info => info.fields['Count']).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    
+    return <div 
+    // style={{display: "flex", justifyContent: window.innerWidth > 768 ? "" : "center"}}
+    >
         {loaded ? 
         <div style={{display: "flex", 
         overflowX: "auto",
@@ -54,6 +60,40 @@ function Overview(props) {
                         />
                     }
                 )}
+
+
+                <div style={{display: "flex", flexDirection: "row", placeContent: "center"}}>
+                    <div style={{minWidth: "100px", height: "30px", border: "1px solid black"}} className="centerText">
+                        Total
+                    </div>
+
+                    <div style={{minWidth: "100px", height: "30px", border: "1px solid black"}} className="centerText">
+                        {totalHomeCount}
+                    </div>
+
+                    <div style={{minWidth: "200px", height: "30px", border: "1px solid black"}} className="centerText">
+                        {totalCommentedHouseCount}
+                    </div>
+
+                    <div style={{minWidth: "100px", height: "30px", border: "1px solid black"}} className="centerText">
+                        {((totalCommentedHouseCount / totalHomeCount) * 100).toFixed(2)}%
+                    </div>
+
+                    <div style={{minWidth: "150px", height: "30px", border: "1px solid black"}} className="centerText">
+                        
+                    </div>
+
+                    <div style={{minWidth: "150px", height: "30px", border: "1px solid black"}} className="centerText">
+                        
+                    </div>
+
+                    <div style={{minWidth: "150px", height: "30px", border: "1px solid black"}} className="centerText">
+                        
+                    </div>
+                </div>
+
+
+
             </div>
         </div>
             :

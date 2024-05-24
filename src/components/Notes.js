@@ -74,7 +74,8 @@ function Notes(props) {
     return <div style={{width: window.innerWidth > 450 ? "450px" : window.innerWidth, 
     display: "flex", 
     flexDirection: "column", 
-    marginTop: window.innerWidth > 768 ? "" : "20px"
+    marginTop: window.innerWidth > 768 ? "" : "20px",
+    marginLeft: window.innerWidth > 768 ? "10px" : "0", 
     }}>
 
         
@@ -96,13 +97,15 @@ function Notes(props) {
             <PrevNote noteFull={prevNotesFull}/>
         </div>
 
-        <div className="left right" style={{minHeight: "300px", outline: "0px solid transparent"}} contentEditable="true" id="note">
+        <div className="left right" style={{minHeight: "280px", outline: "0px solid transparent"}} contentEditable="true" id="note">
             
         </div>
         
         <div style={{display: "flex", direction: "rtl"}} className="left bottom right">
             <button 
-            style={{display: "flex", alignSelf: "end", margin: "5px 10px"}} 
+            style={{display: "flex", alignSelf: "end", margin: "5px 10px",
+                fontSize: window.innerWidth > 768 ? "" : "16px"
+            }} 
             className={`${hideClass}`} 
             onClick={e => {
                 e.preventDefault();
@@ -126,20 +129,28 @@ function Notes(props) {
         
         
         <div style={{}}>
-            <button onClick={e => {appendText(e.target.innerHTML)}}>
-                called, cannot reach 
+            <button style={{fontSize: window.innerWidth > 768 ? "" : "15px", textAlign: "left"}} onClick={e => {appendText(e.target.innerHTML)}}>
+                Called, cannot reach 
             </button>
             <br></br>
-            <button onClick={e => {appendText(e.target.innerHTML)}}>
-                called owner, not interested 
+            <button style={{fontSize: window.innerWidth > 768 ? "" : "15px", textAlign: "left"}} onClick={e => {appendText(e.target.innerHTML)}}>
+                Called owner, not interested 
             </button>
             <br></br>
-            <button onClick={e => {appendText(e.target.innerHTML)}}>
-                called owner, need to follow up 
+            <button style={{fontSize: window.innerWidth > 768 ? "" : "15px", textAlign: "left"}} onClick={e => {appendText(e.target.innerHTML)}}>
+                Called owner, need to follow up 
             </button>
             <br></br>
-            <button onClick={e => {appendText(e.target.innerHTML)}}>
+            <button style={{fontSize: window.innerWidth > 768 ? "" : "16px", textAlign: "left"}} onClick={e => {appendText(e.target.innerHTML)}}>
                 (Priority) called owner, show interest of selling, FOLLOW UP 
+            </button>
+            <br></br>
+            <button style={{fontSize: window.innerWidth > 768 ? "" : "16px", textAlign: "left"}} onClick={e => {appendText(e.target.innerHTML)}}>
+                Replied to REI with interest
+            </button>
+            <br></br>
+            <button style={{fontSize: window.innerWidth > 768 ? "" : "16px", textAlign: "left"}} onClick={e => {appendText(e.target.innerHTML)}}>
+            Replied to mail chimp with interest
             </button>
             <br></br>
         </div>
