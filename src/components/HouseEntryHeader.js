@@ -4,7 +4,8 @@ function HouseEntryHeader() {
         <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>AreaLotSF</div>
         <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>Zonedcodelocal</div>
         <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>Bedroomscount</div>
-        <div style={{minWidth: "100px", alignContent: "center", textAlign: "center"}}>Bathcount</div>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>Bathcount</div>
+        <div style={{minWidth: "100px", alignContent: "center", textAlign: "center"}}>Priority</div>
     </div>
 }
 

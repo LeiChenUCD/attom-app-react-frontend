@@ -149,6 +149,57 @@ export function deleteToggleInfo(id) {
     });
 }
 
+export function insertPriorityInfo(id, ATTOMID, priority, censusTract) {
+    const obj = {
+        id,
+        fields: {
+            fields: {
+                ATTOMID,
+                Priority: priority,
+                "Census Tract": censusTract
+            }
+        }
+    }
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "insertPriorityInfo", requestOptions)
+    .then(res => res.json())
+    .then(data => {return data})
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+      });
+}
+
+export function deletePriorityInfo(id) {
+    const obj = {
+        id
+    }
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "deletePriorityInfo", requestOptions)
+    .then(res => res.json())
+    .then(data => {return data})
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
+}
+
 export function loadToggleInfoCensusTract(censusTract) {
     const obj = {
         censusTract
@@ -177,6 +228,45 @@ export function loadToggleInfoCensusTract(censusTract) {
                 house[10] = toggleDict[house[5]][0]
                 house[11] = toggleDict[house[5]][1] === "true" ? true : false
                 house[12] = toggleDict[house[5]][2] === "true" ? true : false
+            }
+            return house
+        })
+        // console.log(houses)
+        return data
+    })
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
+}
+
+export function loadPriorityInfoCensusTract(censusTract) {
+    const obj = {
+        censusTract
+    }
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "getPriorityInfoCensusTract", requestOptions)
+    .then(res => res.json())
+    .then(data => {
+        // house[5] is attom id
+        // console.log(data.data.items)
+        var priorityDict = {}
+        for (var item of data.data.items) {
+            priorityDict[item.fields.ATTOMID[0].text] = [item.record_id, item.fields.Priority]
+        }
+        // console.log(priorityDict)
+        houses = houses.map(house => {
+            if (house[5] in priorityDict) {
+                house[13] = priorityDict[house[5]][0]
+                house[14] = priorityDict[house[5]][1]
             }
             return house
         })
@@ -362,10 +452,10 @@ export function sortHouseHold(sortedData, sortMethod) {
     } else if (sortMethod === "Fewest Bedroomscount") {
         sortedData.sort((a, b) => {
             if (a[8] < b[8]) {
-                return 1;
+                return -1;
             }
             if (a[8] > b[8]) {
-                return -1;
+                return 1;
             }
             return 0;
         });
@@ -382,10 +472,10 @@ export function sortHouseHold(sortedData, sortMethod) {
     } else if (sortMethod === "Fewest Bathcount") {
         sortedData.sort((a, b) => {
             if (a[9] < b[9]) {
-                return 1;
+                return -1;
             }
             if (a[9] > b[9]) {
-                return -1;
+                return 1;
             }
             return 0;
         });
@@ -395,6 +485,26 @@ export function sortHouseHold(sortedData, sortMethod) {
                 return 1;
             }
             if (a[9] > b[9]) {
+                return -1;
+            }
+            return 0;
+        });
+    } else if (sortMethod === "Lowest Priority") {
+        sortedData.sort((a, b) => {
+            if (a[14] < b[14]) {
+                return -1;
+            }
+            if (a[14] > b[14]) {
+                return 1;
+            }
+            return 0;
+        });
+    } else if (sortMethod === "Highest Priority") {
+        sortedData.sort((a, b) => {
+            if (a[14] < b[14]) {
+                return 1;
+            }
+            if (a[14] > b[14]) {
                 return -1;
             }
             return 0;
@@ -515,8 +625,12 @@ async function loadHousesFromATTOMPostgresTract(tract) {
     // 10 id for greyout / selective house table
     // 11 keep or not (greyout for not keeping)
     // 12 selective house?
+    // 13 priority table id
+    // 14 priority value
     houses = houseRes.map(house => 
-        [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, "", true, false]
+        [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, 
+            false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, 
+            "", true, false, "", 3]
     )
     // return houses
 }

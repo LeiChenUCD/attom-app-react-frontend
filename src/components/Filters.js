@@ -1,7 +1,8 @@
 import { getHouses } from "../util/util"
 function Filters(props) {
     const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset, 
-        setContactInfoSubset, setZoneFilter, setBedroomUpper, setBedroomLower, setBathroomLower, setBathroomUpper, setKeptSubset, setSelectiveSubset} = props
+        setContactInfoSubset, setZoneFilter, setBedroomUpper, setBedroomLower, setBathroomLower, 
+        setBathroomUpper, setKeptSubset, setSelectiveSubset, setPriorityLower, setPriorityUpper} = props
     const inputStyle = {
         width: "60px"
     }
@@ -63,6 +64,19 @@ function Filters(props) {
             }}></input>
         </div>
 
+        Priority
+        <div>
+        <input style={inputStyle} onInput={e => {
+            setPriorityLower(e.target.value.trim() === "" ? 0 : parseInt(e.target.value))
+            setCurPage(0)
+            }}></input>
+        ————
+        <input style={inputStyle} onInput={e => {
+            setPriorityUpper(e.target.value.trim() === "" ? Number.MAX_SAFE_INTEGER : parseInt(e.target.value))
+            setCurPage(0)
+            }}></input>
+        </div>
+
         Order By
         <select onChange={e => {
             setSortMethod(e.target.value)
@@ -77,9 +91,11 @@ function Filters(props) {
             <option>Most Bedroomscount</option>
             <option>Fewest Bathcount</option>
             <option>Most Bathcount</option>
+            <option>Lowest Priority</option>
+            <option>Highest Priority</option>
         </select>
 
-        Kept Houses?
+        {/* Kept Houses?
         <select onChange={e => {
             setKeptSubset(e.target.value)
             setCurPage(0)
@@ -97,7 +113,7 @@ function Filters(props) {
             <option>Both</option>
             <option>Selective Houses</option>
             <option>Non-Selective Houses</option>
-        </select>
+        </select> */}
 
         Noted?
         <select onChange={e => {

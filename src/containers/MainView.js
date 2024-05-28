@@ -4,7 +4,7 @@ import HouseHolds from "../components/Households";
 import Notes from "../components/Notes";
 import Map from "../components/Map";
 import MandatoryFields from "../components/MandatoryFields";
-import { loadHouseCensusTract, loadContactInfo, loadToggleInfoCensusTract } from "../util/util";
+import { loadHouseCensusTract, loadContactInfo, loadToggleInfoCensusTract, loadPriorityInfoCensusTract } from "../util/util";
 import L from 'leaflet';
 import GeneralInfo from "./GeneralInfo";
 // import { houses } from "../assets/households"
@@ -18,6 +18,8 @@ function MainView(props) {
     const [bedroomUpper, setBedroomUpper] = React.useState(Number.MAX_SAFE_INTEGER)
     const [bathroomLower, setBathroomLower] = React.useState(0)
     const [bathroomUpper, setBathroomUpper] = React.useState(Number.MAX_SAFE_INTEGER)
+    const [priorityLower, setPriorityLower] = React.useState(0)
+    const [priorityUpper, setPriorityUpper] = React.useState(Number.MAX_SAFE_INTEGER)
     const [addrFilter, setAddrFilter] = React.useState("")
     const [zoneFilter, setZoneFilter] = React.useState("All")
     const [selectedAddr, setSelectedAddr] = React.useState("")
@@ -43,7 +45,7 @@ function MainView(props) {
         async function loading() {
             // await loadHouses()
             await loadHouseCensusTract(censusTract)
-            await loadToggleInfoCensusTract(censusTract)
+            await loadPriorityInfoCensusTract(censusTract)
             setLoaded(true)
             // const southwest = [getSouthwestLatitude(getHouses()), getSouthwestLongitude(getHouses())];
             // const northeast = [getNortheastLatitude(getHouses()), getNortheastLongitude(getHouses())];
@@ -83,6 +85,8 @@ function MainView(props) {
                 setBedroomUpper={setBedroomUpper}
                 setBathroomLower={setBathroomLower}
                 setBathroomUpper={setBathroomUpper}
+                setPriorityLower={setPriorityLower}
+                setPriorityUpper={setPriorityUpper}
                 setAddrFilter={setAddrFilter}
                 setSortMethod={setSortMethod}
                 setCurPage={setCurPage}
@@ -113,6 +117,8 @@ function MainView(props) {
                     bedroomUpper={bedroomUpper}
                     bathroomLower={bathroomLower}
                     bathroomUpper={bathroomUpper}
+                    priorityLower={priorityLower}
+                    priorityUpper={priorityUpper}
                     addrFilter={addrFilter} 
                     setSelectedAddr={setSelectedAddr}
                     id={id}

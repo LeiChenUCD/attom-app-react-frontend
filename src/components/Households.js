@@ -7,7 +7,7 @@ import { sortHouseHold } from "../util/util"
 
 function HouseHolds(props) {
 
-    const {LotAreaLower, LotAreaUpper, addrFilter, setSelectedAddr, id, selectedAddr, sortMethod, curPage, setCurPage, setHouseEntry, sortedSubset, setSortedSubset, setCenter, authorName, prevNotesFull, notedSubset, censusTract, setZoom, zoom, setATTOMID, ATTOMID, contactInfoSubset, setCurRecordIdx, zoneFilter, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, keptSubset, selectiveSubset} = props
+    const {LotAreaLower, LotAreaUpper, addrFilter, setSelectedAddr, id, selectedAddr, sortMethod, curPage, setCurPage, setHouseEntry, sortedSubset, setSortedSubset, setCenter, authorName, prevNotesFull, notedSubset, censusTract, setZoom, zoom, setATTOMID, ATTOMID, contactInfoSubset, setCurRecordIdx, zoneFilter, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, keptSubset, selectiveSubset, priorityLower, priorityUpper} = props
     const [pageSize, setPageSize] = React.useState(10)
     const [filteredSubset, setFilteredSubset] = React.useState([]);
 
@@ -19,8 +19,10 @@ function HouseHolds(props) {
             .filter(house => house[8] >= bedroomLower)
             .filter(house => house[8] <= bedroomUpper)
             .filter(house => house[9] >= bathroomLower)
-            .filter(house => house[9] <= bathroomUpper);
-
+            .filter(house => house[9] <= bathroomUpper)
+            .filter(house => house[14] >= priorityLower)
+            .filter(house => house[14] <= priorityUpper);
+        console.log(filteredData)
         if (addrFilter !== "") {
             filteredData = filteredData.filter(house => house[0].toLowerCase().includes(addrFilter.toLowerCase()));
         }
@@ -54,7 +56,7 @@ function HouseHolds(props) {
         }
 
         setFilteredSubset(filteredData);
-    }, [LotAreaLower, LotAreaUpper, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, addrFilter, notedSubset, contactInfoSubset, zoneFilter, keptSubset, selectiveSubset]);
+    }, [LotAreaLower, LotAreaUpper, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, addrFilter, notedSubset, contactInfoSubset, zoneFilter, keptSubset, selectiveSubset, priorityLower, priorityUpper]);
 
     // Sort the filteredSubset based on sortMethod
     React.useEffect(() => {
