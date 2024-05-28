@@ -11,7 +11,7 @@ import '@changey/react-leaflet-markercluster/dist/styles.min.css'
 import { convexHull, getSouthwestLatitude, getNortheastLatitude, getSouthwestLongitude, getNortheastLongitude, getHouses } from '../util/util';
 
 function MyComponent(props) {
-    const {center, zoom, houseEntry} = props
+    const {center, zoom, houseEntry, setATTOMID} = props
     const map = useMap();
     // polyline.add
     
@@ -19,6 +19,7 @@ function MyComponent(props) {
     //     map.setView(center, zoom);
     // }, [center, zoom, map]);
     React.useEffect(() => {
+        setATTOMID(houseEntry[5])
         // console.log("here: rendered", center, zoom)
         map.setView([houseEntry[2], houseEntry[3]], zoom);
     }, [houseEntry]);
@@ -65,7 +66,7 @@ function MapEventHandlers(props) {
 function Map(props) {
     
     const {houseEntry, sortedSubset, center, setCenter, setHouseEntry, setSelectedAddr, authorName,
-    prevNotesFull, insertNote, id, selectedAddr, zoom, setZoom} = props
+    prevNotesFull, insertNote, id, selectedAddr, zoom, setZoom, setATTOMID} = props
     const [top, setTop] = React.useState(getNortheastLatitude(getHouses()))
     const [right, setRight] = React.useState(getNortheastLongitude(getHouses()))
     const [bottom, setBottom] = React.useState(getSouthwestLatitude(getHouses()))
@@ -255,6 +256,7 @@ function Map(props) {
                 <MyComponent 
                 // bounds={bounds}
                 houseEntry={houseEntry}
+                setATTOMID={setATTOMID}
                 center={center}
                 zoom={zoom} 
                 />

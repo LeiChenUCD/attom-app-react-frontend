@@ -37,7 +37,6 @@ function HouseEntry(props) {
         } else {
             insertPriorityInfo(id, ATTOMID, priority, censusTract)
         }
-        
     }
 
     const bold = houseEntry[5] === ATTOMID ? "bold" : ""

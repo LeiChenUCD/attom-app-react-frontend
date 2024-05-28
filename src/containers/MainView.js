@@ -161,6 +161,7 @@ function MainView(props) {
                     prevNotesFull={prevNotesFull}
                     id={id}
                     addrFilter={addrFilter}
+                    setATTOMID={setATTOMID}
                     />
                     {selectedAddr === "" ? null : 
                     <Notes selectedAddr={selectedAddr} 
