@@ -1,9 +1,8 @@
-import { MapContainer, TileLayer, Marker, useMap, Polyline, Polygon } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Import Leaflet CSS to override default styles
 import React from 'react';
 import L from 'leaflet'
 import { isBetween } from '../util/util';
-import { splitter, noteSplitter } from '../util/util';
 // npm i @changey/react-leaflet-markercluster
 // https://www.npmjs.com/package/react-leaflet-markercluster
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
@@ -11,22 +10,14 @@ import '@changey/react-leaflet-markercluster/dist/styles.min.css'
 import { convexHull, getSouthwestLatitude, getNortheastLatitude, getSouthwestLongitude, getNortheastLongitude, getHouses } from '../util/util';
 
 function MyComponent(props) {
-    const {center, zoom, houseEntry, setATTOMID} = props
+    const {zoom, houseEntry, setATTOMID} = props
     const map = useMap();
-    // polyline.add
-    
-    // React.useEffect(() => {
-    //     map.setView(center, zoom);
-    // }, [center, zoom, map]);
     React.useEffect(() => {
         setATTOMID(houseEntry[5])
-        // console.log("here: rendered", center, zoom)
         map.setView([houseEntry[2], houseEntry[3]], zoom);
     }, [houseEntry]);
     return null
 }
-
-// import { useMap, useEffect } from 'react-leaflet';
 
 function MapEventHandlers(props) {
     const {setTop, setRight, setBottom, setLeft, setZoom, setCenter} = props
@@ -45,10 +36,6 @@ function MapEventHandlers(props) {
             setBottom(bottom)
             setLeft(left)
             setZoom(map.getZoom())
-            // setCenter([map.getCenter().lat, map.getCenter().lng]);
-            // setCenter(map.getCenter())
-            // console.log(map.getCenter())
-            // console.log(map.getZoom())
         };
 
         map.on("moveend", handleMoveEnd);
@@ -65,8 +52,7 @@ function MapEventHandlers(props) {
   
 function Map(props) {
     
-    const {houseEntry, sortedSubset, center, setCenter, setHouseEntry, setSelectedAddr, authorName,
-    prevNotesFull, insertNote, id, selectedAddr, zoom, setZoom, setATTOMID} = props
+    const {houseEntry, sortedSubset, center, setCenter, setHouseEntry, setSelectedAddr, zoom, setZoom, setATTOMID} = props
     const [top, setTop] = React.useState(getNortheastLatitude(getHouses()))
     const [right, setRight] = React.useState(getNortheastLongitude(getHouses()))
     const [bottom, setBottom] = React.useState(getSouthwestLatitude(getHouses()))
@@ -86,7 +72,6 @@ function Map(props) {
             iconSize: [40, 40],
             className: `cluster-marker cluster-marker-${size}`,
             html: `<div style="background-color: green; color: white; border-radius: 50%; text-align: center; line-height: 40px;">${count}</div>`,
-            // html: `<div style="margin-left: -20px; margin-top: -20px; width: 40px; height: 40px; transform: translate3d(250px, 202px, 0px); z-index: 202;">${count}</div>`
         };
         return L.divIcon(options);
     };
@@ -98,18 +83,9 @@ function Map(props) {
             iconSize: [40, 40],
             className: `cluster-marker cluster-marker-${size}`,
             html: `<div style="background-color: blue; color: white; border-radius: 50%; text-align: center; line-height: 40px;">${count}</div>`,
-            // html: `<div style="margin-left: -20px; margin-top: -20px; width: 40px; height: 40px; transform: translate3d(250px, 202px, 0px); z-index: 202;">${count}</div>`
         };
         return L.divIcon(options);
     };
-
-    const biggerIcon = L.icon({
-        iconUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-        iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-        iconSize: [40, 60], // Set the size of the icon
-        iconAnchor: [20, 59], // Set the anchor point of the icon
-        popupAnchor: [1, -34] // Set the popup anchor
-    });
     
     const commentedStyles = `
         background-color: green;
@@ -198,41 +174,29 @@ function Map(props) {
         return !(house[2] === center[0] && house[3] === center[1])
     })
 
-    
-    
-    // get bound (house[2]: lat, house[3]: long)
     const border = [
         [getSouthwestLatitude(getHouses()), getSouthwestLongitude(getHouses())], // Bottom-left corner
         [getNortheastLatitude(getHouses()), getNortheastLongitude(getHouses())]  // Top-right corner
     ];
-    
-
-    // console.log(subsetOnMap.map(house => [house[2], house[3]]))
-    // console.log(convexHull(subsetOnMap.map(house => [house[2], house[3]])))
-
-    // var polyline = L.polyline(convexHull(subsetOnMap.map(house => [house[2], house[3]])), {color: 'red'});
 
     const handleMarkerClick = (event) => {
         // console.log('Marker clicked:', event.latlng); // Log marker position when clicked
         setCenter([event.latlng.lat, event.latlng.lng])
         const newHouse = subsetOnMap.filter(house => house[2] === event.latlng.lat && house[3] === event.latlng.lng)[0]
         setHouseEntry(newHouse)
-        // console.log(newHouse[0])
         setSelectedAddr(newHouse[0])
     };
 
     const selectedAddrWithinMap = isBetween(center[0], top, bottom) && isBetween(center[1], left, right)
     const additionalHouse = selectedAddrWithinMap ? 1 : 0
     const bounds = L.latLngBounds(border);
-    // console.log(houseEntry[4])
+    
     return (
         <div style={{ 
             width: window.innerWidth > 450 ? "450px" : window.innerWidth, height: "450px", 
             marginBottom: "10px" }}>
             <MapContainer 
             bounds={bounds}
-            // center={center} 
-            // zoom={zoom} 
             maxZoom={maxZoom}
             style={{ height: '100%', width: '100%' }}
             >
@@ -254,7 +218,6 @@ function Map(props) {
                 {
                 center[0] !== -1 &&
                 <MyComponent 
-                // bounds={bounds}
                 houseEntry={houseEntry}
                 setATTOMID={setATTOMID}
                 center={center}
@@ -263,16 +226,11 @@ function Map(props) {
                 }
 
                 {houseEntry[4] === true ? <Marker position={center} icon={commentedBiggerIcon}/> : <Marker position={center} icon={uncommentedBiggerIcon}/>}
-                {/* <Marker position={center}/> */}
-                {/* {subsetOnMap.length >= 5000 &&
-                    <Polygon positions={convexHull(subsetOnMap.map(house => [house[2], house[3]]))}/>
-                } */}
 
                 {subsetOnMap.length < 1000 ?
                 zoom >= 18 ? 
                 <>
                 {subsetOnMap.filter(house => house[4] === true).map((house, idx) => {
-                    // console.log(idx);
                     return <Marker 
                     key={idx} 
                     position={[house[2], house[3]]}
@@ -281,7 +239,6 @@ function Map(props) {
                     />
                 })}
                 {subsetOnMap.filter(house => house[4] === false).map((house, idx) => {
-                    // console.log(idx);
                     return <Marker 
                     key={idx} 
                     position={[house[2], house[3]]}
@@ -297,7 +254,6 @@ function Map(props) {
                 >
                     {/* with comment */}
                     {subsetOnMap.filter(house => house[4] === true).map((house, idx) => {
-                    // console.log(idx);
                     return <>
                     <Marker 
                     key={idx} 
@@ -315,7 +271,6 @@ function Map(props) {
                 >
                     {/* without comment */}
                     {subsetOnMap.filter(house => house[4] === false).map((house, idx) => {
-                    // console.log(idx);
                     return <Marker 
                     key={idx} 
                     position={[house[2], house[3]]}

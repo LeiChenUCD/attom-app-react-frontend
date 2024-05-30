@@ -4,12 +4,9 @@ import HouseHolds from "../components/Households";
 import Notes from "../components/Notes";
 import Map from "../components/Map";
 import MandatoryFields from "../components/MandatoryFields";
-import { loadHouseCensusTract, loadContactInfo, loadToggleInfoCensusTract, 
-    loadPriorityInfoCensusTract, loadNoteCensusTract, loadHouseAll, loadPriorityInfoAll, 
+import { loadHouseCensusTract, loadPriorityInfoCensusTract, loadNoteCensusTract, loadHouseAll, loadPriorityInfoAll, 
     loadNoteAll, initConnection } from "../util/util";
-import L from 'leaflet';
 import GeneralInfo from "./GeneralInfo";
-// import { houses } from "../assets/households"
 
 function MainView(props) {
 
@@ -47,7 +44,6 @@ function MainView(props) {
     React.useEffect(() => {
         async function loading() {
             if (loaded) return
-            // await loadHouses()
             await initConnection()
             if (censusTract === 0) {
                 setLoadingStatement("Loading All House Information... (2/4)")
@@ -65,18 +61,11 @@ function MainView(props) {
                 await loadNoteCensusTract(censusTract)
             }
             setLoaded(true)
-            // const southwest = [getSouthwestLatitude(getHouses()), getSouthwestLongitude(getHouses())];
-            // const northeast = [getNortheastLatitude(getHouses()), getNortheastLongitude(getHouses())];
-            // const bounds = L.latLngBounds([southwest, northeast]);
-            // setCenter(bounds.getCenter())
-            // setZoom(calculateZoomLevel(bounds))
         }
         loading()
     }, [])
     
     return <div style={{}}
-    // style={{display: "flex", 
-    // flexDirection: window.innerWidth > 768 ? "row" : "column", justifyContent: "center", paddingTop: "30px"}}
     >
         {
             loaded ? 

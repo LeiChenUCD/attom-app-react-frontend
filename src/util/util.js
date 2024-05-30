@@ -455,11 +455,7 @@ export function loadNoteAll() {
 
 // loadNoteCensusTract(507205)
 
-var censusTractInfo = {}
 export function getCensusTractInfo() {
-    // if (Object.keys(censusTractInfo).length > 0) {
-    //     return censusTractInfo
-    // }
     const requestOptions = {
         // mode: 'no-cors',
         method: "GET",
@@ -479,7 +475,6 @@ export function getCensusTractInfo() {
         return res.json();
       })
     .then(res => {
-        censusTractInfo = res
         return res})
     .catch((error) => {
         // alert(error);
@@ -666,27 +661,6 @@ function isNotRightTurn(a, b, c) {
 // [PropertyAddressFull, AreaLotSF, lat, long, noted (bool)]
 
 var houses = []
-// get houses from ATTOM database
-async function loadHousesFromATTOMPostgres() {
-    // var houses = [["1510 CAMDEN AVE",9424.0,37.267636,-121.942385],["1500 CAMDEN AVE",8132.0,37.267784,-121.942569]]
-    const houseRes = await execPostgresQuery("\
-    SELECT \
-        PropertyAddressFull, AreaLotSF, PropertyLatitude, PropertyLongitude \
-    FROM \
-        taxassessor \
-    where \
-        PropertyAddressCity = 'CAMPBELL' \
-        AND PropertyAddressFull IS NOT NULL \
-        AND AreaLotSF IS NOT NULL \
-        AND PropertyLatitude IS NOT NULL \
-        AND PropertyLongitude IS NOT NULL \
-     ")
-
-    houses = houseRes.map(house => 
-        [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude]
-    )
-    // return houses
-}
 
 async function loadHousesFromATTOMPostgresTract(tract) {
     // var houses = [["1510 CAMDEN AVE",9424.0,37.267636,-121.942385],["1500 CAMDEN AVE",8132.0,37.267784,-121.942569]]

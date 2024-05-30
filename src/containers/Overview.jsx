@@ -1,4 +1,4 @@
-import { loadCensusTract, loadContactInfo, getCensusTractInfo, getContactInfo, initConnection } from "../util/util"
+import { loadCensusTract, loadContactInfo, getCensusTractInfo, initConnection } from "../util/util"
 import CensusTractEntry from "../components/CensusTractEntry"
 import CensusTractHeader from "../components/CensusTractHeader"
 import React from "react"
@@ -29,7 +29,6 @@ function Overview(props) {
             setLoadingStatement("Loading Contact Info... (4/4)")
             await loadContactInfo()
 
-            // console.log(response.data.items)
             setCensusTractOverviewInfo(response.data.items)
             setLoaded(true)
         }
@@ -39,9 +38,7 @@ function Overview(props) {
     const totalHomeCount = censusTractInfo.map(info => parseInt(info.count)).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     const totalCommentedHouseCount = censusTractOverviewInfo.map(info => info.fields['Count']).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     
-    return <div 
-    // style={{display: "flex", justifyContent: window.innerWidth > 768 ? "" : "center"}}
-    >
+    return <div>
         {loaded ? 
         <div style={{display: "flex", 
         overflowX: "auto",

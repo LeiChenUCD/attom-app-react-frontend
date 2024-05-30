@@ -21,7 +21,6 @@ function PageManager(props) {
         <div className="switch_page" onClick={e => setCurPage(endIdx === totalCount ? curPage : curPage + 1)}>&#8250;</div>
         {startIdx + 1} - {endIdx} / {totalCount} 
         <div style={{width: "10px"}}></div>
-        {/* <label for="dog-names">Choose a dog name:</label>  */}
         <select onChange={e => {setPageSize(parseInt(e.target.value))
                                 handleSelectChange(e)}} value={selectedSize}>
             <option value={10}>10</option>

@@ -2,11 +2,10 @@ import { getHouses } from "../util/util"
 function Filters(props) {
     const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset, 
         setContactInfoSubset, setZoneFilter, setBedroomUpper, setBedroomLower, setBathroomLower, 
-        setBathroomUpper, setKeptSubset, setSelectiveSubset, setPriorityLower, setPriorityUpper, setNoteFilter} = props
+        setBathroomUpper, setPriorityLower, setPriorityUpper, setNoteFilter} = props
     const inputStyle = {
         width: "60px"
     }
-    // console.log([...new Set(getHouses().filter(house => house[7] !== null).map(house => house[7]))])
     return <div style={{display: "flex", flexDirection: "column"}}>
         Address
         <input onInput={e => {
@@ -100,26 +99,6 @@ function Filters(props) {
             <option>Lowest Priority</option>
             <option>Highest Priority</option>
         </select>
-
-        {/* Kept Houses?
-        <select onChange={e => {
-            setKeptSubset(e.target.value)
-            setCurPage(0)
-            }}>
-            <option>Both</option>
-            <option>Kept Houses</option>
-            <option>Eliminated Houses</option>
-        </select>
-
-        Selective Houses?
-        <select onChange={e => {
-            setSelectiveSubset(e.target.value)
-            setCurPage(0)
-            }}>
-            <option>Both</option>
-            <option>Selective Houses</option>
-            <option>Non-Selective Houses</option>
-        </select> */}
 
         Noted?
         <select onChange={e => {

@@ -1,4 +1,3 @@
-// import { getCensusTractInfo } from "../util/util"
 import React from "react"
 import { parseTime } from "../util/util";
 function CensusTractEntry(props) {

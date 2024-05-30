@@ -1,14 +1,7 @@
 import { useEffect } from "react"
-import { getNote } from "../util/util"
-import { insertNote } from "../util/util"
 import React from "react"
 import PrevNote from "./PrevNote"
-import { splitter, noteSplitter } from "../util/util"
-import { setAddrNoted, setATTOMIDNoted, parseTime } from "../util/util"
-// import style from '../index.css'
-
-// const splitter = "%-%"
-// const noteSplitter = "%^%"
+import { getNote, insertNote, setATTOMIDNoted, parseTime } from "../util/util"
 
 // write to existing record
 async function submitOneNote(e, address, note, author, id, prevNotesFull, setId, setPrevNotesFull, censusTract, ATTOMID) {
@@ -16,15 +9,11 @@ async function submitOneNote(e, address, note, author, id, prevNotesFull, setId,
         return
     }
     document.getElementById("submit").innerHTML = "Submitting..."
-    // const res = await insertOneNote(address, note, author)
     setATTOMIDNoted(ATTOMID)
-    // console.log(note + splitter + author + splitter + Date.now())
     const ending = prevNotesFull.length > 0 && prevNotesFull[prevNotesFull.length - 1] !== '\n' ? '\n' : ''
     const noteCombined = `${prevNotesFull}${ending}[${parseTime(Date.now())}] ${author}: ${note}`
-    // id, address, note)
     setPrevNotesFull(noteCombined)
     const idRet = await insertNote(id, address, noteCombined, censusTract, author, ATTOMID)
-    // console.log("id:", idRet.data.record.id)
     setId(idRet.data.record.id)
     document.getElementById("submit").innerHTML = "Submit"
 }
@@ -32,7 +21,6 @@ async function submitOneNote(e, address, note, author, id, prevNotesFull, setId,
 function Notes(props) {
     const {selectedAddr, authorName, setId, id, setPrevNotesFull, prevNotesFull, houseEntry, censusTract, ATTOMID} = props
     const hideClass = selectedAddr === "" ? "hide" : ""
-    // console.log("attom id", ATTOMID)
     const [prevNotes, setPrevNotes] = React.useState("")
     function appendText(text) {
         document.getElementById("note").innerHTML += text
@@ -40,17 +28,13 @@ function Notes(props) {
 
     useEffect(() => {
         async function fetchData(ATTOMID) {
-            // Update the document title using the browser API
             setPrevNotes([])
             if (ATTOMID === "") return
             setId("")
             setPrevNotesFull("")
             var res = undefined
-            // if (houseEntry[4] === true) {
             document.getElementById("note").innerHTML = "loading..."
             res = await getNote(ATTOMID)
-            // }
-            // console.log(res)
             if (res === undefined) {
                 document.getElementById("note").innerHTML = ""
                 return
@@ -84,16 +68,6 @@ function Notes(props) {
             </div>
 
         <div>
-            {/* {prevNotesFull.split(noteSplitter).map((note, idx) => {
-                if (note.length < 3) return
-                return <PrevNote 
-                key={idx} 
-                // time={note.fields.Time}
-                // author={note.fields.Author[0].text}
-                // note={note.fields.Notes[0].text}
-                noteFull={note}
-                />
-            })} */}
             <PrevNote noteFull={prevNotesFull}/>
         </div>
 
@@ -121,8 +95,6 @@ function Notes(props) {
                     document.getElementById("note").innerHTML = ""
                 }
             }}
-            // onClick={e => 
-            // submitNote(e, id, selectedAddr, document.getElementById("note").innerHTML, setId)}
             id="submit"
             >Submit</button>
         </div>

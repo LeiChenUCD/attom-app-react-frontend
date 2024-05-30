@@ -11,7 +11,6 @@ function HouseHolds(props) {
     const [pageSize, setPageSize] = React.useState(10)
     const [filteredSubset, setFilteredSubset] = React.useState([]);
 
-    // Filter the houses based on LotAreaLower, LotAreaUpper, and addrFilter
     React.useEffect(() => {
         let filteredData = getHouses()
             .filter(house => house[1] >= LotAreaLower)
@@ -22,7 +21,7 @@ function HouseHolds(props) {
             .filter(house => house[9] <= bathroomUpper)
             .filter(house => house[14] >= priorityLower)
             .filter(house => house[14] <= priorityUpper);
-        // console.log(filteredData)
+            
         if (addrFilter !== "") {
             filteredData = filteredData.filter(house => house[0].toLowerCase().includes(addrFilter.toLowerCase()));
         }
