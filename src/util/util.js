@@ -2,7 +2,7 @@ import { households } from "../assets/households";
 // const endpoint = "http://localhost:3001/"
 // const endpoint = "https://attom-app-react-backend.onrender.com/"
 const endpoint = process.env.REACT_APP_ENDPOINT
-
+console.log("endpoint:", process.env.REACT_APP_ENDPOINT)
 export function execPostgresQuery(query) {
     const obj = {
         query
@@ -40,7 +40,8 @@ export function insertNote(id, address, note, censusTract, author, ATTOMID) {
             fields: {
                 Address: address,
                 Notes: note,
-                ATTOMID: ATTOMID
+                ATTOMID: ATTOMID,
+                "Census Tract": censusTract
             }
         }
     }
@@ -279,6 +280,41 @@ export function loadPriorityInfoCensusTract(censusTract) {
     });
 }
 
+export function loadPriorityInfoAll() {
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "getPriorityInfoAll", requestOptions)
+    .then(res => res.json())
+    .then(data => {
+        // house[5] is attom id
+        // console.log(data.data.items)
+        var priorityDict = {}
+        for (var item of data.data.items) {
+            priorityDict[item.fields.ATTOMID[0].text] = [item.record_id, item.fields.Priority]
+        }
+        // console.log(priorityDict)
+        houses = houses.map(house => {
+            if (house[5] in priorityDict) {
+                house[13] = priorityDict[house[5]][0]
+                house[14] = priorityDict[house[5]][1]
+            }
+            return house
+        })
+        // console.log(houses)
+        return data
+    })
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
+}
+
 function getNotedAddress() {
     const requestOptions = {
         // mode: 'no-cors',
@@ -352,6 +388,72 @@ export function getNote(ATTOMID) {
         console.error("Error:", error);
       });
 }
+
+export function loadNoteCensusTract(censusTract) {
+    const obj = {
+        censusTract
+    }
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "getNoteCensusTract", requestOptions)
+    .then(res => res.json())
+    .then(data => {
+        const theNotes = data.data.items.reduce((acc, house) => {
+            acc[house.fields.ATTOMID[0].text] = house.fields.Notes.map(note => note.text).join('');
+            return acc;
+          }, {});
+        // console.log(theNotes)
+        for (var house of houses) {
+            if (house[5] in theNotes) {
+                house[15] = theNotes[house[5]]
+            }
+        }
+        return data
+    })
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
+}
+
+export function loadNoteAll() {
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "getNoteAll", requestOptions)
+    .then(res => res.json())
+    .then(data => {
+        const theNotes = data.data.items.reduce((acc, house) => {
+            acc[house.fields.ATTOMID[0].text] = house.fields.Notes.map(note => note.text).join('');
+            return acc;
+          }, {});
+        // console.log(theNotes)
+        for (var house of houses) {
+            if (house[5] in theNotes) {
+                house[15] = theNotes[house[5]]
+            }
+        }
+        return data
+    })
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
+}
+
+// loadNoteCensusTract(507205)
 
 var censusTractInfo = {}
 export function getCensusTractInfo() {
@@ -627,16 +729,97 @@ async function loadHousesFromATTOMPostgresTract(tract) {
     // 12 selective house?
     // 13 priority table id
     // 14 priority value
+    // 15 note
+    // 16 census track
     houses = houseRes.map(house => 
         [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, 
             false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, 
-            "", true, false, "", 3]
+            "", true, false, "", 3, "", 0]
+    )
+    // return houses
+}
+
+async function loadHousesFromATTOMPostgresAll() {
+    // var houses = [["1510 CAMDEN AVE",9424.0,37.267636,-121.942385],["1500 CAMDEN AVE",8132.0,37.267784,-121.942569]]
+    const houseRes = await execPostgresQuery(`\
+    SELECT \
+        PropertyAddressFull, \
+        AreaLotSF, \
+        PropertyLatitude, \
+        PropertyLongitude, \
+        "[attom id]", \
+        zonedcodelocal, \
+        bedroomscount, \
+        bathcount, \
+        censustract \
+    FROM \
+        taxassessor \
+    where \
+        PropertyAddressCity = 'CAMPBELL' \
+        AND PropertyAddressFull IS NOT NULL \
+        AND AreaLotSF IS NOT NULL \
+        AND PropertyLatitude IS NOT NULL \
+        AND PropertyLongitude IS NOT NULL \
+     `)
+
+    // console.log(houseRes)
+    // first false: has comments or not
+    // second false: has contact info or not
+    // 0 house.propertyaddressfull
+    // 1 house.arealotsf
+    // 2 house.propertylatitude
+    // 3 house.propertylongitude
+    // 4 have notes - false
+    // 5 house['[attom id]']
+    // 6 have contact info - false
+    // 7 house.zonedcodelocal
+    // 8 house.bedroomscount
+    // 9 house.bathcount
+    // 10 id for greyout / selective house table
+    // 11 keep or not (greyout for not keeping)
+    // 12 selective house?
+    // 13 priority table id
+    // 14 priority value
+    // 15 note
+    // 16 census track
+    
+    houses = houseRes.map(house => 
+        [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, 
+            false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, 
+            "", true, false, "", 3, "", house.censustract]
     )
     // return houses
 }
 
 async function loadHousesFromATTOMMemory() {
     houses = households
+}
+
+export async function initConnection() {
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    return fetch(endpoint + "initConnection", requestOptions)
+    .then(res => {
+        // Check if the response is ok (status code 200)
+        // console.log(res)
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        // Parse the JSON response and return it (returns a Promise)
+        return res.json();
+      })
+    .then(res => {
+        // console.log(res)
+        return res})
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
 }
 
 // return houses with notes
@@ -651,6 +834,21 @@ export async function loadHouses() {
 
 export async function loadHouseCensusTract(tract) {
     await loadHousesFromATTOMPostgresTract(tract)
+    const notedATTOMID = await getNotedATTOMID()
+    const notedATTOMIDSet = new Set(notedATTOMID);
+    // assemble house with notes
+    houses = houses.map(house => {
+        house[4] = notedATTOMIDSet.has(house[5])
+        return house
+    })
+    houses = houses.map(house => {
+        house[6] = contactInfo[house[0]] !== undefined ? true : false
+        return house
+    })
+}
+
+export async function loadHouseAll() {
+    await loadHousesFromATTOMPostgresAll()
     const notedATTOMID = await getNotedATTOMID()
     const notedATTOMIDSet = new Set(notedATTOMID);
     // assemble house with notes
@@ -702,7 +900,7 @@ export async function queryRecord(attom_id, db) {
 // load census tract info
 var censusTractRes = []
 export async function loadCensusTract() {
-    console.log(censusTractRes.length)
+    // console.log(censusTractRes.length)
     if (censusTractRes.length > 0) {
         return censusTractRes
     }

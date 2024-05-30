@@ -4,7 +4,9 @@ import HouseHolds from "../components/Households";
 import Notes from "../components/Notes";
 import Map from "../components/Map";
 import MandatoryFields from "../components/MandatoryFields";
-import { loadHouseCensusTract, loadContactInfo, loadToggleInfoCensusTract, loadPriorityInfoCensusTract } from "../util/util";
+import { loadHouseCensusTract, loadContactInfo, loadToggleInfoCensusTract, 
+    loadPriorityInfoCensusTract, loadNoteCensusTract, loadHouseAll, loadPriorityInfoAll, 
+    loadNoteAll, initConnection } from "../util/util";
 import L from 'leaflet';
 import GeneralInfo from "./GeneralInfo";
 // import { houses } from "../assets/households"
@@ -21,6 +23,7 @@ function MainView(props) {
     const [priorityLower, setPriorityLower] = React.useState(0)
     const [priorityUpper, setPriorityUpper] = React.useState(Number.MAX_SAFE_INTEGER)
     const [addrFilter, setAddrFilter] = React.useState("")
+    const [noteFilter, setNoteFilter] = React.useState("")
     const [zoneFilter, setZoneFilter] = React.useState("All")
     const [selectedAddr, setSelectedAddr] = React.useState("")
     const [id, setId] = React.useState("")
@@ -40,12 +43,27 @@ function MainView(props) {
     const [prevNotesFull, setPrevNotesFull] = React.useState("")
     const [ATTOMID, setATTOMID] = React.useState("")
     const [curRecordIdx, setCurRecordIdx] = React.useState(0);
-
+    const [loadingStatement, setLoadingStatement] = React.useState("Connecting to Server... (1/4)")
     React.useEffect(() => {
         async function loading() {
+            if (loaded) return
             // await loadHouses()
-            await loadHouseCensusTract(censusTract)
-            await loadPriorityInfoCensusTract(censusTract)
+            await initConnection()
+            if (censusTract === 0) {
+                setLoadingStatement("Loading All House Information... (2/4)")
+                await loadHouseAll()
+                setLoadingStatement("Loading All Priority Information... (3/4)")
+                await loadPriorityInfoAll()
+                setLoadingStatement("Loading All Notes... (4/4)")
+                await loadNoteAll()
+            } else {
+                setLoadingStatement(`Loading House Information from Census Tract ${censusTract}... (2/4)`)
+                await loadHouseCensusTract(censusTract)
+                setLoadingStatement(`Loading Priority Information from Census Tract ${censusTract}... (3/4)`)
+                await loadPriorityInfoCensusTract(censusTract)
+                setLoadingStatement(`Loading Notes from Census Tract ${censusTract}... (4/4)`)
+                await loadNoteCensusTract(censusTract)
+            }
             setLoaded(true)
             // const southwest = [getSouthwestLatitude(getHouses()), getSouthwestLongitude(getHouses())];
             // const northeast = [getNortheastLatitude(getHouses()), getNortheastLongitude(getHouses())];
@@ -95,6 +113,7 @@ function MainView(props) {
                 setNotedSubset={setNotedSubset}
                 setContactInfoSubset={setContactInfoSubset}
                 setZoneFilter={setZoneFilter}
+                setNoteFilter={setNoteFilter}
                 />
             </div>
                 
@@ -141,6 +160,7 @@ function MainView(props) {
                     zoneFilter={zoneFilter}
                     keptSubset={keptSubset}
                     selectiveSubset={selectiveSubset}
+                    noteFilter={noteFilter}
                     />
                 </div>
 
@@ -188,7 +208,7 @@ function MainView(props) {
             </div>    
         </div> :
         <div className="centerText" style={{marginTop: "30px"}}>
-            Loading...
+            {loadingStatement}
         </div>
         }
     </div>

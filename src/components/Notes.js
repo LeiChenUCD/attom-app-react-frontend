@@ -114,7 +114,7 @@ function Notes(props) {
                     return
                 }
                 if (document.getElementById("note").innerHTML !== "") {
-                    submitOneNote(e, selectedAddr, document.getElementById("note").innerText, authorName, id, prevNotesFull, setId, setPrevNotesFull, censusTract, houseEntry[5])
+                    submitOneNote(e, selectedAddr, document.getElementById("note").innerText, authorName, id, prevNotesFull, setId, setPrevNotesFull, censusTract === 0 ? houseEntry[16] : censusTract, houseEntry[5])
                     const ending = prevNotesFull.length > 0 && prevNotesFull[prevNotesFull.length - 1] !== '\n' ? '\n' : ''
                     const newNote = `${ending}[${parseTime(Date.now())}] ${authorName}: ${document.getElementById("note").innerText}`
                     setPrevNotes(prevNotes + newNote)

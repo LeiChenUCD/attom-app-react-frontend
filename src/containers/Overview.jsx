@@ -1,7 +1,8 @@
-import { loadCensusTract, loadContactInfo, getCensusTractInfo, getContactInfo } from "../util/util"
+import { loadCensusTract, loadContactInfo, getCensusTractInfo, getContactInfo, initConnection } from "../util/util"
 import CensusTractEntry from "../components/CensusTractEntry"
 import CensusTractHeader from "../components/CensusTractHeader"
 import React from "react"
+import AllEntry from "../components/AllEntry"
 function Overview(props) {
 
     const {setCensusTract, setAuthorName, authorName} = props
@@ -10,14 +11,24 @@ function Overview(props) {
     const [censusTractInfo, setCensusTractInfo] = React.useState([])
     // overview info by censustract from lark overview table
     const [censusTractOverviewInfo, setCensusTractOverviewInfo] = React.useState([])
+
+    const [loadingStatement, setLoadingStatement] = React.useState("Connecting to Server... (1/4)")
     
     React.useEffect(() => {
         async function loadInfo() {
+            if (loaded) return
+            await initConnection()
             // get overview info group by censustract
+            setLoadingStatement("Loading Data from ATTOM... (2/4)")
             const censusTractRes = await loadCensusTract()
             setCensusTractInfo(censusTractRes)
+
+            setLoadingStatement("Loading Comment Overview Info... (3/4)")
             const response = await getCensusTractInfo()
+
+            setLoadingStatement("Loading Contact Info... (4/4)")
             await loadContactInfo()
+
             // console.log(response.data.items)
             setCensusTractOverviewInfo(response.data.items)
             setLoaded(true)
@@ -48,36 +59,13 @@ function Overview(props) {
                 </div>
                 <CensusTractHeader/>
 
-                <div style={{display: "flex", flexDirection: "row", placeContent: "center"}}>
-                    <div style={{minWidth: "100px", height: "30px", border: "1px solid black"}} className="centerText">
-                        All
-                    </div>
-
-                    <div style={{minWidth: "100px", height: "30px", border: "1px solid black"}} className="centerText">
-                        {totalHomeCount}
-                    </div>
-
-                    <div style={{minWidth: "200px", height: "30px", border: "1px solid black"}} className="centerText">
-                        {totalCommentedHouseCount}
-                    </div>
-
-                    <div style={{minWidth: "100px", height: "30px", border: "1px solid black"}} className="centerText">
-                        {((totalCommentedHouseCount / totalHomeCount) * 100).toFixed(2)}%
-                    </div>
-
-                    <div style={{minWidth: "150px", height: "30px", border: "1px solid black"}} className="centerText">
-                        
-                    </div>
-
-                    <div style={{minWidth: "150px", height: "30px", border: "1px solid black"}} className="centerText">
-                        
-                    </div>
-
-                    <div style={{minWidth: "150px", height: "30px", border: "1px solid black"}} className="centerText">
-                        
-                    </div>
-                </div>
-
+                
+                <AllEntry 
+                authorName={authorName}
+                totalHomeCount={totalHomeCount}
+                totalCommentedHouseCount={totalCommentedHouseCount}
+                setCensusTract={setCensusTract}
+                />
                 {censusTractInfo && censusTractInfo.map(
                     (info, idx) => {
                         return <CensusTractEntry 
@@ -96,7 +84,7 @@ function Overview(props) {
         </div>
             :
         <div className="centerText" style={{marginTop: "30px"}}>
-            Loading...
+            {loadingStatement}
         </div>
         }
     </div>

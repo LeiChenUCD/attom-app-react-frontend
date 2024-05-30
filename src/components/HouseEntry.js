@@ -6,40 +6,46 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faToggleOn, faToggleOff, faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
 
 function HouseEntry(props) {
-    const {houseEntry, setSelectedAddr, selectedAddr, setHouseEntry, setCenter, authorName, prevNotesFull, id, censusTract, setZoom, zoom, setATTOMID, ATTOMID, setCurRecordIdx} = props
-    // console.log(houseEntry[11])
+    const {house, setSelectedAddr, selectedAddr, setHouseEntry, setCenter, authorName, prevNotesFull, id, censusTract, setZoom, zoom, setATTOMID, ATTOMID, setCurRecordIdx} = props
+    // console.log(house[11])
     // grey out unwanted houses
     // const [keepHouse, setKeepHouse] = React.useState(true)
     // select house in selective entry in overview page
     // const [selectedHouse, setSelectedHouse] = React.useState(false)
-    // console.log(houseEntry)
+    // console.log(house)
 
     // React.useEffect(() => {
-    //     setKeepHouse(houseEntry[11])
-    //     setSelectedHouse(houseEntry[12])
-    // }, [houseEntry])
+    //     setKeepHouse(house[11])
+    //     setSelectedHouse(house[12])
+    // }, [house])
+
+    const [dropdownNumber, setDropdownNumber] = React.useState(house[14])
+
+    React.useEffect(() => {
+        setDropdownNumber(house[14])
+    }, [house])
 
     async function insertToggleInfoAsync(id, ATTOMID, keepHouse, selectiveHouse, censusTract) {
-        console.log(houseEntry[10])
-        if (houseEntry[10] === "") {
+        console.log(house[10])
+        if (house[10] === "") {
             const res = await insertToggleInfo(id, ATTOMID, keepHouse, selectiveHouse, censusTract)
             console.log(res.data.record.id)
-            houseEntry[10] = res.data.record.id
+            house[10] = res.data.record.id
         } else {
             insertToggleInfo(id, ATTOMID, keepHouse, selectiveHouse, censusTract)
         }
     }
     
     async function insertPriorityInfoAsync(id, ATTOMID, priority, censusTract) {
-        if (houseEntry[13] === "") {
+        if (house[13] === "") {
             const res = await insertPriorityInfo(id, ATTOMID, priority, censusTract)
-            houseEntry[13] = res.data.record.id
+            house[13] = res.data.record.id
         } else {
             insertPriorityInfo(id, ATTOMID, priority, censusTract)
         }
     }
-
-    const bold = houseEntry[5] === ATTOMID ? "bold" : ""
+    // console.log(house)
+    const bold = house[5] === ATTOMID ? "bold" : ""
     return <div className="bottom right left" style={{minHeight: "30px", display: "flex", flexDirection: "row", fontWeight: bold, fontSize: "14px", 
     // background: keepHouse ? "" : "grey" 
     }}>
@@ -55,10 +61,10 @@ function HouseEntry(props) {
             }
 
             if (document.getElementById("note") !== null && (document.getElementById("note").innerText.trim() === "" || document.getElementById("note").innerText.trim() === "loading...")) {
-                setHouseEntry(houseEntry)
-                setATTOMID(houseEntry[5])
-                setCenter([houseEntry[2], houseEntry[3]])
-                setSelectedAddr(houseEntry[0])
+                setHouseEntry(house)
+                setATTOMID(house[5])
+                setCenter([house[2], house[3]])
+                setSelectedAddr(house[0])
                 setZoom(Math.max(18, zoom))
                 setCurRecordIdx(0)
                 return
@@ -70,15 +76,15 @@ function HouseEntry(props) {
                 const ending = prevNotesFull.length > 0 && prevNotesFull[prevNotesFull.length - 1] !== '\n' ? '\n' : ''
                 const noteCombined = `${prevNotesFull}${ending}[${parseTime(Date.now())}] ${authorName}: ${document.getElementById("note").innerText}`
                 // id, address, note)
-                insertNote(id, selectedAddr, noteCombined, censusTract, authorName, ATTOMID)
+                insertNote(id, selectedAddr, noteCombined, censusTract === 0 ? house[16] : censusTract, authorName, ATTOMID)
 
                 setATTOMIDNoted(ATTOMID)
             }
             
-            setHouseEntry(houseEntry)
-            setATTOMID(houseEntry[5])
-            setCenter([houseEntry[2], houseEntry[3]])
-            setSelectedAddr(houseEntry[0])
+            setHouseEntry(house)
+            setATTOMID(house[5])
+            setCenter([house[2], house[3]])
+            setSelectedAddr(house[0])
             setZoom(Math.max(18, zoom))
             setCurRecordIdx(0)
 
@@ -87,7 +93,7 @@ function HouseEntry(props) {
             }
         }}>
             <div style={{width: "250px", textAlign: "center"}}>
-                {houseEntry[0]}
+                {house[0]}
             </div>
             {/* <div style={{width: "40px", textAlign: 'center'}}>
 
@@ -96,36 +102,36 @@ function HouseEntry(props) {
             onClick={e => {
                 e.stopPropagation()
                 // console.log("hi")
-                houseEntry[11] = !houseEntry[11]
-                setKeepHouse(houseEntry[11])
-                if (!houseEntry[11] && houseEntry[12]) {
-                    houseEntry[12] = false
-                    setSelectedHouse(houseEntry[12])
+                house[11] = !house[11]
+                setKeepHouse(house[11])
+                if (!house[11] && house[12]) {
+                    house[12] = false
+                    setSelectedHouse(house[12])
                 }
                 // update greyout / selective information
                 // id, ATTOMID, keepHouse, selectiveHouse, censusTract
-                if (houseEntry[11] && !houseEntry[12]) {
-                    deleteToggleInfo(houseEntry[10])
-                    houseEntry[10] = ""
+                if (house[11] && !house[12]) {
+                    deleteToggleInfo(house[10])
+                    house[10] = ""
                 } else {
-                    insertToggleInfoAsync(houseEntry[10], houseEntry[5], houseEntry[11], houseEntry[12], censusTract)
+                    insertToggleInfoAsync(house[10], house[5], house[11], house[12], censusTract)
                 }
             }}
-              icon={houseEntry[11] && keepHouse ? faToggleOff : faToggleOn}
+              icon={house[11] && keepHouse ? faToggleOff : faToggleOn}
             />
 
             {keepHouse && <FontAwesomeIcon
             onClick={e => {
                 e.stopPropagation()
-                houseEntry[12] = !houseEntry[12]
-                setSelectedHouse(houseEntry[12])
+                house[12] = !house[12]
+                setSelectedHouse(house[12])
 
                 // update greyout / selective information
-                if (houseEntry[11] && !houseEntry[12]) {
-                    deleteToggleInfo(houseEntry[10])
-                    houseEntry[10] = ""
+                if (house[11] && !house[12]) {
+                    deleteToggleInfo(house[10])
+                    house[10] = ""
                 } else {
-                    insertToggleInfoAsync(houseEntry[10], houseEntry[5], houseEntry[11], houseEntry[12], censusTract)
+                    insertToggleInfoAsync(house[10], house[5], house[11], house[12], censusTract)
                 }
             }}
               icon={selectedHouse ? faCheckSquare: faSquare}
@@ -134,25 +140,29 @@ function HouseEntry(props) {
 
         </div>
 
-        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[1]}</div>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{house[1]}</div>
 
-        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[7]}</div>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{house[7]}</div>
 
-        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[8]}</div>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{house[8]}</div>
 
-        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{houseEntry[9]}</div>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{house[9]}</div>
         <div style={{minWidth: "100px", alignContent: "center", textAlign: "center"}}>
             <select style={{width: "100%", height: "100%", textAlign: "center", border: "0", outline: "none", fontWeight: bold === "bold" ? "bolder" : ""}}
-            value={houseEntry[14]}
+            value={dropdownNumber}
+            // defaultValue={3}
             onChange={e => {
-                houseEntry[14] = parseInt(e.target.value)
-                if (e.target.value === "3" && houseEntry[13] !== "") {
-                    deletePriorityInfo(houseEntry[13])
-                    houseEntry[13] = ""
+                house[14] = parseInt(e.target.value)
+                setDropdownNumber(house[14])
+                console.log(house)
+                if (e.target.value === "3" && house[13] !== "") {
+                    deletePriorityInfo(house[13])
+                    house[13] = ""
                 } 
                 if (e.target.value !== "3") {
-                    insertPriorityInfoAsync(houseEntry[13], houseEntry[5], parseInt(e.target.value), censusTract)
+                    insertPriorityInfoAsync(house[13], house[5], parseInt(e.target.value), censusTract === 0 ? house[16] : censusTract)
                 }
+                
             }}>
                 <option value={5}>5</option>
                 <option value={4}>4</option>

@@ -2,7 +2,7 @@ import { getHouses } from "../util/util"
 function Filters(props) {
     const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset, 
         setContactInfoSubset, setZoneFilter, setBedroomUpper, setBedroomLower, setBathroomLower, 
-        setBathroomUpper, setKeptSubset, setSelectiveSubset, setPriorityLower, setPriorityUpper} = props
+        setBathroomUpper, setKeptSubset, setSelectiveSubset, setPriorityLower, setPriorityUpper, setNoteFilter} = props
     const inputStyle = {
         width: "60px"
     }
@@ -11,6 +11,12 @@ function Filters(props) {
         Address
         <input onInput={e => {
             setAddrFilter(e.target.value.trim())
+            setCurPage(0)
+        }}></input>
+
+        Note
+        <input onInput={e => {
+            setNoteFilter(e.target.value.trim())
             setCurPage(0)
         }}></input>
 
