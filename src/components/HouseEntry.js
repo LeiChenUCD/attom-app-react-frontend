@@ -75,7 +75,7 @@ function HouseEntry(props) {
         <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{house[8]}</div>
 
         <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>{house[9]}</div>
-        <div style={{minWidth: "100px", alignContent: "center", textAlign: "center"}}>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>
             <select style={{width: "100%", height: "100%", textAlign: "center", border: "0", outline: "none", fontWeight: bold === "bold" ? "bolder" : ""}}
             value={dropdownNumber}
             onChange={e => {
@@ -98,7 +98,11 @@ function HouseEntry(props) {
                 <option value={1}>1</option>
             </select>
         </div>
-        
+        <div style={{minWidth: "100px", alignContent: "center", textAlign: "center"}}>
+            <a href={house[17]} target="_blank">
+                {house[17] === "" ? "" : "Link"}
+            </a>
+        </div>
     </div>
 }
 export default HouseEntry

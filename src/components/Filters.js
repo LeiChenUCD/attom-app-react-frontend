@@ -2,7 +2,7 @@ import { getHouses } from "../util/util"
 function Filters(props) {
     const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset, 
         setContactInfoSubset, setZoneFilter, setBedroomUpper, setBedroomLower, setBathroomLower, 
-        setBathroomUpper, setPriorityLower, setPriorityUpper, setNoteFilter} = props
+        setBathroomUpper, setPriorityLower, setPriorityUpper, setNoteFilter, setSellerReplySubset} = props
     const inputStyle = {
         width: "60px"
     }
@@ -81,6 +81,16 @@ function Filters(props) {
             setCurPage(0)
             }}></input>
         </div>
+
+        Seller Reply?
+        <select onChange={e => {
+            setSellerReplySubset(e.target.value)
+            setCurPage(0)
+            }}>
+            <option>Both</option>
+            <option>With Seller Reply</option>
+            <option>Without Seller Reply</option>
+        </select>
 
         Order By
         <select onChange={e => {

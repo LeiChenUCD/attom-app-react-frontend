@@ -1,6 +1,9 @@
 import { households } from "../assets/households";
 // const endpoint = "http://localhost:3001/"
+// origin render
 // const endpoint = "https://attom-app-react-backend.onrender.com/"
+// technical render
+// const endpoint = "https://attom-app-react-backend-ycyj.onrender.com/"
 const endpoint = process.env.REACT_APP_ENDPOINT
 console.log("endpoint:", process.env.REACT_APP_ENDPOINT)
 export function execPostgresQuery(query) {
@@ -705,10 +708,12 @@ async function loadHousesFromATTOMPostgresTract(tract) {
     // 14 priority value
     // 15 note
     // 16 census track
+    // 17 link to seller reply
+    // 18 address of seller reply
     houses = houseRes.map(house => 
         [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, 
             false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, 
-            "", true, false, "", 3, "", 0]
+            "", true, false, "", 3, "", 0, "", ""]
     )
     // return houses
 }
@@ -756,11 +761,13 @@ async function loadHousesFromATTOMPostgresAll() {
     // 14 priority value
     // 15 note
     // 16 census track
+    // 17 link to seller reply
+    // 18 address of seller reply
     
     houses = houseRes.map(house => 
         [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, 
             false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, 
-            "", true, false, "", 3, "", house.censustract]
+            "", true, false, "", 3, "", house.censustract, "", ""]
     )
     // return houses
 }
@@ -834,6 +841,60 @@ export async function loadHouseAll() {
         house[6] = contactInfo[house[0]] !== undefined ? true : false
         return house
     })
+}
+
+export async function loadDDPdfs() {
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "getDDPdfs", requestOptions)
+    .then(res => res.json())
+    .then(data => {
+        const files = data.data.files.reduce((acc, cur) => {
+            acc[cur.name.replace(".pdf", "")] = cur.url
+            return acc
+        }, {})
+        // console.log(files)
+        return files
+    })
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
+}
+
+export async function loadSellerReply() {
+    const requestOptions = {
+        // mode: 'no-cors',
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    };
+    // console.log(requestOptions.body)
+    return fetch(endpoint + "sellerReply", requestOptions)
+    .then(res => res.json())
+    .then(data => {
+        houses = houses.map(house => {
+            if (house[0] in data) {
+                house[17] = data[house[0]][0]
+                house[18] = data[house[0]][1]
+                data[house[0]].push("matched")
+            }
+            return house
+        })
+        // console.log(data)
+        return data
+    })
+    .catch((error) => {
+        // alert(error);
+        console.error("Error:", error);
+    });
 }
 
 export function setAddrNoted(addr) {

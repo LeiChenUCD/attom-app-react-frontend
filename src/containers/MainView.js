@@ -5,7 +5,7 @@ import Notes from "../components/Notes";
 import Map from "../components/Map";
 import MandatoryFields from "../components/MandatoryFields";
 import { loadHouseCensusTract, loadPriorityInfoCensusTract, loadNoteCensusTract, loadHouseAll, loadPriorityInfoAll, 
-    loadNoteAll, initConnection } from "../util/util";
+    loadNoteAll, initConnection, loadSellerReply, loadDDPdfs } from "../util/util";
 import GeneralInfo from "./GeneralInfo";
 
 function MainView(props) {
@@ -34,37 +34,72 @@ function MainView(props) {
     const [loaded, setLoaded] = React.useState(false)
     const [keptSubset, setKeptSubset] = React.useState("Both")
     const [selectiveSubset, setSelectiveSubset] = React.useState("Both")
+    const [sellerReplySubset, setSellerReplySubset] = React.useState("Both")
     const [notedSubset, setNotedSubset] = React.useState("Both")
     const [contactInfoSubset, setContactInfoSubset] = React.useState("Both")
     // all prev note, author, time in a big string
     const [prevNotesFull, setPrevNotesFull] = React.useState("")
     const [ATTOMID, setATTOMID] = React.useState("")
     const [curRecordIdx, setCurRecordIdx] = React.useState(0);
-    const [loadingStatement, setLoadingStatement] = React.useState("Connecting to Server... (1/4)")
+    const [loadingStatement, setLoadingStatement] = React.useState("Connecting to Server... (1/5)")
+    const [unmatchedSellerReplyDict, setUnmatchedSellerReplyDict] = React.useState([]);
+
+    // scratch purpose, may delete in the future
+    const [ddPdfs, setDdPdfs] = React.useState({})
+
     React.useEffect(() => {
         async function loading() {
             if (loaded) return
             await initConnection()
             if (censusTract === 0) {
-                setLoadingStatement("Loading All House Information... (2/4)")
+                setLoadingStatement("Loading All House Information... (2/5)")
                 await loadHouseAll()
-                setLoadingStatement("Loading All Priority Information... (3/4)")
+                setLoadingStatement("Loading All Priority Information... (3/5)")
                 await loadPriorityInfoAll()
-                setLoadingStatement("Loading All Notes... (4/4)")
+                setLoadingStatement("Loading All Notes... (4/5)")
                 await loadNoteAll()
+                setLoadingStatement("Loading All Seller Replies... (5/5)")
+                if (authorName.toLowerCase().startsWith("test")) {
+                    const sellerReplyDict = await loadSellerReply()
+                    setUnmatchedSellerReplyDict(Object.entries(
+                            sellerReplyDict
+                        )
+                        .filter(
+                            entry => entry[1].length === 2
+                        )
+                        .map(
+                            entry => entry[1]
+                        )
+                    )
+                    // console.log(unmatchedSellerReplyDict)
+                    
+                    setDdPdfs(await loadDDPdfs())
+                }
+                
+                
             } else {
-                setLoadingStatement(`Loading House Information from Census Tract ${censusTract}... (2/4)`)
+                setLoadingStatement(`Loading House Information from Census Tract ${censusTract}... (2/5)`)
                 await loadHouseCensusTract(censusTract)
-                setLoadingStatement(`Loading Priority Information from Census Tract ${censusTract}... (3/4)`)
+                setLoadingStatement(`Loading Priority Information from Census Tract ${censusTract}... (3/5)`)
                 await loadPriorityInfoCensusTract(censusTract)
-                setLoadingStatement(`Loading Notes from Census Tract ${censusTract}... (4/4)`)
+                setLoadingStatement(`Loading Notes from Census Tract ${censusTract}... (4/5)`)
                 await loadNoteCensusTract(censusTract)
+                setLoadingStatement(`Loading Seller Replies from Census Tract ${censusTract}... (5/5)`)
+                await loadSellerReply()
             }
             setLoaded(true)
         }
         loading()
     }, [])
     
+    // React.useEffect(() => {
+    //     if (!loaded) return
+    //     if (authorName.toLowerCase().startsWith("test") && censusTract === 0) {
+    //         console.log(loaded)
+    //         alert("unmatched record:", unmatchedSellerReplyDict)
+    //     }
+    // }, [loaded])
+    // console.log(unmatchedSellerReplyDict)
     return <div style={{}}
     >
         {
@@ -99,6 +134,7 @@ function MainView(props) {
                 setCurPage={setCurPage}
                 setKeptSubset={setKeptSubset}
                 setSelectiveSubset={setSelectiveSubset}
+                setSellerReplySubset={setSellerReplySubset}
                 setNotedSubset={setNotedSubset}
                 setContactInfoSubset={setContactInfoSubset}
                 setZoneFilter={setZoneFilter}
@@ -110,12 +146,37 @@ function MainView(props) {
             <div style={{width: "10px"}}></div>
 
             <div>
+
+                {censusTract === 0 && authorName.toLowerCase().startsWith("test") && 
+                <>
+                <div style={{paddingBottom: "10px"}}>
+                        Unmatched Seller Replies:
+                        {unmatchedSellerReplyDict.map((entry, idx) => 
+                        <div key={idx}>
+                            <a href={entry[0]} target="_blank">
+                                {entry[1]}
+                            </a>
+                        </div>)}
+                </div>
                 
+                <div style={{paddingBottom: "10px"}}>
+                    Due Diligence:
+                    {Object.entries(ddPdfs).map((pdf, idx) => 
+                        <div key={idx}>
+                            <a href={pdf[1]} target="_blank">
+                                {pdf[0]}
+                            </a>
+                        </div>
+                    )}
+                </div>
+                </>
+                }
+
                 <div style={{display: "flex", 
                 overflowX: window.innerWidth > 768 ? "" : "auto",
                 marginTop: window.innerWidth > 768 ? "" : "20px",
                 }}>
-
+                    
                     <HouseHolds 
                     curPage={curPage}
                     setCurPage={setCurPage}
@@ -150,7 +211,9 @@ function MainView(props) {
                     keptSubset={keptSubset}
                     selectiveSubset={selectiveSubset}
                     noteFilter={noteFilter}
+                    sellerReplySubset={sellerReplySubset}
                     />
+
                 </div>
 
                 <div style={{display: "flex", 
