@@ -676,11 +676,13 @@ async function loadHousesFromATTOMPostgresTract(tract) {
         "[attom id]", \
         zonedcodelocal, \
         bedroomscount, \
-        bathcount \
+        bathcount, \
+        propertyaddresscity, \
+        parcelnumberraw \
     FROM \
         taxassessor \
     where \
-        PropertyAddressCity = 'CAMPBELL' \
+        (PropertyAddressCity = 'CAMPBELL' OR PropertyAddressCity = 'LOS ALTOS') \
         AND CensusTract = '${tract}' \
         AND PropertyAddressFull IS NOT NULL \
         AND AreaLotSF IS NOT NULL \
@@ -710,10 +712,14 @@ async function loadHousesFromATTOMPostgresTract(tract) {
     // 16 census track
     // 17 link to seller reply
     // 18 address of seller reply
+    // 19 apn
+    // 20 link to dd
+    // 21 house.propertyaddresscity
+
     houses = houseRes.map(house => 
         [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, 
             false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, 
-            "", true, false, "", 3, "", 0, "", ""]
+            "", true, false, "", 3, "", 0, "", "", house.parcelnumberraw, "", house.propertyaddresscity]
     )
     // return houses
 }
@@ -730,11 +736,13 @@ async function loadHousesFromATTOMPostgresAll() {
         zonedcodelocal, \
         bedroomscount, \
         bathcount, \
-        censustract \
+        censustract, \
+        propertyaddresscity, \
+        parcelnumberraw \
     FROM \
         taxassessor \
     where \
-        PropertyAddressCity = 'CAMPBELL' \
+        (PropertyAddressCity = 'CAMPBELL' OR PropertyAddressCity = 'LOS ALTOS') \
         AND PropertyAddressFull IS NOT NULL \
         AND AreaLotSF IS NOT NULL \
         AND PropertyLatitude IS NOT NULL \
@@ -763,11 +771,14 @@ async function loadHousesFromATTOMPostgresAll() {
     // 16 census track
     // 17 link to seller reply
     // 18 address of seller reply
+    // 19 apn
+    // 20 link to dd
+    // 21 house.propertyaddresscity
     
     houses = houseRes.map(house => 
         [house.propertyaddressfull, house.arealotsf, house.propertylatitude, house.propertylongitude, 
             false, house['[attom id]'], false, house.zonedcodelocal, house.bedroomscount, house.bathcount, 
-            "", true, false, "", 3, "", house.censustract, "", ""]
+            "", true, false, "", 3, "", house.censustract, "", "", house.parcelnumberraw, "", house.propertyaddresscity]
     )
     // return houses
 }
@@ -856,9 +867,14 @@ export async function loadDDPdfs() {
     .then(res => res.json())
     .then(data => {
         const files = data.data.files.reduce((acc, cur) => {
-            acc[cur.name.replace(".pdf", "")] = cur.url
+            acc[cur.name.replace(".pdf", "")] = [cur.url]
             return acc
         }, {})
+        houses = houses.map(house => {
+            house[20] = house[19] in files ? files[house[19]][0] : ""
+            if (house[20] !== "") files[house[19]].push("matched")
+            return house
+        })
         // console.log(files)
         return files
     })
@@ -947,7 +963,7 @@ export async function loadCensusTract() {
     FROM \
         taxassessor \
     where \
-        PropertyAddressCity = 'CAMPBELL' \
+        (PropertyAddressCity = 'CAMPBELL' OR PropertyAddressCity = 'LOS ALTOS') \
         AND PropertyAddressFull IS NOT NULL \
         AND AreaLotSF IS NOT NULL \
         AND PropertyLatitude IS NOT NULL \

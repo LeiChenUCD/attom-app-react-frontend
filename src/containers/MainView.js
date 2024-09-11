@@ -35,8 +35,10 @@ function MainView(props) {
     const [keptSubset, setKeptSubset] = React.useState("Both")
     const [selectiveSubset, setSelectiveSubset] = React.useState("Both")
     const [sellerReplySubset, setSellerReplySubset] = React.useState("Both")
+    const [ddSubset, setDdSubset] = React.useState("Both")
     const [notedSubset, setNotedSubset] = React.useState("Both")
     const [contactInfoSubset, setContactInfoSubset] = React.useState("Both")
+    const [citySubset, setCitySubset] = React.useState("All")
     // all prev note, author, time in a big string
     const [prevNotesFull, setPrevNotesFull] = React.useState("")
     const [ATTOMID, setATTOMID] = React.useState("")
@@ -137,6 +139,8 @@ function MainView(props) {
                 setSellerReplySubset={setSellerReplySubset}
                 setNotedSubset={setNotedSubset}
                 setContactInfoSubset={setContactInfoSubset}
+                setCitySubset={setCitySubset}
+                setDdSubset={setDdSubset}
                 setZoneFilter={setZoneFilter}
                 setNoteFilter={setNoteFilter}
                 />
@@ -160,10 +164,12 @@ function MainView(props) {
                 </div>
                 
                 <div style={{paddingBottom: "10px"}}>
-                    Due Diligence:
-                    {Object.entries(ddPdfs).map((pdf, idx) => 
+                    Unmatched Due Diligence:
+                    {Object.entries(ddPdfs)
+                    .filter(pdf => pdf[1].length === 1)
+                    .map((pdf, idx) => 
                         <div key={idx}>
-                            <a href={pdf[1]} target="_blank">
+                            <a href={pdf[1][0]} target="_blank">
                                 {pdf[0]}
                             </a>
                         </div>
@@ -212,6 +218,8 @@ function MainView(props) {
                     selectiveSubset={selectiveSubset}
                     noteFilter={noteFilter}
                     sellerReplySubset={sellerReplySubset}
+                    ddSubset={ddSubset}
+                    citySubset={citySubset}
                     />
 
                 </div>

@@ -98,9 +98,14 @@ function HouseEntry(props) {
                 <option value={1}>1</option>
             </select>
         </div>
-        <div style={{minWidth: "100px", alignContent: "center", textAlign: "center"}}>
+        <div style={{minWidth: "100px", borderRight: "1px solid black", alignContent: "center", textAlign: "center"}}>
             <a href={house[17]} target="_blank">
                 {house[17] === "" ? "" : "Link"}
+            </a>
+        </div>
+        <div style={{minWidth: "100px", alignContent: "center", textAlign: "center"}}>
+            <a href={house[20]} target="_blank">
+                {house[20] === "" ? "" : "Link"}
             </a>
         </div>
     </div>

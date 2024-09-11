@@ -2,11 +2,21 @@ import { getHouses } from "../util/util"
 function Filters(props) {
     const {setLotAreaLower, setLotAreaUpper, setAddrFilter, setSortMethod, setCurPage, setNotedSubset, 
         setContactInfoSubset, setZoneFilter, setBedroomUpper, setBedroomLower, setBathroomLower, 
-        setBathroomUpper, setPriorityLower, setPriorityUpper, setNoteFilter, setSellerReplySubset} = props
+        setBathroomUpper, setPriorityLower, setPriorityUpper, setNoteFilter, setSellerReplySubset, setDdSubset, setCitySubset} = props
     const inputStyle = {
         width: "60px"
     }
     return <div style={{display: "flex", flexDirection: "column"}}>
+        City
+        <select onChange={e => {
+            setCitySubset(e.target.value)
+            setCurPage(0)
+            }}>
+            <option>All</option>
+            <option>CAMPBELL</option>
+            <option>LOS ALTOS</option>
+        </select>
+
         Address
         <input onInput={e => {
             setAddrFilter(e.target.value.trim())
@@ -90,6 +100,16 @@ function Filters(props) {
             <option>Both</option>
             <option>With Seller Reply</option>
             <option>Without Seller Reply</option>
+        </select>
+
+        Due Diligence?
+        <select onChange={e => {
+            setDdSubset(e.target.value)
+            setCurPage(0)
+            }}>
+            <option>Both</option>
+            <option>With Due Diligence</option>
+            <option>Without Due Diligence</option>
         </select>
 
         Order By

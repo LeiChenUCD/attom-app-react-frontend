@@ -7,7 +7,7 @@ import { sortHouseHold } from "../util/util"
 
 function HouseHolds(props) {
 
-    const {LotAreaLower, LotAreaUpper, addrFilter, setSelectedAddr, id, selectedAddr, sortMethod, curPage, setCurPage, setHouseEntry, sortedSubset, setSortedSubset, setCenter, authorName, prevNotesFull, notedSubset, censusTract, setZoom, zoom, setATTOMID, ATTOMID, contactInfoSubset, setCurRecordIdx, zoneFilter, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, keptSubset, selectiveSubset, priorityLower, priorityUpper, noteFilter, sellerReplySubset} = props
+    const {LotAreaLower, LotAreaUpper, addrFilter, setSelectedAddr, id, selectedAddr, sortMethod, curPage, setCurPage, setHouseEntry, sortedSubset, setSortedSubset, setCenter, authorName, prevNotesFull, notedSubset, censusTract, setZoom, zoom, setATTOMID, ATTOMID, contactInfoSubset, setCurRecordIdx, zoneFilter, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, keptSubset, selectiveSubset, priorityLower, priorityUpper, noteFilter, sellerReplySubset, ddSubset, citySubset} = props
     const [pageSize, setPageSize] = React.useState(10)
     const [filteredSubset, setFilteredSubset] = React.useState([]);
 
@@ -28,6 +28,10 @@ function HouseHolds(props) {
 
         if (noteFilter !== "") {
             filteredData = filteredData.filter(house => house[15].toLowerCase().includes(noteFilter.toLowerCase()));
+        }
+        console.log(citySubset)
+        if (citySubset !== "All") {
+            filteredData = filteredData.filter(house => house[21] === citySubset)
         }
 
         if (zoneFilter !== "All") {
@@ -52,6 +56,12 @@ function HouseHolds(props) {
             filteredData = filteredData.filter(house => house[17] === "")
         }
 
+        if (ddSubset === "With Due Diligence") {
+            filteredData = filteredData.filter(house => house[20] !== "")
+        } else if (ddSubset === "Without Due Diligence") {
+            filteredData = filteredData.filter(house => house[20] === "")
+        }
+
         if (notedSubset === "Noted Addresses") {
             filteredData = filteredData.filter(house => house[4] === true)
         } else if (notedSubset === "Not Noted Addresses") {
@@ -65,7 +75,7 @@ function HouseHolds(props) {
         }
 
         setFilteredSubset(filteredData);
-    }, [LotAreaLower, LotAreaUpper, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, addrFilter, notedSubset, contactInfoSubset, zoneFilter, keptSubset, selectiveSubset, priorityLower, priorityUpper, noteFilter, sellerReplySubset]);
+    }, [LotAreaLower, LotAreaUpper, bedroomLower, bedroomUpper, bathroomLower, bathroomUpper, addrFilter, notedSubset, contactInfoSubset, zoneFilter, keptSubset, selectiveSubset, priorityLower, priorityUpper, noteFilter, sellerReplySubset, ddSubset, citySubset]);
 
     // Sort the filteredSubset based on sortMethod
     React.useEffect(() => {
@@ -77,14 +87,14 @@ function HouseHolds(props) {
     }, [filteredSubset, sortMethod, setSortedSubset]);
 
     
-
     // data that is current displaying
     const startIdx = curPage * pageSize;
     const endIdx = Math.min(startIdx + pageSize, sortedSubset.length);
     const display = sortedSubset.slice(curPage * pageSize, endIdx)
-
+    
     const pageNum = Math.ceil(sortedSubset.length / pageSize)
-
+    
+    console.log(display)
     return <div>
         <PageManager 
         totalCount={sortedSubset.length} 
