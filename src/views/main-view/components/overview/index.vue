@@ -1,0 +1,118 @@
+<script setup lang="ts">
+import { ref, onMounted, watch } from "vue";
+
+defineOptions({
+  name: "Overview"
+});
+const props = defineProps({
+  detailData: {
+    type: Object,
+    default: () => {
+      return {};
+    }
+  },
+});
+const emit = defineEmits(["onComment","onViewDetail"]);
+const mapContainer = ref();
+
+function onShowViewDetail() {
+  emit('onViewDetail', props.detailData);
+}
+
+function onShowAddComment() {
+  emit('onComment', props.detailData);
+}
+
+async function loadGoogleMaps() {
+  if (!window.google) {
+    await loadScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyDPhLSzTe7K6FRi6gOvFBIbwyDeLmyfthE');
+  }
+  initMap();
+}
+
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+function initMap() {
+  if (mapContainer.value) {
+    const fenway = { lat: props.detailData.propertylatitude, lng: props.detailData.propertylongitude };
+    const panorama = new google.maps.StreetViewPanorama(
+      mapContainer.value,
+      {
+        position: fenway,
+        pov: { heading: 165, pitch: 0 },
+        zoom: 1,
+      }
+    );
+  }
+}
+
+watch(
+  () => props.detailData,
+  () => {
+    loadGoogleMaps();
+  },
+  {
+    deep: true
+  }
+);
+</script>
+
+<template>
+  <div class="overview-container">
+    <!--div class="address">{{detailData?.propertyaddressfull}}</div-->
+    <div class="content">
+      <div class="item left">
+        <div ref="mapContainer" style="width: 100%; height: 100%;"></div>
+      </div>
+      <div class="item right">
+        <dl>
+          <dt class="title">Properties</dt>
+          <dd class="text">Size: {{detailData?.arealotsf}}</dd>
+          <dd class="text">BathCount: {{ detailData?.bathcount }}</dd>
+          <dd class="text">BedroomCount: {{ detailData?.bedroomscount }}</dd>
+        </dl>
+        <dl style="margin-top:20px;">
+          <dt class="title">Comments</dt>
+          <dd class="text">{{detailData?.note}}</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="operator">
+      <el-button @click="onShowViewDetail()">View Detail</el-button>
+      <el-button @click="onShowAddComment" type="primary">Add Comment</el-button>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.overview-container {
+  .content {
+    display: flex;
+    width: 100%;
+    height: 255px;
+    overflow: auto;
+    .item {
+      width: 50%;
+      .title {
+        font-weight: bold;
+      }
+      &.right {
+        padding-left: 10px;
+      }
+    }
+  }
+  >.operator {
+    padding-top: 5px;
+    text-align: right;
+  }
+}
+</style>
