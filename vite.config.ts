@@ -27,7 +27,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       proxy: {
         "/api": {
           // 这里填写后端地址
-          target: "https://attom-app-react-backend-ycyj.onrender.com",//"http://114.55.117.226",//https://demo.tduckapp.com
+          target: "https://attom-app-react-backend-ycyj.onrender.com/api",//"http://114.55.117.226",//https://demo.tduckapp.com
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, "")
         }
