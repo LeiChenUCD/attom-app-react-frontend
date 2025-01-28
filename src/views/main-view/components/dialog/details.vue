@@ -122,6 +122,9 @@ defineExpose({ getRef });
     .address {
 
     }
+    .content {
+      margin-bottom: 20px;
+    }
     .loading-box {
       padding: 20px;
     }
