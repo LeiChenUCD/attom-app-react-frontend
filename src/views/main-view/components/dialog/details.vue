@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import type { TabsPaneContext } from 'element-plus'
 import { CommentFormProps } from "./utils/types";
-import { getCensusListApi } from "@/api/welcome";
+import { getCensusListApi, queryContactInfo } from "@/api/welcome";
 
 const props = withDefaults(defineProps<CommentFormProps>(), {
   formInline: () => ({
@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<CommentFormProps>(), {
 const isLoading = ref(false)
 const ruleFormRef = ref();
 const newFormInline = ref(props.formInline);
-const detail = ref(newFormInline.value?.detail || {})
+const detail: any = ref(newFormInline.value?.detail || {})
 const activeTab = ref('amortizedequity')
 const detailData = ref({
   amortizedequity: null,
@@ -43,7 +43,18 @@ function getRef() {
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   activeName.value = '1';
-  getDetailApi()
+  if (tab.paneName === 'contactinfo') {
+    //getContactInfoApi()
+    detailData.value[activeTab.value] = detail.value.contactInfo? detail.value?.contactInfo : [];
+  } else {
+    getDetailApi()
+  }
+}
+
+async function getContactInfoApi() {
+  isLoading.value = true;
+  const data = await queryContactInfo({})
+  isLoading.value = false;
 }
 
 async function getDetailApi() {
@@ -85,7 +96,7 @@ defineExpose({ getRef });
         class="demo-tabs" 
         @tab-click="handleClick">
         <el-tab-pane v-for="(tab, index) in tabList" 
-          :key="index" :label="tab.label" :name="tab.name">
+          :key="index" :disabled="isLoading" :label="tab.label" :name="tab.name">
           <div class="loading-box" v-if="isLoading" v-loading="isLoading"></div>
           <el-collapse v-else-if="detailData[tab.name]?.length>0" v-model="activeName" accordion>
             <el-collapse-item 
