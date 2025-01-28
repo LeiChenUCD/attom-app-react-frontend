@@ -216,8 +216,10 @@ export function useColumns() {
         }
         if (contactInfo[item.propertyaddressfull]) {
           item['haveContactInfo'] = true;
+          item['contactInfo'] = contactInfo[item.propertyaddressfull] || null;
         } else {
           item['haveContactInfo'] = false;
+          item['contactInfo'] = null;
         }
 
         if (attomId in infoMap) {
@@ -414,9 +416,9 @@ export function useColumns() {
     }
 
     if (params.contactInfo === "With Contact Info") {
-      filteredData = filteredData.filter(house => house.contactInfo === true)
+      filteredData = filteredData.filter(house => house.haveContactInfo === true)
     } else if (params.contactInfo === "Without Contact Info") {
-      filteredData = filteredData.filter(house => house.contactInfo === false)
+      filteredData = filteredData.filter(house => house.haveContactInfo === false)
     }
     houses.value = filteredData;
     initCurrentRowData();
