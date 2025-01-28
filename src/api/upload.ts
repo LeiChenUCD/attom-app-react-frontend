@@ -2,10 +2,11 @@ import { http } from "@/utils/http";
 import axios from "axios";
 import {generateUUID} from "@/utils/common";
 import {message} from "@/utils/message";
+import { baseApiUrl } from "./base";
 
 /** 上线接口 **/
 export const uploadTokenApi = (params?: object) => {
-  return http.request<any>("get", "/api/admin/upload/uptoken", { params });
+  return http.request<any>("get", `${baseApiUrl}/api/admin/upload/uptoken`, { params });
 };
 
 export const uploadToAliyunOSS2 = async (file: any,filePath?: any,  uploadParams?: any) => {
@@ -22,7 +23,7 @@ export const uploadToAliyunOSS2 = async (file: any,filePath?: any,  uploadParams
   // file必须为最后一个表单域，除file以外的其他表单域无顺序要求。
   formData.append('file', file);
 
-  const url = `/api/upload/file`;//`${uploadParams.domain}`;
+  const url = `${baseApiUrl}/api/upload/file`;//`${uploadParams.domain}`;
 
   try {
     const {data} = await axios({
