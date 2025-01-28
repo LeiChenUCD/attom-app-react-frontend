@@ -122,7 +122,7 @@ defineExpose({ getRef });
               </div>
             </el-collapse-item>
           </el-collapse>
-          <el-empty v-else description="description" />
+          <el-empty v-else description="No data" />
         </el-tab-pane>
       </el-tabs>
     </div>
