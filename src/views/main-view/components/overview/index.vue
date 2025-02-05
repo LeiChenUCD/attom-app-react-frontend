@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
+const { VITE_GOOGLE_MAP_API_KEY } = import.meta.env;
 
 defineOptions({
   name: "Overview"
@@ -25,7 +26,7 @@ function onShowAddComment() {
 
 async function loadGoogleMaps() {
   if (!window.google) {
-    await loadScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyDPhLSzTe7K6FRi6gOvFBIbwyDeLmyfthE');
+    await loadScript(`https://maps.googleapis.com/maps/api/js?key=${VITE_GOOGLE_MAP_API_KEY}`);
   }
   initMap();
 }
