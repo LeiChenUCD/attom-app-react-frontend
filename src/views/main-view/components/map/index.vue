@@ -13,14 +13,39 @@ const props = defineProps({
       return [];
     }
   },
+  detailData: {
+    type: Object,
+    default: () => {
+      return {};
+    }
+  },
 });
 const mapContainer = ref(null);
-const emit = defineEmits(["onFiler"]);
+const emit = defineEmits(["onRowIndex"]);
 let mapCom = null;
 const zoomLevel = ref(10);
 const minZoomLevel = ref(3);
 const maxZoomLevel = ref(21);
 let secondaryPointsLayers = [];
+const currentPoint = ref();
+let currentMarker;
+
+ // 高亮图标
+ const highlightIcon = L.icon({
+  iconUrl: 'marker-cur.svg', // 图标路径
+  iconSize: [50, 50], // 图标大小
+  popupAnchor: [5, -90],
+  iconAnchor: [22, 94], // 图标锚点
+  //popupAnchor: [-3, -56] // 弹出框锚点
+});
+
+// 灰色图标
+const grayIcon = L.icon({
+    iconUrl: 'marker-icon-2x.png', // 灰色图标路径
+    iconSize: [50, 50], // 图标大小
+    popupAnchor: [5, -90],
+    iconAnchor: [22, 94] // 图标锚点
+});
 
 function initMap() {
   if (mapContainer.value) {
@@ -125,44 +150,6 @@ function getSouthwestLongitude(houses) {
   return minLongitude;
 }
 
-function buildAllPoints(list: any) {
-  // 使用MarkerClusterer来聚合标记
-  /*const markers = L.markerClusterGroup({
-      // 可以在这里配置MarkerClusterer的选项，如最大聚类半径、图标等
-      maxClusterRadius: 80, // 例如，设置最大聚类半径为80像素
-      iconCreateFunction: function (cluster) {
-          // 自定义聚类图标的函数（可选）
-          const childCount = cluster.getChildCount();
-          let c = ' marker-cluster-';
-          if (childCount < 10) {
-              c += 'small';
-          } else if (childCount < 100) {
-              c += 'medium';
-          } else {
-              c += 'large';
-          }
-          return L.divIcon({ html: '<b>' + childCount + '</b>', className: c, iconSize: L.point(40, 40) });
-      }
-  });*/
-  secondaryPointsLayers = [];
-  const markers = L.markerClusterGroup();
-  if (list?.length > 0) {
-    //const points = [];
-    for (let i = 0; i < list.length; i++) {
-      const item = list[i];
-      const point = [item.propertylatitude, item.propertylongitude];
-      //points.push(point);
-      const layer = L.marker(point).bindPopup(item.propertyaddressfull);
-      secondaryPointsLayers.push(layer)
-      markers.addLayer(layer);
-    }
-    markers.addTo(mapCom);
-    //画多边形
-	  /*const polygon = L.polygon(points, {color: '#aa0000',fillColor:'#ff15c9',
-	              weight:1}).addTo(mapCom);*/
-  }
-}
-
 // Function to check the correct direction
 function isNotRightTurn(a, b, c) {
     return (b[0] - a[0]) * (c[1] - a[1]) - 
@@ -204,14 +191,43 @@ function convexHull(points) {
     return Array.from(hull);
 }
 
+function addCurrentPoint(data: any) {
+  // 添加标记
+  currentMarker = L.marker(
+    [data.propertylatitude, data.propertylongitude], 
+    { 
+      icon: highlightIcon, 
+      title: data.propertyaddressfull, //鼠标hover显示
+    }
+  ).addTo(mapCom);
+  secondaryPointsLayers.push(currentMarker)
+  // 绑定工具提示
+  currentMarker.bindPopup(data.propertyaddressfull, {
+      permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
+      direction: 'top', // 提示框显示的方向（top, bottom, left, right）
+      //offset: [0, -65], //偏移量
+      //opacity: 0.9 // 提示框的透明度
+  });
+  // 自动定位到标记的位置
+  //mapCom.setView(marker.getLatLng(), zoomLevel.value);
+  mapCom.panTo([data.propertylatitude, data.propertylongitude]);
+  if (!currentMarker.isPopupOpen()) {
+    currentMarker.openPopup();
+  }
+}
+
+function clearAllMarkers() {
+   // 遍历并删除所有次点图层
+   secondaryPointsLayers.forEach(function(layer) {
+      mapCom.removeLayer(layer);
+  });
+}
+
 function initData() {
   if (!mapCom) {
     return;
   }
-  // 遍历并删除所有次点图层
-  secondaryPointsLayers.forEach(function(layer) {
-    mapCom.removeLayer(layer);
-});
+  clearAllMarkers();
   if (props.houses?.length > 0) {
     const top = getNortheastLatitude(props.houses);
     const right = getNortheastLongitude(props.houses);
@@ -219,9 +235,11 @@ function initData() {
     const left = getSouthwestLongitude(props.houses);
     const center = [props.houses[0]['propertylatitude'], props.houses[0]['propertylongitude']];
     //mapCom.value.setView([center[0], center[1]], zoomLevel);
-    mapCom.panTo([center[0], center[1]]);
+    //mapCom.panTo([center[0], center[1]]);
+    currentPoint.value = props.houses[0];
+    mapCom.panTo([currentPoint.value.propertylatitude, currentPoint.value.propertylongitude]);
     buildAllPoints(props.houses);
-
+    addCurrentPoint(props.houses[0]);
     /*const subsetOnMap = props.houses.filter(house => {
       return isBetween(house['propertylatitude'], top, bottom) && isBetween(house['propertylongitude'], left, right)
     }).filter(house => {
@@ -232,8 +250,113 @@ function initData() {
     const polygon = L.polygon(points, {color: '#aa0000',fillColor:'#ff15c9',
 	              weight:1}).addTo(mapCom);
                 */
+    // 为每个点绑定点击事件
+    bindMarkerEvent();
   }
 
+}
+
+function bindMarkerEvent() {
+  secondaryPointsLayers.forEach(marker => {
+    marker.on('click', function () {
+      resetAllMarkers(true);
+      // 将当前点击的点的图标设置为高亮
+      marker.setIcon(highlightIcon);
+      if (!marker.isPopupOpen()) {
+        marker.openPopup();
+      }
+      const latLng = marker.getLatLng();
+      const curHouseIndex = getCurHouseIndex(latLng, props.houses);
+      emit('onRowIndex', curHouseIndex);
+    });
+  });
+}
+
+function getCurHouseIndex(latLng: any, list: any) {
+  let res = 0;
+  if (latLng && list?.length > 0) {
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i];
+      if (latLng.lat === item.propertylatitude && latLng.lng === item.propertylongitude) {
+        res = i;
+        break;
+      }
+    }
+  }
+  return res;
+}
+
+function buildAllPoints(list: any) {
+  // 使用MarkerClusterer来聚合标记
+  /*const markers = L.markerClusterGroup({
+      // 可以在这里配置MarkerClusterer的选项，如最大聚类半径、图标等
+      maxClusterRadius: 80, // 例如，设置最大聚类半径为80像素
+      iconCreateFunction: function (cluster) {
+          // 自定义聚类图标的函数（可选）
+          const childCount = cluster.getChildCount();
+          let c = ' marker-cluster-';
+          if (childCount < 10) {
+              c += 'small';
+          } else if (childCount < 100) {
+              c += 'medium';
+          } else {
+              c += 'large';
+          }
+          return L.divIcon({ html: '<b>' + childCount + '</b>', className: c, iconSize: L.point(40, 40) });
+      }
+  });*/
+  secondaryPointsLayers = [];
+  const markers = L.markerClusterGroup();
+  if (list?.length > 0) {
+    //const points = [];
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i];
+      const point = [item.propertylatitude, item.propertylongitude];
+      let layer;
+      if (currentPoint.value['[attom id]'] !== item['[attom id]']) {
+        //points.push(point);
+        layer = L.marker(point, { icon: grayIcon }).bindPopup(item.propertyaddressfull, {
+            permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
+            direction: 'top', // 提示框显示的方向（top, bottom, left, right）
+            //offset: [0, -65], //偏移量
+            //opacity: 0.9 // 提示框的透明度
+        });
+        secondaryPointsLayers.push(layer)
+        markers.addLayer(layer);
+      } else {
+      }
+    }
+    markers.addTo(mapCom);
+    //画多边形
+	  /*const polygon = L.polygon(points, {color: '#aa0000',fillColor:'#ff15c9',
+	              weight:1}).addTo(mapCom);*/
+  }
+}
+
+function resetAllMarkers(isClick: boolean) {
+  // 将所有点的图标设置为灰色
+  secondaryPointsLayers.forEach(m => {
+    /*const latLng = m.getLatLng();
+    m.setZIndexOffset(1);
+    if (m.isPopupOpen()) {
+      m.closePopup();
+    }
+    if (latLng.lat === currentPoint.value.propertylatitude && latLng.lng === currentPoint.value.propertylongitude) {
+      if (isClick) {
+        m.setIcon(grayIcon);
+      } else {
+        m.setZIndexOffset(999999);
+        m.setIcon(highlightIcon);
+        mapCom.panTo([currentPoint.value.propertylatitude, currentPoint.value.propertylongitude]);
+        if (!m.isPopupOpen()) {
+          m.openPopup();
+        }
+      }
+    } else {
+      m.setIcon(grayIcon);
+    }*/
+    m.setIcon(grayIcon);
+  });
 }
 
 onMounted(() => {
@@ -248,6 +371,22 @@ watch(
   {
     deep: true,
     immediate: true
+  }
+);
+
+watch(
+  () => props.detailData,
+  () => {
+    currentPoint.value = props.detailData;
+    clearAllMarkers();
+    buildAllPoints(props.houses);
+    addCurrentPoint(currentPoint.value);
+    // 为每个点绑定点击事件
+    bindMarkerEvent();
+    //resetAllMarkers(false);
+  },
+  {
+    deep: true
   }
 );
 </script>

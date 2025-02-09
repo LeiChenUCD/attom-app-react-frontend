@@ -11,7 +11,7 @@ import { useColumns } from "./components/table/columns";
 import { useDialog } from "./components/dialog/utils/hook";
 import type { SortBy } from 'element-plus'
 
-const { loading, columns, houses, currentRowData, sortState, zonedcodelocalOptions, pagination, Empty, onSort,onTableRowIndex, onFilerData, onCurrentChange } = useColumns();
+const { loading, columns, houses, currentRowIndex, currentRowData, sortState, zonedcodelocalOptions, pagination, Empty, onSort,onTableRowIndex, onFilerData, onCurrentChange } = useColumns();
 const {
   form,
   openCommentDialog,
@@ -45,6 +45,7 @@ function getHouseById(id: string, list: any) {
     for (let i = 0; i < list.length; i++) {
       const item = list[i];
       if (id === item['[attom id]']) {
+        onTableRowIndex(i);
         res = item;
         break;
       }
@@ -144,6 +145,7 @@ watch(
           :sortState="sortState" 
           :columns="columns" 
           :houses="houses" 
+          :index="currentRowIndex"
           @onRowIndex="onTableRowIndex"
           @onSort="onSortTableData"
           />
@@ -169,7 +171,7 @@ watch(
       >
         <el-card shadow="never" class="h-[950px]">
           
-          <MapBox :houses="houses" />
+          <MapBox :detailData="currentRowData" :houses="houses" @onRowIndex="onTableRowIndex"/>
           
         </el-card>
       </re-col>

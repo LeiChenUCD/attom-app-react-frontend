@@ -32,7 +32,7 @@ defineExpose({ getRef });
     :rules="formRules"
     label-width="160px"
   >
-    <el-form-item v-if="commentHistory?.length > 0" label="Comment History">
+    <el-form-item v-if="commentHistory?.length > 0" label-position="top" label="Comment History">
       <div class="comment-history-list">
         <div class="item" v-for="(item, index) in commentHistory" 
           :key="index">
@@ -41,7 +41,7 @@ defineExpose({ getRef });
       </div>
     </el-form-item>
 
-    <el-form-item label="Comment" prop="comment">
+    <el-form-item label="Comment" label-position="top" prop="comment">
       <el-input
         v-model="newFormInline.comment"
         :rows="6"
