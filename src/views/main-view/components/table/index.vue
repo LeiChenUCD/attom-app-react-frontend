@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import type { Column } from 'element-plus';
 import type { SortBy } from 'element-plus';
 
@@ -7,6 +7,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  index: {
+    type: Number,
+    default: 0
   },
   columns: {
     type: Array,
@@ -47,6 +51,18 @@ onMounted(() => {
     boxWidth.value = parentContainer.value.offsetWidth;
   }
 });
+
+watch(
+  () => props.index,
+  val => {
+    currentRowIndex.value = val;
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+);
+
 </script>
 
 <template>

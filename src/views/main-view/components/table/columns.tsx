@@ -31,6 +31,7 @@ export function useColumns() {
     label: 'All',
   }]);
   const currentRowData = ref({});
+  const currentRowIndex = ref(0);
   const columns: Column<any>[] = [
     {
       key: 'propertyaddressfull',
@@ -433,6 +434,7 @@ export function useColumns() {
   }
 
   function onTableRowIndex(index: number) {
+    currentRowIndex.value = index;
     currentRowData.value = houses.value[index];
   }
 
@@ -446,6 +448,7 @@ export function useColumns() {
     columns,
     sortState,
     houses,
+    currentRowIndex,
     currentRowData,
     pagination,
     zonedcodelocalOptions,
