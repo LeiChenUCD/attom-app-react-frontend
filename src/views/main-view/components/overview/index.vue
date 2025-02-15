@@ -15,6 +15,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["onComment","onViewDetail"]);
 const mapContainer = ref();
+const comments = ref([]);
 
 function onShowViewDetail() {
   emit('onViewDetail', props.detailData);
@@ -56,10 +57,20 @@ function initMap() {
   }
 }
 
+function buildComments() {
+  const note = props.detailData?.note || '';
+  let res = [];
+  if (note) {
+    res = note.split('\n').map(line => line.trim());
+  }
+  return res;
+}
+
 watch(
   () => props.detailData,
   () => {
     loadGoogleMaps();
+    comments.value = buildComments();
   },
   {
     deep: true
@@ -83,7 +94,10 @@ watch(
         </dl>
         <dl style="margin-top:20px;">
           <dt class="title">Comments</dt>
-          <dd class="text">{{detailData?.note}}</dd>
+          <dd class="text">
+            <div v-for="(item, index) in comments" :key="index">{{ item }}</div>
+            <!--{{detailData?.note}}-->
+          </dd>
         </dl>
       </div>
     </div>
