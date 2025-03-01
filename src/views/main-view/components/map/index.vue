@@ -330,6 +330,15 @@ function buildAllPoints(list: any) {
     //画多边形
 	  /*const polygon = L.polygon(points, {color: '#aa0000',fillColor:'#ff15c9',
 	              weight:1}).addTo(mapCom);*/
+    // 添加 GeoServer WMS 图层
+    var wmsLayer = L.tileLayer.wms("http://162.235.126.57/geoserver/mygis/wms", {
+        layers: "mygis:ust_oppo_fund_potential_sites__ust_cleanup_fund_potential_sites",
+        format: "image/png",
+        transparent: true,
+        styles: "",  // 应用自定义 SLD 样式
+        attribution: "GeoServer WMS"
+    }).addTo(mapCom);
+    wmsLayer.setZIndex(999);
   }
 }
 
