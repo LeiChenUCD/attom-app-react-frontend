@@ -1,7 +1,7 @@
 import { delay } from "@pureadmin/utils";
 import { ref, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { getCensusListApi, getNotedATTOMID, queryContactInfo, getPriorityInfoAll, getNoteAll, getSellerReply, getDDPdfs } from "@/api/welcome";
+import { getCensusListApi2, getNotedATTOMID, queryContactInfo, getPriorityInfoAll, getNoteAll, getSellerReply, getDDPdfs } from "@/api/welcome";
 import type { PaginationProps } from "@pureadmin/table";
 import ThumbUp from "@iconify-icons/ri/thumb-up-line";
 import Hearts from "@iconify-icons/ri/hearts-line";
@@ -10,6 +10,7 @@ import type { Column } from 'element-plus';
 import { TableV2SortOrder, ElLoading } from 'element-plus';
 import type { SortBy } from 'element-plus';
 import { cloneDeep } from "@pureadmin/utils";
+import { objectParamsToQueryString } from '@/utils/common'
 import {
   ElButton,
   ElIcon,
@@ -160,7 +161,15 @@ export function useColumns() {
      `
     }
     const param = JSON.stringify(obj);
-    const houseRes = await getCensusListApi(param);
+    const params = {
+      where: `titlecompanystandardizedcode='26021'`,
+      maxResultSize: 9999,
+      objectIds: '',
+      resultOffset: 9999,
+      outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",arealotsf,bathcount,bedroomscount,censustract,parcelnumberraw,propertyaddresscity,propertyaddressfull,propertylatitude,propertylongitude,zonedcodeloca`
+    };
+    const queryString = objectParamsToQueryString(params);
+    const houseRes = await getCensusListApi2(queryString, params);
     return houseRes;
   }
 
@@ -253,7 +262,7 @@ export function useColumns() {
         } else {
           item['dueDiligenceLink'] = '';
         }
-       
+
         if (item['dueDiligenceLink']) {
           item['dueDiligence'] = 'matched';
         } else {
