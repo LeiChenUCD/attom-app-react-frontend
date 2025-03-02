@@ -166,11 +166,12 @@ export function useColumns() {
       maxResultSize: 9999,
       objectIds: '',
       resultOffset: 9999,
-      outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",arealotsf,bathcount,bedroomscount,censustract,parcelnumberraw,propertyaddresscity,propertyaddressfull,propertylatitude,propertylongitude,zonedcodeloca`
+      outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
+      //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",arealotsf,bathcount,bedroomscount,censustract,parcelnumberraw,propertyaddresscity,propertyaddressfull,propertylatitude,propertylongitude,zonedcodeloca`
     };
     const queryString = objectParamsToQueryString(params);
     const houseRes = await getCensusListApi2(queryString, params);
-    return houseRes;
+    return houseRes?.result || [];
   }
 
   async function queryAllData() {
