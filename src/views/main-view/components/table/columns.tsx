@@ -515,7 +515,6 @@ export function useColumns() {
     currentRowIndex.value = index;
     currentRowData.value = houses.value[index];
   }
-
   onMounted(() => {
     initTableData();
   });
