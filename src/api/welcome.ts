@@ -7,6 +7,11 @@ export const getCensusListApi = (data: any) => {
 };
 
 /** 获取列表 */
+export const getCensusListApi2 = (queryString: string, data: any) => {
+  return http.request<any>("post", `${baseApiUrl}/api/recorder-records?${queryString}`, { data });
+};
+
+/** 获取列表 */
 export const getCensusTractInfoListApi = (params: any) => {
   return http.request<any>("get", `${baseApiUrl}/api/getCensusTractInfo`, { params });
 };

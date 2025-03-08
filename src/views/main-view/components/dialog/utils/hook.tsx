@@ -11,8 +11,8 @@ import { reactive, ref, onMounted, h, toRaw } from "vue";
 import { useRouter } from "vue-router";
 import { insertNote, getNoteById } from "@/api/welcome";
 import { storageLocal } from "@pureadmin/utils";
-import {type DataInfo,userKey,} from "@/utils/auth";
-import { ElLoading } from 'element-plus';
+import { type DataInfo, userKey } from "@/utils/auth";
+import { ElLoading } from "element-plus";
 
 export function useDialog() {
   const form = reactive({
@@ -34,7 +34,7 @@ export function useDialog() {
       title: `View Detail`,
       props: {
         formInline: {
-          detail: row,
+          detail: row
         }
       },
       width: "80%",
@@ -53,14 +53,14 @@ export function useDialog() {
       return;
     }
     const param = {
-      "ATTOMID": row['[attom id]'] ?? ""
+      ATTOMID: row["[attom id]"] ?? ""
     };
     const loadingData = ElLoading.service({
       lock: true,
-      text: 'Loading...',
-      background: 'rgba(0, 0, 0, 0.7)',
-    })
-    const {data} = await getNoteById(param);
+      text: "Loading...",
+      background: "rgba(0, 0, 0, 0.7)"
+    });
+    const { data } = await getNoteById(param);
     loadingData.close();
     if (data?.items?.length > 0) {
       currentComment.value = data?.items[0];
@@ -71,7 +71,7 @@ export function useDialog() {
       title: `Add Comment`,
       props: {
         formInline: {
-          currentComment: currentComment,
+          currentComment: currentComment
         }
       },
       width: "60%",
@@ -104,33 +104,37 @@ export function useDialog() {
     if (note) {
       Notes = `${note},`;
     }*/
-    let overallNotes = ""
+    let overallNotes = "";
     if (currentComment.value?.fields) {
       for (let i = 0; i < currentComment.value.fields.Notes?.length; i++) {
         overallNotes += currentComment.value.fields.Notes[i].text;
       }
     }
-    const ending = overallNotes?.length > 0 && overallNotes[overallNotes.length - 1] !== '\n' ? '\n' : '';
+    const ending =
+      overallNotes?.length > 0 && overallNotes[overallNotes.length - 1] !== "\n"
+        ? "\n"
+        : "";
 
     const commentContent = `${overallNotes}${ending}[${dayjs(new Date().toISOString()).format("YYYY-MM-DD HH:mm")}] ${userInfo.username}: ${comment}`;
+    const ATTOMID = row["[attom id]"] ? row["[attom id]"].toString() : "";
     const params = {
-      "id": currentComment.value?.record_id || '',
-      "censusTract": row.censustract,
-      "author": userInfo.username,
-      "fields": {
-        "fields": {
-          "Address": row.propertyaddressfull,
-          "Notes": commentContent,
-          "ATTOMID": row['[attom id]'] || '',
-          "Census Tract": row.censustract,
+      id: currentComment.value?.record_id || "",
+      censusTract: row.censustract,
+      author: userInfo.username,
+      fields: {
+        fields: {
+          Address: row.propertyaddressfull,
+          Notes: commentContent,
+          ATTOMID: ATTOMID,
+          "Census Tract": row.censustract
         }
       }
-    }
+    };
     const loadingData = ElLoading.service({
       lock: true,
-      text: 'Loading...',
-      background: 'rgba(0, 0, 0, 0.3)',
-    })
+      text: "Loading...",
+      background: "rgba(0, 0, 0, 0.3)"
+    });
     let res = await insertNote(params);
     loadingData.close();
     if (res?.code === 0) {
@@ -139,14 +143,12 @@ export function useDialog() {
     }
   }
 
-
-  onMounted(() => {
-  });
+  onMounted(() => {});
 
   return {
     form,
     loading,
     openCommentDialog,
-    openViewDetailDialog,
+    openViewDetailDialog
   };
 }
