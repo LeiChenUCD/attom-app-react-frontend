@@ -4,7 +4,7 @@ import { object } from "vue-types";
  * 生成uuid
  * **/
 export function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (crypto.getRandomValues(new Uint8Array(1))[0] % 16) | 0;
     var v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
@@ -14,7 +14,7 @@ export function generateUUID() {
 /**
  * 遍历tree，重置value，label属性
  * */
-export function traverseTreeData(tree: any[], value?:any, label?:any, callback?: (node: any) => void) {
+export function traverseTreeData(tree: any[], value?: any, label?: any, callback?: (node: any) => void) {
   tree?.forEach((node) => {
     // 处理当前节点
     if (value) {
@@ -46,15 +46,15 @@ export function traverseTreeDataUpdateRules(tree: any[], dataObj: any, callback?
           node.value = null;
         }
       } else {
-       
+
       }
     }
-    
+
     callback(node);
 
     // 如果节点有子节点，则递归遍历子节点
     if (node?.children) {
-      traverseTreeDataUpdateRules(node.children,dataObj, callback);
+      traverseTreeDataUpdateRules(node.children, dataObj, callback);
     }
   });
 }
@@ -95,4 +95,11 @@ export function isValidJSON(str) {
  * */
 export function getTablePageSizes() {
   return [10, 20, 50, 100]
+}
+
+// 编写一个函数来将对象转换为URL查询字符串
+export function objectParamsToQueryString(obj) {
+  return Object.keys(obj)
+    .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]))
+    .join('&');
 }
