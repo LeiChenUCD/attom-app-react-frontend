@@ -1,1 +1,0 @@
-function r(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(n){var x=crypto.getRandomValues(new Uint8Array(1))[0]%16|0,e=n==="x"?x:x&3|8;return e.toString(16)})}function t(n){return Object.keys(n).map(x=>encodeURIComponent(x)+"="+encodeURIComponent(n[x])).join("&")}export{r as g,t as o};
