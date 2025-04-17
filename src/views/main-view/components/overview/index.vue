@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getImagesListApi, getHouseDetailApi } from "@/api/welcome";
+import { objectParamsToQueryString } from "@/utils/common";
 import { ref, onMounted, watch } from "vue";
 const { VITE_GOOGLE_MAP_API_KEY } = import.meta.env;
 
@@ -11,31 +13,34 @@ const props = defineProps({
     default: () => {
       return {};
     }
-  },
+  }
 });
-const emit = defineEmits(["onComment","onViewDetail"]);
+const emit = defineEmits(["onComment", "onViewDetail"]);
 const mapContainer = ref();
 const comments = ref([]);
-
+const imageList = ref([]);
+const bannerHeight = ref("255px");
 function onShowViewDetail() {
-  emit('onViewDetail', props.detailData);
+  emit("onViewDetail", props.detailData);
 }
 
 function onShowAddComment() {
-  emit('onComment', props.detailData);
+  emit("onComment", props.detailData);
 }
 
 async function loadGoogleMaps() {
   if (!window.google) {
-    await loadScript(`https://maps.googleapis.com/maps/api/js?key=${VITE_GOOGLE_MAP_API_KEY}`);
+    await loadScript(
+      `https://maps.googleapis.com/maps/api/js?key=${VITE_GOOGLE_MAP_API_KEY}`
+    );
   }
   initMap();
 }
 
 function loadScript(url) {
   return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
+    const script = document.createElement("script");
+    script.type = "text/javascript";
     script.src = url;
     script.onload = resolve;
     script.onerror = reject;
@@ -45,31 +50,58 @@ function loadScript(url) {
 
 function initMap() {
   if (mapContainer.value) {
-    const fenway = { lat: props.detailData.propertylatitude, lng: props.detailData.propertylongitude };
-    const panorama = new google.maps.StreetViewPanorama(
-      mapContainer.value,
-      {
-        position: fenway,
-        pov: { heading: 165, pitch: 0 },
-        zoom: 1,
-      }
-    );
+    const fenway = {
+      lat: props.detailData.propertylatitude,
+      lng: props.detailData.propertylongitude
+    };
+    const panorama = new google.maps.StreetViewPanorama(mapContainer.value, {
+      position: fenway,
+      pov: { heading: 165, pitch: 0 },
+      zoom: 1
+    });
   }
 }
 
 function buildComments() {
-  const note = props.detailData?.note || '';
+  const note = props.detailData?.note || "";
   let res = [];
   if (note) {
-    res = note.split('\n').map(line => line.trim());
+    res = note.split("\n").map(line => line.trim());
   }
   return res;
+}
+
+async function getDataImages(listingkeynumeric: any) {
+  const params = {
+    attomId: listingkeynumeric || "" //"16945068"
+  };
+  imageList.value = [];
+  const res = await getImagesListApi(params);
+  if (res?.pictures?.length > 0) {
+    imageList.value = res.pictures || [];
+  } else {
+    loadGoogleMaps();
+  }
+}
+
+async function getHouseDetail() {
+  const params = {
+    attomid: props.detailData["[attom id]"] ?? ""
+  };
+  const queryString = objectParamsToQueryString(params);
+  const res = await getHouseDetailApi(queryString, params);
+  if (res?.mls?.length > 0) {
+    getDataImages(res.mls[0].listingkeynumeric);
+  } else {
+    loadGoogleMaps();
+  }
 }
 
 watch(
   () => props.detailData,
   () => {
-    loadGoogleMaps();
+    imageList.value = [];
+    getHouseDetail();
     comments.value = buildComments();
   },
   {
@@ -83,16 +115,23 @@ watch(
     <!--div class="address">{{detailData?.propertyaddressfull}}</div-->
     <div class="content">
       <div class="item left">
-        <div ref="mapContainer" style="width: 100%; height: 100%;"></div>
+        <div v-if="imageList?.length > 0">
+          <el-carousel indicator-position="none" :height="bannerHeight">
+            <el-carousel-item v-for="(item, index) in imageList" :key="index">
+              <img style="width: 100%; height: 100%" :src="item" />
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+        <div v-else ref="mapContainer" style="width: 100%; height: 100%" />
       </div>
       <div class="item right">
         <dl>
           <dt class="title">Properties</dt>
-          <dd class="text">Size: {{detailData?.arealotsf}}</dd>
+          <dd class="text">Size: {{ detailData?.arealotsf }}</dd>
           <dd class="text">BathCount: {{ detailData?.bathcount }}</dd>
           <dd class="text">BedroomCount: {{ detailData?.bedroomscount }}</dd>
         </dl>
-        <dl style="margin-top:20px;">
+        <dl style="margin-top: 20px">
           <dt class="title">Comments</dt>
           <dd class="text">
             <div v-for="(item, index) in comments" :key="index">{{ item }}</div>
@@ -103,7 +142,9 @@ watch(
     </div>
     <div class="operator">
       <el-button @click="onShowViewDetail()">View Detail</el-button>
-      <el-button @click="onShowAddComment" type="primary">Add Comment</el-button>
+      <el-button type="primary" @click="onShowAddComment"
+        >Add Comment</el-button
+      >
     </div>
   </div>
 </template>
@@ -125,7 +166,7 @@ watch(
       }
     }
   }
-  >.operator {
+  > .operator {
     padding-top: 5px;
     text-align: right;
   }

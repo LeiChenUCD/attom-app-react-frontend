@@ -9,15 +9,24 @@ import MapBox from "./components/map/index.vue";
 import { latestNewsData } from "./data";
 import { useColumns } from "./components/table/columns";
 import { useDialog } from "./components/dialog/utils/hook";
-import type { SortBy } from 'element-plus'
+import type { SortBy } from "element-plus";
 
-const { loading, columns, houses, currentRowIndex, currentRowData, sortState, zonedcodelocalOptions, pagination, Empty, onSort,onTableRowIndex, onFilerData, onCurrentChange } = useColumns();
 const {
-  form,
-  openCommentDialog,
-  openViewDetailDialog,
-} = useDialog();
-
+  loading,
+  columns,
+  houses,
+  currentRowIndex,
+  currentRowData,
+  sortState,
+  zonedcodelocalOptions,
+  pagination,
+  Empty,
+  onSort,
+  onTableRowIndex,
+  onFilerData,
+  onCurrentChange
+} = useColumns();
+const { form, openCommentDialog, openViewDetailDialog } = useDialog();
 
 defineOptions({
   name: "MainView"
@@ -25,11 +34,11 @@ defineOptions({
 
 const route = useRoute();
 const { params, query } = route;
-const censustractId = ref(params.censustractId || '');
-const houseId = ref('');
+const censustractId = ref(params.censustractId || "");
+const houseId = ref("");
 
 function onSortTableData(sortBy: SortBy) {
-  onSort(sortBy)
+  onSort(sortBy);
 }
 
 function onChangeHouse() {
@@ -44,7 +53,7 @@ function getHouseById(id: string, list: any) {
   if (id && list?.length > 0) {
     for (let i = 0; i < list.length; i++) {
       const item = list[i];
-      if (id === item['[attom id]']) {
+      if (id === item["[attom id]"]) {
         onTableRowIndex(i);
         res = item;
         break;
@@ -57,13 +66,12 @@ function getHouseById(id: string, list: any) {
 watch(
   () => currentRowData,
   () => {
-    houseId.value = currentRowData.value['[attom id]'] || '';
+    houseId.value = currentRowData.value["[attom id]"] || "";
   },
   {
     deep: true
   }
 );
-
 </script>
 
 <template>
@@ -86,12 +94,14 @@ watch(
           }
         }"
       >
-       <el-card shadow="never">
-          <FilterBox :zonedcodelocalOptions="zonedcodelocalOptions" @onFiler="onFilerData"/>
+        <el-card shadow="never">
+          <FilterBox
+            :zonedcodelocalOptions="zonedcodelocalOptions"
+            @onFiler="onFilerData"
+          />
         </el-card>
-    </re-col>
-    
-  
+      </re-col>
+
       <re-col
         v-motion
         class="mb-[18px]"
@@ -109,45 +119,55 @@ watch(
           }
         }"
       >
-      <el-card shadow="never" class="h-[350px]" style="margin-bottom: 20px;">
-        <div>
-          <div class="text-md font-medium" style="margin-bottom: 5px;">
-            <!--?.propertyaddressfull}}-->
-            <el-select-v2 
-              v-model="houseId" 
-              filterable 
-              :options="houses" 
-              @change="onChangeHouse"
-              :props="{
-                label: 'propertyaddressfull',
-                value: '[attom id]',
-              }"
-              placeholder="Please select"
-              style="width: 50%" />
+        <el-card shadow="never" class="h-[350px]" style="margin-bottom: 20px">
+          <div>
+            <div class="text-md font-medium" style="margin-bottom: 5px">
+              <!--?.propertyaddressfull}}-->
+              <el-select-v2
+                v-model="houseId"
+                filterable
+                :options="houses"
+                :props="{
+                  label: 'propertyaddressfull',
+                  value: '[attom id]'
+                }"
+                placeholder="Please select"
+                style="width: 50%"
+                @change="onChangeHouse"
+              />
+            </div>
           </div>
-        </div>
-        <div>
-          <OverviewBox :detailData="currentRowData" @onComment="openCommentDialog" @onViewDetail="openViewDetailDialog"></OverviewBox>
-        </div>
-      </el-card>
+          <div>
+            <OverviewBox
+              :detailData="currentRowData"
+              @onComment="openCommentDialog"
+              @onViewDetail="openViewDetailDialog"
+            />
+          </div>
+        </el-card>
         <el-card shadow="never" class="h-[580px]">
           <div class="flex justify-between">
-            <div class="text-md font-medium">
-              Houses
-            </div>
-            <div> 
-              <span style="margin-right: 20px;">Total: {{ houses?.length }}</span>
-              <el-link type="primary" href="https://z1wxnr4c1l.larksuite.com/base/ZJYxbUZW0ah85TssgMqupEZJsB8?table=tbliAQ068PH77Eli&view=vewM7zhIkl" target="_blank">Lark Table</el-link>
+            <div class="text-md font-medium">Houses</div>
+            <div>
+              <span style="margin-right: 20px"
+                >Total: {{ houses?.length }}</span
+              >
+              <el-link
+                type="primary"
+                href="https://z1wxnr4c1l.larksuite.com/base/ZJYxbUZW0ah85TssgMqupEZJsB8?table=tbliAQ068PH77Eli&view=vewM7zhIkl"
+                target="_blank"
+                >Lark Table</el-link
+              >
             </div>
           </div>
-         <WelcomeTable 
-          :loading="loading" 
-          :sortState="sortState" 
-          :columns="columns" 
-          :houses="houses" 
-          :index="currentRowIndex"
-          @onRowIndex="onTableRowIndex"
-          @onSort="onSortTableData"
+          <WelcomeTable
+            :loading="loading"
+            :sortState="sortState"
+            :columns="columns"
+            :houses="houses"
+            :index="currentRowIndex"
+            @onRowIndex="onTableRowIndex"
+            @onSort="onSortTableData"
           />
         </el-card>
       </re-col>
@@ -170,9 +190,11 @@ watch(
         }"
       >
         <el-card shadow="never" class="h-[950px]">
-          
-          <MapBox :detailData="currentRowData" :houses="houses" @onRowIndex="onTableRowIndex"/>
-          
+          <MapBox
+            :detailData="currentRowData"
+            :houses="houses"
+            @onRowIndex="onTableRowIndex"
+          />
         </el-card>
       </re-col>
     </el-row>
