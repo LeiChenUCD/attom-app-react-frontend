@@ -31,10 +31,17 @@ export function useColumns() {
   const houses = ref([]);
   const allTableData = ref([]);
   let contactInfo = new Map();
+  const infoMapData = ref({});
+  const theNotesData = ref({});
+  const housesResData = ref([]);
+  const notedATTOMIDSetData = ref({});
+  const sellerReplyData = ref({});
+  const dDPdfsData = ref({});
   const loading = ref(true);
   const route = useRoute();
   const { params, query } = route;
   const censustractId = ref(params.censustractId || "0");
+  const queryParams = ref({});
   const zonedcodelocalOptions = ref([
     {
       value: "All",
@@ -145,7 +152,69 @@ export function useColumns() {
     //background: true
   });
 
-  function onCurrentChange(page: number) {}
+  function onCurrentChange(page: number) { }
+
+  function isNeedLoadData() {
+    let res = true;
+    const params: any = queryParams.value || {};
+    if (params.lotAreaLower) {
+      res = true;
+    } else if (params.lotAreaUpper) {
+      res = true;
+    } else if (params.bathcountLower) {
+      res = true;
+    } else if (params.bathcountUpper) {
+      res = true;
+    } else if (params.bedroomscountLower) {
+      res = true;
+    } else if (params.bedroomscountUpper) {
+      res = true;
+    } else if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
+      res = true;
+    } else if (params.addrFilter) {
+      //address
+      res = true;
+    }
+    return res;
+  }
+
+  function getFilerParams() {
+    let res = "minorcivildivisionname='SAN JOSE'";
+    const params: any = queryParams.value || {};
+    if (params.lotAreaLower) {
+      res += ` and arealotsf>=${params.lotAreaLower}`;
+    }
+
+    if (params.lotAreaUpper) {
+      res += ` and arealotsf<=${params.lotAreaUpper}`;
+    }
+
+    if (params.bathcountLower) {
+      res += ` and bathcount>=${params.bathcountLower}`;
+    }
+
+    if (params.bathcountUpper) {
+      res += ` and bathcount<=${params.bathcountUpper}`;
+    }
+
+    if (params.bedroomscountLower) {
+      res += ` and bedroomscount>=${params.bedroomscountLower}`;
+    }
+
+    if (params.bedroomscountUpper) {
+      res += ` and bedroomscount<=${params.bedroomscountUpper}`;
+    }
+
+    if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
+      res += ` and zonedcodelocal='${params.zonedcodelocal}'`;
+    }
+
+    if (params.addrFilter) {
+      //address
+      res += ` and propertyaddressfull LIKE '%${params.addrFilter}%' `;
+    }
+    return res;
+  }
 
   async function loadHousesFromATTOMPostgresAll() {
     const obj = {
@@ -173,11 +242,12 @@ export function useColumns() {
      `
     };
     const param = JSON.stringify(obj);
+    //minorcivildivisionname='SAN JOSE' and arealotsf>8000 and arealotsf<10000 and bathcount=5 and bedroomscount>3 and zonedcodelocal='R1'
     const params = {
-      where: `minorcivildivisionname='SAN JOSE'`,
-      maxResultSize: 30000,
+      where: getFilerParams(), //`minorcivildivisionname='SAN JOSE'`,
+      maxResultSize: 3000,
       objectIds: "",
-      resultOffset: 30000,
+      resultOffset: 0,
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
       outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",arealotsf,bathcount,bedroomscount,censustract,parcelnumberraw,propertyaddresscity,propertyaddressfull,propertylatitude,propertylongitude,zonedcodeloca`
@@ -185,22 +255,22 @@ export function useColumns() {
 
     const queryString = objectParamsToQueryString(params);
     const houseRes = await getCensusListApi2(queryString, params);
+    pagination.total = houseRes?.totalSize || 0;
     return houseRes?.result || [];
   }
 
-  async function queryAllData() {
-    const housesRes = await loadHousesFromATTOMPostgresAll();
-    //houses.value = housesRes;
-    pagination.total = housesRes?.length || 0;
+  async function getNotedATTOMIDSet() {
     const res = await getNotedATTOMID({});
     const notedATTOMID = res.data.items.map(
       addr => addr.fields.ATTOMID[0].text
     );
     const notedATTOMIDSet = new Set(notedATTOMID);
-    return {
-      housesRes: housesRes,
-      notedATTOMIDSet: notedATTOMIDSet
-    };
+    return notedATTOMIDSet;
+  }
+
+  async function queryAllData() {
+    const housesRes = await loadHousesFromATTOMPostgresAll();
+    return housesRes;
   }
   /**
    * 
@@ -343,36 +413,54 @@ export function useColumns() {
     return theNotes;
   }
 
-  function queryDataByCensustractId() {}
+  function queryDataByCensustractId() { }
 
-  async function initTableData() {
+  async function initTableData(init: boolean) {
     loading.value = true;
     const loadingData = ElLoading.service({
       lock: true,
       text: "Loading 0%",
       background: "rgba(0, 0, 0, 0.7)"
     });
-    await onQueryContactInfo();
+    if (init) {
+      await onQueryContactInfo();
+    }
     loadingData.setText("Loading 10%");
     if (censustractId.value === "0") {
-      const res = await queryAllData();
+      if (init || isNeedLoadData()) {
+        const housesRes = await queryAllData();
+        housesResData.value = housesRes || [];
+      }
+      if (init) {
+        notedATTOMIDSetData.value = await getNotedATTOMIDSet();
+      }
       loadingData.setText("Loading 20%");
-      const infoMap = await onGetPriorityInfoAll();
+      if (init) {
+        infoMapData.value = await onGetPriorityInfoAll();
+      }
       loadingData.setText("Loading 40%");
-      const theNotes = await onGetNoteAll();
+      if (init) {
+        theNotesData.value = await onGetNoteAll();
+      }
       loadingData.setText("Loading 60%");
-      const sellerReply = await getSellerReply({});
+      if (init) {
+        sellerReplyData.value = await getSellerReply({});
+      }
       loadingData.setText("Loading 80%");
-      const dDPdfs = await getDDPdfs({});
+      if (init) {
+        dDPdfsData.value = await getDDPdfs({});
+      }
+
       loadingData.setText("Loading 100%");
       houses.value = buildHousesList(
-        res.housesRes,
-        res.notedATTOMIDSet,
-        infoMap,
-        theNotes,
-        sellerReply,
-        dDPdfs
+        housesResData.value,
+        notedATTOMIDSetData.value,
+        infoMapData.value,
+        theNotesData.value,
+        sellerReplyData.value,
+        dDPdfsData.value
       );
+      //houses.value = res.housesRes;
       allTableData.value = cloneDeep(houses.value);
       loadingData.close();
       initCurrentRowData();
@@ -382,7 +470,9 @@ export function useColumns() {
     loading.value = false;
   }
 
-  function onFilerData(params: any) {
+  async function onFilerData(params: any) {
+    queryParams.value = params;
+    await initTableData(false);
     let filteredData = allTableData.value;
     if (params.lotAreaLower) {
       filteredData = filteredData.filter(
@@ -515,8 +605,9 @@ export function useColumns() {
     currentRowIndex.value = index;
     currentRowData.value = houses.value[index];
   }
+
   onMounted(() => {
-    initTableData();
+    initTableData(true);
   });
 
   return {

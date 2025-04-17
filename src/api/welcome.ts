@@ -1,6 +1,17 @@
 import { http } from "@/utils/http";
 import { baseApiUrl } from "./base";
 
+/** 获取图片列表 */
+export const getImagesListApi = (data: any) => {
+  return http.request<any>(
+    "post",
+    `${baseApiUrl}/api/property-pic-urls/${data.attomId}`,
+    {
+      data
+    }
+  );
+};
+
 /** 获取列表 */
 export const getCensusListApi = (data: any) => {
   return http.request<any>("post", `${baseApiUrl}/api/executeQuery`, { data });
@@ -8,16 +19,32 @@ export const getCensusListApi = (data: any) => {
 
 /** 获取列表 */
 export const getCensusListApi2 = (queryString: string, data: any) => {
-  return http.request<any>("post", `${baseApiUrl}/api/recorder-records?${queryString}`, { data });
+  return http.request<any>(
+    "post",
+    `${baseApiUrl}/api/recorder-records?${queryString}`,
+    { data }
+  );
+};
+
+export const getHouseDetailApi = (queryString: string, data: any) => {
+  return http.request<any>(
+    "post",
+    `${baseApiUrl}/api/property-details?${queryString}`,
+    { data }
+  );
 };
 
 /** 获取列表 */
 export const getCensusTractInfoListApi = (params: any) => {
-  return http.request<any>("get", `${baseApiUrl}/api/getCensusTractInfo`, { params });
+  return http.request<any>("get", `${baseApiUrl}/api/getCensusTractInfo`, {
+    params
+  });
 };
 
 export const getNotedATTOMID = (params: any) => {
-  return http.request<any>("get", `${baseApiUrl}/api/getNotedATTOMID`, { params });
+  return http.request<any>("get", `${baseApiUrl}/api/getNotedATTOMID`, {
+    params
+  });
 };
 
 export const queryContactInfo = (params: any) => {
@@ -25,7 +52,9 @@ export const queryContactInfo = (params: any) => {
 };
 
 export const getPriorityInfoAll = (params: any) => {
-  return http.request<any>("get", `${baseApiUrl}/api/getPriorityInfoAll`, { params });
+  return http.request<any>("get", `${baseApiUrl}/api/getPriorityInfoAll`, {
+    params
+  });
 };
 
 export const getNoteAll = (params: any) => {
@@ -55,14 +84,20 @@ export const createAllianceApi = (data?: object) => {
 
 /** 更新 */
 export const updateAllianceApi = (id: any, data?: object) => {
-  return http.request<any>("post", `${baseApiUrl}/api/alliances/${id}`, { data });
+  return http.request<any>("post", `${baseApiUrl}/api/alliances/${id}`, {
+    data
+  });
 };
 
 export const deleteAllianceApi = (id: any, data?: object) => {
-  return http.request<any>("post", `${baseApiUrl}/api/alliances/delete/${id}`, { data });
+  return http.request<any>("post", `${baseApiUrl}/api/alliances/delete/${id}`, {
+    data
+  });
 };
 
 /** 获取信息 */
 export function getAllianceDetailApi(params: any) {
-  return http.request<any>("get", `${baseApiUrl}/api/alliances/${params._id}`, { params });
-};
+  return http.request<any>("get", `${baseApiUrl}/api/alliances/${params._id}`, {
+    params
+  });
+}
