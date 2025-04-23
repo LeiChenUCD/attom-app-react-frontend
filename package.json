@@ -23,7 +23,7 @@
     "preinstall": "npx only-allow pnpm"
   },
   "keywords": [],
-  "homepage": "",
+  "homepage": "https://actool.alphax-capital.com/attom-app-react-frontend",
   "repository": {
     "type": "git",
     "url": ""
