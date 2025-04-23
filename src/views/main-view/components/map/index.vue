@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from "vue";
 import L from "leaflet";
 import "leaflet.markercluster";
+import { wmsApiBaseUrl } from "@/api/base";
 
 defineOptions({
   name: "MapComponent"
@@ -32,7 +33,7 @@ let currentMarker;
 
 let currentWMSLayer: L.TileLayer | null = null;
 
-const wmsBaseUrl = "https://wms.echo999.com/geoserver/mygis/wms";
+const wmsBaseUrl = `${wmsApiBaseUrl}/geoserver/mygis/wms`;
 const wsmLayerService = {
   opportunityZone: {
     layerName: "mygis:SJ_OpportunityZone",
