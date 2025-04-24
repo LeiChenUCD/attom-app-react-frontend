@@ -139,27 +139,36 @@ const loadWMSLayer = () => {
   if (!wsmData) {
     return;
   }
+
   const layerName = wsmData.layerName;
   const layerTitle = wsmData.layerTitle;
   const options = wsmData.options;
+
   if (currentWMSLayer) {
     mapCom?.removeLayer(currentWMSLayer);
     currentWMSLayer = null;
   }
 
-  const { bbox, srs } = options;
-
+  // 移除 bbox 参数，Leaflet 会自动计算
   currentWMSLayer = L.tileLayer.wms(wmsBaseUrl, {
     layers: layerName,
     format: "image/png",
     transparent: true,
-    srs,
-    bbox,
+    crs: L.CRS.EPSG3857, // 或根据服务调整
+    version: "1.1.1", // 明确指定版本
     attribution: `WMS Layer: ${layerTitle}`
   });
 
   if (mapCom) {
     currentWMSLayer.addTo(mapCom);
+
+    // 可能需要调整地图视图以适应图层范围
+    // 您可以使用 options.bbox 来设置地图视图
+    const [minX, minY, maxX, maxY] = options.bbox.split(",").map(Number);
+    mapCom.fitBounds([
+      [minY, minX], // 西南角
+      [maxY, maxX] // 东北角
+    ]);
   }
 };
 
