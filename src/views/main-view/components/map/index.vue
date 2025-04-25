@@ -164,11 +164,11 @@ const loadWMSLayer = () => {
 
     // 可能需要调整地图视图以适应图层范围
     // 您可以使用 options.bbox 来设置地图视图
-    const [minX, minY, maxX, maxY] = options.bbox.split(",").map(Number);
+    /*const [minX, minY, maxX, maxY] = options.bbox.split(",").map(Number);
     mapCom.fitBounds([
       [minY, minX], // 西南角
       [maxY, maxX] // 东北角
-    ]);
+    ]);*/
   }
 };
 
