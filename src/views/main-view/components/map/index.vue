@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import L from "leaflet";
+import proj4 from "proj4";
+//import * as L from 'leaflet';
+import "proj4leaflet";
 import "leaflet.markercluster";
 import { wmsApiBaseUrl } from "@/api/base";
 
@@ -134,32 +137,127 @@ const wmsOptions = ref([
   }
 ]);
 
-const loadWMSLayer = () => {
+// 定义 EPSG:2227 投影
+const crs2227 = new L.Proj.CRS(
+  "EPSG:2227",
+  "+proj=lcc +lat_1=36.5 +lat_2=35.46666666666667 +lat_0=34.83333333333334 +lon_0=-120.5 +x_0=2000000.0001016 +y_0=500000.0001016 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs",
+  {
+    resolutions: [
+      2116.670900008467, 1058.3354500042335, 529.1677250021168,
+      264.5838625010584, 132.2919312505292, 66.1459656252646, 33.0729828126323,
+      16.53649140631615, 8.268245703158075, 4.134122851579037,
+      2.0670614257895186, 1.0335307128947593, 0.5167653564473796,
+      0.2583826782236898, 0.1291913391118449, 0.06459566955592245,
+      0.03229783477796123, 0.016148917388980614, 0.008074458694490307,
+      0.004037229347245154, 0.002018614673622577, 0.0010093073368112884
+    ],
+    origin: [0, 0],
+    bounds: L.bounds([2000000, 500000], [2500000, 1000000]) // 示例范围，需调整
+  }
+);
+
+const loadWMSLayer2 = () => {
   const wsmData = wsmLayerService[currentWms.value];
   if (!wsmData) {
+    if (currentWMSLayer) {
+      mapCom?.removeLayer(currentWMSLayer);
+      currentWMSLayer = null;
+    }
     return;
   }
+
   const layerName = wsmData.layerName;
   const layerTitle = wsmData.layerTitle;
   const options = wsmData.options;
+
   if (currentWMSLayer) {
     mapCom?.removeLayer(currentWMSLayer);
     currentWMSLayer = null;
   }
 
-  const { bbox, srs } = options;
+  // 为不同CRS的图层设置不同参数
+  let layerOptions = {
+    layers: layerName,
+    format: "image/png",
+    transparent: true,
+    version: "1.1.1",
+    attribution: `WMS Layer: ${layerTitle}`,
+    crs: null,
+    srs: ""
+  };
+
+  // 根据图层CRS设置不同参数
+  if (options.srs === "EPSG:2227") {
+    layerOptions.crs = crs2227;
+    layerOptions.srs = "EPSG:2227";
+  } else {
+    layerOptions.crs = L.CRS.EPSG3857;
+  }
+
+  //currentWMSLayer = L.tileLayer.wms(wmsBaseUrl, layerOptions);
 
   currentWMSLayer = L.tileLayer.wms(wmsBaseUrl, {
     layers: layerName,
     format: "image/png",
     transparent: true,
-    srs,
-    bbox,
+    crs: L.CRS.EPSG3857,
+    srs: "EPSG:3857", // 强制使用Web Mercator
+    version: "1.1.1",
     attribution: `WMS Layer: ${layerTitle}`
   });
 
   if (mapCom) {
     currentWMSLayer.addTo(mapCom);
+
+    // 如果是EPSG:2227图层，设置合适的地图视图
+    if (options.srs === "EPSG:2227") {
+      const [minX, minY, maxX, maxY] = options.bbox.split(",").map(Number);
+      const southWest = crs2227.projection.unproject(L.point(minX, minY));
+      const northEast = crs2227.projection.unproject(L.point(maxX, maxY));
+      mapCom.fitBounds(L.latLngBounds(southWest, northEast));
+    }
+  }
+};
+
+const loadWMSLayer = () => {
+  const wsmData = wsmLayerService[currentWms.value];
+  if (!wsmData) {
+    if (currentWMSLayer) {
+      mapCom?.removeLayer(currentWMSLayer);
+      currentWMSLayer = null;
+    }
+    return;
+  }
+
+  const layerName = wsmData.layerName;
+  const layerTitle = wsmData.layerTitle;
+  const options = wsmData.options;
+
+  if (currentWMSLayer) {
+    mapCom?.removeLayer(currentWMSLayer);
+    currentWMSLayer = null;
+  }
+
+  // 移除 bbox 参数，Leaflet 会自动计算
+  currentWMSLayer = L.tileLayer.wms(wmsBaseUrl, {
+    layers: layerName,
+    format: "image/png",
+    transparent: true,
+    crs: L.CRS.EPSG3857, // 或根据服务调整
+    version: "1.1.1", // 明确指定版本
+    attribution: `WMS Layer: ${layerTitle}`
+  });
+
+  if (mapCom) {
+    currentWMSLayer.addTo(mapCom);
+
+    // 可能需要调整地图视图以适应图层范围
+    // 您可以使用 options.bbox 来设置地图视图
+    /*const [minX, minY, maxX, maxY] = options.bbox.split(",").map(Number);
+    mapCom.fitBounds([
+      [minY, minX], // 西南角
+      [maxY, maxX] // 东北角
+    ]);*/
   }
 };
 
@@ -181,7 +279,7 @@ const grayIcon = L.icon({
 });
 
 function onChangeWms() {
-  loadWMSLayer();
+  loadWMSLayer2();
 }
 
 function initMap() {
@@ -481,7 +579,7 @@ function buildAllPoints(list: any) {
 	              weight:1}).addTo(mapCom);*/
     // 添加 GeoServer WMS 图层
     //rendWmsLayer();
-    loadWMSLayer();
+    loadWMSLayer2();
   }
 }
 
@@ -560,6 +658,7 @@ watch(
 <template>
   <div>
     <div class="map-filter-box">
+      <span>WMS:</span>
       <el-select-v2
         v-model="currentWms"
         filterable
@@ -568,7 +667,8 @@ watch(
           label: 'label',
           value: 'value'
         }"
-        placeholder="Please select"
+        clearable
+        placeholder="Please select wms"
         style="width: 50%"
         @change="onChangeWms"
       />
@@ -582,6 +682,10 @@ watch(
   display: flex;
   justify-content: flex-end; /* 右对齐 */
   margin-bottom: 10px;
+  align-items: center;
+  span {
+    margin-right: 10px;
+  }
 }
 .map-container {
   width: 100%;
