@@ -25,6 +25,11 @@ const props = defineProps({
   }
 });
 const mapContainer = ref(null);
+const offsetTop = ref(0);
+const filterStyle = ref({
+  position: "relative",
+  top: 0 + "px"
+});
 const emit = defineEmits(["onRowIndex"]);
 let mapCom = null;
 const zoomLevel = ref(10);
@@ -98,6 +103,14 @@ const wsmLayerService = {
       bbox: "-176.696692,-14.373776,145.830505,71.341324",
       srs: "EPSG:4269"
     }
+  },
+  sjZoning: {
+    layerName: "mygis:SJ_zoning",
+    layerTitle: "San Jose Zoning",
+    options: {
+      bbox: "5823176.279241634,1724173.2793831213,7344103.223655108,2456022.576740115",
+      srs: "EPSG:2227"
+    }
   }
 };
 
@@ -133,7 +146,11 @@ const wmsOptions = ref([
   },
   {
     value: "medianIncome",
-    label: "median_income mygis:tl_2024_ca_B07011_zcta520"
+    label: wsmLayerService["medianIncome"].layerTitle
+  },
+  {
+    value: "sjZoning",
+    label: wsmLayerService["sjZoning"].layerTitle
   }
 ]);
 
@@ -623,7 +640,32 @@ function resetAllMarkers(isClick: boolean) {
   });
 }
 
+function getElemTop() {
+  setTimeout(() => {
+    // 对于元素
+    const elements = document.getElementsByClassName("el-scrollbar__wrap");
+    const filter = document.getElementById("filter-main-box");
+    if (filter && elements?.length > 1) {
+      elements[1].addEventListener("scroll", function () {
+        offsetTop.value = this.scrollTop - filter.offsetHeight;
+        if (offsetTop.value > 0) {
+          filterStyle.value = {
+            position: "absolute",
+            top: offsetTop.value + "px"
+          };
+        } else {
+          filterStyle.value = {
+            position: "relative",
+            top: "0px"
+          };
+        }
+      });
+    }
+  }, 100);
+}
+
 onMounted(() => {
+  getElemTop();
   initMap();
 });
 
@@ -656,8 +698,8 @@ watch(
 </script>
 
 <template>
-  <div>
-    <div class="map-filter-box">
+  <div class="map-com" :class="{ 'map-com-fix': offsetTop > 0 }">
+    <div class="map-filter-box" :style="filterStyle">
       <span>WMS:</span>
       <el-select-v2
         v-model="currentWms"
@@ -669,7 +711,7 @@ watch(
         }"
         clearable
         placeholder="Please select wms"
-        style="width: 50%"
+        style="width: 400px"
         @change="onChangeWms"
       />
     </div>
@@ -678,17 +720,32 @@ watch(
 </template>
 
 <style scoped lang="scss">
-.map-filter-box {
-  display: flex;
-  justify-content: flex-end; /* 右对齐 */
-  margin-bottom: 10px;
-  align-items: center;
-  span {
-    margin-right: 10px;
+.map-com {
+  position: relative;
+  .map-filter-box {
+    display: flex;
+    justify-content: flex-end; /* 右对齐 */
+    margin-bottom: 10px;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 999;
+    span {
+      margin-right: 10px;
+    }
   }
-}
-.map-container {
-  width: 100%;
-  height: 100vh;
+  .map-container {
+    width: 100%;
+    height: 100vh;
+  }
+  &.map-com-fix {
+    padding-top: 42px;
+    .map-filter-box {
+      background: #fff;
+      padding: 10px 0 10px 10px;
+      border-radius: 5px;
+    }
+  }
 }
 </style>

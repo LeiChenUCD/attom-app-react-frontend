@@ -187,3 +187,7 @@
     background: rgb(199 201 203); /* 滑块hover颜色 */
   }
 }
+
+.el-scrollbar__bar.is-vertical {
+  display: block !important;
+}

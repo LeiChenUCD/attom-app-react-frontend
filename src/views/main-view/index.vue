@@ -94,7 +94,7 @@ watch(
           }
         }"
       >
-        <el-card shadow="never">
+        <el-card shadow="never" id="filter-main-box">
           <FilterBox
             :zonedcodelocalOptions="zonedcodelocalOptions"
             @onFiler="onFilerData"
