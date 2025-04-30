@@ -169,6 +169,10 @@ export function useColumns() {
       res = true;
     } else if (params.bedroomscountUpper) {
       res = true;
+    } else if (params.closePriceLower || params.closePriceUpper) {
+      res = true;
+    } else if (params.lotSizeAreaLower || params.lotSizeAreaUpper) {
+      res = true;
     } else if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
       res = true;
     } else if (params.addrFilter) {
@@ -212,6 +216,49 @@ export function useColumns() {
     if (params.addrFilter) {
       //address
       res += ` and propertyaddressfull LIKE '%${params.addrFilter}%' `;
+    }
+
+
+    if (params.closePriceLower || params.closePriceUpper || params.lotSizeAreaLower || params.lotSizeAreaUpper) {
+      res += `&mlsWhere=`;
+      let hasFilter = false;
+      if (params.closePriceLower && params.closePriceUpper) {
+        res += `closeprice>=${params.closePriceLower} and closeprice<=${params.closePriceUpper}`;
+        hasFilter = true;
+      } else {
+        if (params.closePriceLower) {
+          res += `closeprice>=${params.closePriceLower}`;
+          hasFilter = true;
+        }
+        if (params.closePriceUpper) {
+          if (hasFilter) {
+            res += ' and ';
+          }
+          res += `closeprice<=${params.closePriceUpper}`;
+          hasFilter = true;
+        }
+      }
+
+      if (params.lotSizeAreaLower && params.lotSizeAreaUpper) {
+        if (hasFilter) {
+          res += ' and ';
+        }
+        res += `lotsizearea>=${params.lotSizeAreaLower} and lotsizearea<=${params.lotSizeAreaUpper}`;
+      } else {
+        if (params.lotSizeAreaLower) {
+          if (hasFilter) {
+            res += ' and ';
+          }
+          res += `lotsizearea>=${params.lotSizeAreaLower}`;
+          hasFilter = true;
+        }
+        if (params.lotSizeAreaUpper) {
+          if (hasFilter) {
+            res += ' and ';
+          }
+          res += `lotsizearea<=${params.lotSizeAreaUpper}`;
+        }
+      }
     }
     return res;
   }

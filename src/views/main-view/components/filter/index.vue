@@ -107,6 +107,10 @@ const formValue = ref({
   bathcountUpper: null,
   priorityLower: null,
   priorityUpper: null,
+  closePriceLower: null,
+  closePriceUpper: null,
+  lotSizeAreaLower: null,
+  lotSizeAreaUpper: null,
   sellerReplyAddr: "Both",
   dueDiligence: "Both",
   noted: "Both",
@@ -131,6 +135,10 @@ function resetForm() {
     bathcountUpper: null,
     priorityLower: null,
     priorityUpper: null,
+    closePriceLower: null,
+    closePriceUpper: null,
+    lotSizeAreaLower: null,
+    lotSizeAreaUpper: null,
     sellerReplyAddr: "Both",
     dueDiligence: "Both",
     noted: "Both",
@@ -264,6 +272,46 @@ function onBack() {
           placeholder=" "
           :min="0"
           :max="9999"
+          style="width: 42%"
+          controls-position="right"
+        />
+      </el-form-item>
+
+      <el-form-item label="ClosePrice" prop="closePrice">
+        <el-input-number
+          v-model="formValue.closePriceLower"
+          placeholder=" "
+          :min="0"
+          :max="9999999999"
+          style="width: 42%"
+          controls-position="right"
+        />
+        <span style="margin: 0 10px">~</span>
+        <el-input-number
+          v-model="formValue.closePriceUpper"
+          placeholder=" "
+          :min="0"
+          :max="9999999999"
+          style="width: 42%"
+          controls-position="right"
+        />
+      </el-form-item>
+
+      <el-form-item label="LotSizeArea" prop="lotSizeArea">
+        <el-input-number
+          v-model="formValue.lotSizeAreaLower"
+          placeholder=" "
+          :min="0"
+          :max="9999999999"
+          style="width: 42%"
+          controls-position="right"
+        />
+        <span style="margin: 0 10px">~</span>
+        <el-input-number
+          v-model="formValue.lotSizeAreaUpper"
+          placeholder=" "
+          :min="0"
+          :max="9999999999"
           style="width: 42%"
           controls-position="right"
         />
