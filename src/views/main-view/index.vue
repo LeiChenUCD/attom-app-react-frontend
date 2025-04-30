@@ -120,7 +120,7 @@ watch(
           }
         }"
       >
-        <el-card shadow="never" class="h-[350px]" style="margin-bottom: 20px">
+        <el-card id="overview-main-box" shadow="never" class="h-[350px]" style="margin-bottom: 20px">
           <div>
             <div class="text-md font-medium" style="margin-bottom: 5px">
               <!--?.propertyaddressfull}}-->
@@ -146,7 +146,7 @@ watch(
             />
           </div>
         </el-card>
-        <el-card shadow="never" class="h-[580px]">
+        <el-card id="table-main-box" shadow="never" class="h-[580px]">
           <div class="flex justify-between">
             <div class="text-md font-medium">Houses</div>
             <div>
