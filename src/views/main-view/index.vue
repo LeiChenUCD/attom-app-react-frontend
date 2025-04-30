@@ -23,6 +23,7 @@ const {
   Empty,
   onSort,
   onTableRowIndex,
+  onSearchArea,
   onFilerData,
   onCurrentChange
 } = useColumns();
@@ -194,6 +195,7 @@ watch(
             :detailData="currentRowData"
             :houses="houses"
             @onRowIndex="onTableRowIndex"
+            @onSearchArea="onSearchArea"
           />
         </el-card>
       </re-col>

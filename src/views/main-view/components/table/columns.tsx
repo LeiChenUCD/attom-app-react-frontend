@@ -42,6 +42,7 @@ export function useColumns() {
   const { params, query } = route;
   const censustractId = ref(params.censustractId || "0");
   const queryParams = ref({});
+  const searchAreaParams = ref(null);
   const zonedcodelocalOptions = ref([
     {
       value: "All",
@@ -178,6 +179,8 @@ export function useColumns() {
     } else if (params.addrFilter) {
       //address
       res = true;
+    } else if (searchAreaParams.value) {
+      res = true;
     }
     return res;
   }
@@ -259,6 +262,9 @@ export function useColumns() {
           res += `lotsizearea<=${params.lotSizeAreaUpper}`;
         }
       }
+    }
+    if (searchAreaParams.value) {
+      res += `&topLat=${searchAreaParams.value.topLat}&bottomLat=${searchAreaParams.value.bottomLat}&leftLong=${searchAreaParams.value.leftLong}&rightLong=${searchAreaParams.value.rightLong}`;
     }
     return res;
   }
@@ -517,8 +523,7 @@ export function useColumns() {
     loading.value = false;
   }
 
-  async function onFilerData(params: any) {
-    queryParams.value = params;
+  async function queryTabelData() {
     await initTableData(false);
     let filteredData = allTableData.value;
     if (params.lotAreaLower) {
@@ -640,6 +645,12 @@ export function useColumns() {
     initCurrentRowData();
   }
 
+  function onFilerData(params: any) {
+    queryParams.value = params;
+    searchAreaParams.value = null;
+    queryTabelData();
+  }
+
   function initCurrentRowData() {
     if (houses.value?.length > 0) {
       currentRowData.value = houses.value[0];
@@ -651,6 +662,11 @@ export function useColumns() {
   function onTableRowIndex(index: number) {
     currentRowIndex.value = index;
     currentRowData.value = houses.value[index];
+  }
+
+  function onSearchArea(params: any) {
+    searchAreaParams.value = params;
+    queryTabelData();
   }
 
   onMounted(() => {
@@ -670,6 +686,7 @@ export function useColumns() {
     onCurrentChange,
     onSort,
     onTableRowIndex,
-    onFilerData
+    onFilerData,
+    onSearchArea
   };
 }

@@ -30,9 +30,10 @@ const filterStyle = ref({
   position: "relative",
   top: 0 + "px"
 });
-const emit = defineEmits(["onRowIndex"]);
+const emit = defineEmits(["onRowIndex","onSearchArea"]);
 let mapCom = null;
 const zoomLevel = ref(10);
+const isShowSearchBtnArea = ref(false);
 const minZoomLevel = ref(3);
 const maxZoomLevel = ref(21);
 let secondaryPointsLayers = [];
@@ -327,6 +328,47 @@ function initMap() {
   } else {
     console.error("Map container not found!");
   }
+  onMapMove();
+}
+
+function onMapMove() {
+  // 监听地图移动（拖拽或缩放）事件
+  let timeoutID; 
+  isShowSearchBtnArea.value = false;
+  mapCom.on('moveend', function() {
+    isShowSearchBtnArea.value = true;
+    // 清除之前的定时器（如果存在）
+    if (timeoutID) {
+      clearTimeout(timeoutID);
+      timeoutID = null;
+    }
+    
+    timeoutID = setTimeout(() => {
+        isShowSearchBtnArea.value = false;
+    }, 5000);
+  });
+}
+
+function onSearchThisArea() {
+  const bounds = mapCom?.getBounds();
+  // 获取四个角的经纬度
+  const topLat = bounds.getNorth();    // 最北纬度（上边界）
+  const bottomLat = bounds.getSouth(); // 最南纬度（下边界）
+  const leftLong = bounds.getWest();   // 最西经度（左边界）
+  const rightLong = bounds.getEast();  // 最东经度（右边界）
+  
+  console.log({
+    topLat,
+    bottomLat,
+    leftLong,
+    rightLong
+  });
+  emit("onSearchArea",{
+    topLat,
+    bottomLat,
+    leftLong,
+    rightLong
+  })
 }
 
 function isBetween(num, boundA, boundB) {
@@ -477,6 +519,7 @@ function clearAllMarkers() {
 }
 
 function initData() {
+  isShowSearchBtnArea.value = false;
   if (!mapCom) {
     return;
   }
@@ -683,6 +726,7 @@ watch(
 watch(
   () => props.detailData,
   () => {
+    isShowSearchBtnArea.value = false;
     currentPoint.value = props.detailData;
     clearAllMarkers();
     buildAllPoints(props.houses);
@@ -716,12 +760,21 @@ watch(
       />
     </div>
     <div ref="mapContainer" class="map-container" />
+    <el-button @click="onSearchThisArea()" v-if="isShowSearchBtnArea" type="primary" class="btn-search-area">Search this area</el-button>
   </div>
 </template>
 
 <style scoped lang="scss">
 .map-com {
   position: relative;
+  .btn-search-area {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -67px;
+    margin-top: -16px;
+    z-index: 999;
+  }
   .map-filter-box {
     display: flex;
     justify-content: flex-end; /* 右对齐 */
