@@ -691,7 +691,7 @@ function getElemTop() {
     if (filter && elements?.length > 1) {
       elements[1].addEventListener("scroll", function () {
         offsetTop.value = this.scrollTop - filter.offsetHeight;
-        if (window.innerWidth < 760) {
+        if (window.innerWidth <= 760) {
           const overviewBox = document.getElementById("overview-main-box");
           const tableBox = document.getElementById("table-main-box");
            offsetTop.value = offsetTop.value - overviewBox?.offsetHeight - tableBox?.offsetHeight;
