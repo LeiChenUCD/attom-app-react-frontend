@@ -15,14 +15,17 @@ const {
   loading,
   columns,
   houses,
+  isResetMap,
   currentRowIndex,
   currentRowData,
+  isResetPoint,
   sortState,
   zonedcodelocalOptions,
   pagination,
   Empty,
   onSort,
   onTableRowIndex,
+  onSearchArea,
   onFilerData,
   onCurrentChange
 } = useColumns();
@@ -45,7 +48,18 @@ function onChangeHouse() {
   const house = getHouseById(houseId.value, houses.value);
   if (house) {
     currentRowData.value = house;
+    isResetPoint.value = true;
   }
+}
+
+function onTableRow(index: number) {
+  isResetPoint.value = true;
+  onTableRowIndex(index);
+}
+
+function onMapRowIndex(index: number) {
+  isResetPoint.value = false;
+  onTableRowIndex(index);
 }
 
 function getHouseById(id: string, list: any) {
@@ -119,7 +133,7 @@ watch(
           }
         }"
       >
-        <el-card shadow="never" class="h-[350px]" style="margin-bottom: 20px">
+        <el-card id="overview-main-box" shadow="never" class="h-[350px]" style="margin-bottom: 20px">
           <div>
             <div class="text-md font-medium" style="margin-bottom: 5px">
               <!--?.propertyaddressfull}}-->
@@ -145,7 +159,7 @@ watch(
             />
           </div>
         </el-card>
-        <el-card shadow="never" class="h-[580px]">
+        <el-card id="table-main-box" shadow="never" class="h-[580px]">
           <div class="flex justify-between">
             <div class="text-md font-medium">Houses</div>
             <div>
@@ -166,7 +180,7 @@ watch(
             :columns="columns"
             :houses="houses"
             :index="currentRowIndex"
-            @onRowIndex="onTableRowIndex"
+            @onRowIndex="onTableRow"
             @onSort="onSortTableData"
           />
         </el-card>
@@ -192,8 +206,10 @@ watch(
         <el-card shadow="never" class="h-[950px]">
           <MapBox
             :detailData="currentRowData"
+            :isResetPoint="isResetPoint"
             :houses="houses"
-            @onRowIndex="onTableRowIndex"
+            @onRowIndex="onMapRowIndex"
+            @onSearchArea="onSearchArea"
           />
         </el-card>
       </re-col>

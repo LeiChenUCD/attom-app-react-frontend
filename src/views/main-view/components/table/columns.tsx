@@ -29,6 +29,7 @@ import {
 
 export function useColumns() {
   const houses = ref([]);
+  const isResetMap = ref(false);
   const allTableData = ref([]);
   let contactInfo = new Map();
   const infoMapData = ref({});
@@ -42,6 +43,7 @@ export function useColumns() {
   const { params, query } = route;
   const censustractId = ref(params.censustractId || "0");
   const queryParams = ref({});
+  const searchAreaParams = ref(null);
   const zonedcodelocalOptions = ref([
     {
       value: "All",
@@ -49,6 +51,7 @@ export function useColumns() {
     }
   ]);
   const currentRowData = ref({});
+  const isResetPoint = ref(false);
   const currentRowIndex = ref(0);
   const columns: Column<any>[] = [
     {
@@ -152,7 +155,7 @@ export function useColumns() {
     //background: true
   });
 
-  function onCurrentChange(page: number) { }
+  function onCurrentChange(page: number) {}
 
   function isNeedLoadData() {
     let res = true;
@@ -178,7 +181,63 @@ export function useColumns() {
     } else if (params.addrFilter) {
       //address
       res = true;
+    } else if (searchAreaParams.value) {
+      res = true;
     }
+    return res;
+  }
+
+  function getMlsFilterParams() {
+    let res = "";
+    const params: any = queryParams.value || {};
+    if (
+      params.closePriceLower ||
+      params.closePriceUpper ||
+      params.lotSizeAreaLower ||
+      params.lotSizeAreaUpper
+    ) {
+      let hasFilter = false;
+      if (params.closePriceLower && params.closePriceUpper) {
+        res += `closeprice>=${params.closePriceLower} and closeprice<=${params.closePriceUpper}`;
+        hasFilter = true;
+      } else {
+        if (params.closePriceLower) {
+          res += `closeprice>=${params.closePriceLower}`;
+          hasFilter = true;
+        }
+        if (params.closePriceUpper) {
+          if (hasFilter) {
+            res += " and ";
+          }
+          res += `closeprice<=${params.closePriceUpper}`;
+          hasFilter = true;
+        }
+      }
+
+      if (params.lotSizeAreaLower && params.lotSizeAreaUpper) {
+        if (hasFilter) {
+          res += " and ";
+        }
+        res += `lotsizearea>=${params.lotSizeAreaLower} and lotsizearea<=${params.lotSizeAreaUpper}`;
+      } else {
+        if (params.lotSizeAreaLower) {
+          if (hasFilter) {
+            res += " and ";
+          }
+          res += `lotsizearea>=${params.lotSizeAreaLower}`;
+          hasFilter = true;
+        }
+        if (params.lotSizeAreaUpper) {
+          if (hasFilter) {
+            res += " and ";
+          }
+          res += `lotsizearea<=${params.lotSizeAreaUpper}`;
+        }
+      }
+    }
+    /*if (searchAreaParams.value) {
+      res += `&topLat=${searchAreaParams.value.topLat}&bottomLat=${searchAreaParams.value.bottomLat}&leftLong=${searchAreaParams.value.leftLong}&rightLong=${searchAreaParams.value.rightLong}`;
+    }*/
     return res;
   }
 
@@ -217,49 +276,6 @@ export function useColumns() {
       //address
       res += ` and propertyaddressfull LIKE '%${params.addrFilter}%' `;
     }
-
-
-    if (params.closePriceLower || params.closePriceUpper || params.lotSizeAreaLower || params.lotSizeAreaUpper) {
-      res += `&mlsWhere=`;
-      let hasFilter = false;
-      if (params.closePriceLower && params.closePriceUpper) {
-        res += `closeprice>=${params.closePriceLower} and closeprice<=${params.closePriceUpper}`;
-        hasFilter = true;
-      } else {
-        if (params.closePriceLower) {
-          res += `closeprice>=${params.closePriceLower}`;
-          hasFilter = true;
-        }
-        if (params.closePriceUpper) {
-          if (hasFilter) {
-            res += ' and ';
-          }
-          res += `closeprice<=${params.closePriceUpper}`;
-          hasFilter = true;
-        }
-      }
-
-      if (params.lotSizeAreaLower && params.lotSizeAreaUpper) {
-        if (hasFilter) {
-          res += ' and ';
-        }
-        res += `lotsizearea>=${params.lotSizeAreaLower} and lotsizearea<=${params.lotSizeAreaUpper}`;
-      } else {
-        if (params.lotSizeAreaLower) {
-          if (hasFilter) {
-            res += ' and ';
-          }
-          res += `lotsizearea>=${params.lotSizeAreaLower}`;
-          hasFilter = true;
-        }
-        if (params.lotSizeAreaUpper) {
-          if (hasFilter) {
-            res += ' and ';
-          }
-          res += `lotsizearea<=${params.lotSizeAreaUpper}`;
-        }
-      }
-    }
     return res;
   }
 
@@ -292,13 +308,30 @@ export function useColumns() {
     //minorcivildivisionname='SAN JOSE' and arealotsf>8000 and arealotsf<10000 and bathcount=5 and bedroomscount>3 and zonedcodelocal='R1'
     const params = {
       where: getFilerParams(), //`minorcivildivisionname='SAN JOSE'`,
+      mlsWhere: getMlsFilterParams(),
       maxResultSize: 3000,
       objectIds: "",
       resultOffset: 0,
+      topLat: "",
+      bottomLat: "",
+      leftLong: "",
+      rightLong: "",
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
       outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",arealotsf,bathcount,bedroomscount,censustract,parcelnumberraw,propertyaddresscity,propertyaddressfull,propertylatitude,propertylongitude,zonedcodeloca`
     };
+
+    if (searchAreaParams.value) {
+      params.topLat = searchAreaParams.value.topLat;
+      params.bottomLat = searchAreaParams.value.bottomLat;
+      params.leftLong = searchAreaParams.value.leftLong;
+      params.rightLong = searchAreaParams.value.rightLong;
+    } else {
+      delete params.topLat;
+      delete params.bottomLat;
+      delete params.leftLong;
+      delete params.rightLong;
+    }
 
     const queryString = objectParamsToQueryString(params);
     const houseRes = await getCensusListApi2(queryString, params);
@@ -460,7 +493,7 @@ export function useColumns() {
     return theNotes;
   }
 
-  function queryDataByCensustractId() { }
+  function queryDataByCensustractId() {}
 
   async function initTableData(init: boolean) {
     loading.value = true;
@@ -514,13 +547,17 @@ export function useColumns() {
     } else {
       queryDataByCensustractId();
     }
+    isResetMap.value = false;
+    setTimeout(() => {
+      isResetMap.value = true;
+    }, 100);
     loading.value = false;
   }
 
-  async function onFilerData(params: any) {
-    queryParams.value = params;
+  async function queryTabelData() {
     await initTableData(false);
     let filteredData = allTableData.value;
+    const params: any = queryParams.value || {};
     if (params.lotAreaLower) {
       filteredData = filteredData.filter(
         house => house.arealotsf >= params.lotAreaLower
@@ -583,13 +620,13 @@ export function useColumns() {
       );
     }
 
-    if (params.citySubset !== "All") {
+    if (params.citySubset && params.citySubset !== "All") {
       filteredData = filteredData.filter(
         house => house.propertyaddresscity === params.citySubset
       );
     }
 
-    if (params.zonedcodelocal !== "All") {
+    if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
       filteredData = filteredData.filter(
         house => house.zonedcodelocal === params.zonedcodelocal
       );
@@ -640,17 +677,29 @@ export function useColumns() {
     initCurrentRowData();
   }
 
+  function onFilerData(params: any) {
+    queryParams.value = params;
+    searchAreaParams.value = null;
+    queryTabelData();
+  }
+
   function initCurrentRowData() {
     if (houses.value?.length > 0) {
       currentRowData.value = houses.value[0];
     } else {
       currentRowData.value = {};
     }
+    isResetPoint.value = true;
   }
 
   function onTableRowIndex(index: number) {
     currentRowIndex.value = index;
     currentRowData.value = houses.value[index];
+  }
+
+  function onSearchArea(params: any) {
+    searchAreaParams.value = params;
+    queryTabelData();
   }
 
   onMounted(() => {
@@ -662,14 +711,17 @@ export function useColumns() {
     loading,
     columns,
     sortState,
+    isResetMap,
     houses,
     currentRowIndex,
     currentRowData,
+    isResetPoint,
     pagination,
     zonedcodelocalOptions,
     onCurrentChange,
     onSort,
     onTableRowIndex,
-    onFilerData
+    onFilerData,
+    onSearchArea
   };
 }
