@@ -88,12 +88,14 @@ async function getHouseDetail() {
   const params = {
     attomid: props.detailData["[attom id]"] ?? ""
   };
-  const queryString = objectParamsToQueryString(params);
-  const res = await getHouseDetailApi(queryString, params);
-  if (res?.mls?.length > 0) {
-    getDataImages(res.mls[0].listingkeynumeric);
-  } else {
-    loadGoogleMaps();
+  if (params.attomid) {
+    const queryString = objectParamsToQueryString(params);
+    const res = await getHouseDetailApi(queryString, params);
+    if (res?.mls?.length > 0) {
+      getDataImages(res.mls[0].listingkeynumeric);
+    } else {
+      loadGoogleMaps();
+    }
   }
 }
 

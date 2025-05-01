@@ -15,8 +15,10 @@ const {
   loading,
   columns,
   houses,
+  isResetMap,
   currentRowIndex,
   currentRowData,
+  isResetPoint,
   sortState,
   zonedcodelocalOptions,
   pagination,
@@ -46,7 +48,18 @@ function onChangeHouse() {
   const house = getHouseById(houseId.value, houses.value);
   if (house) {
     currentRowData.value = house;
+    isResetPoint.value = true;
   }
+}
+
+function onTableRow(index: number) {
+  isResetPoint.value = true;
+  onTableRowIndex(index);
+}
+
+function onMapRowIndex(index: number) {
+  isResetPoint.value = false;
+  onTableRowIndex(index);
 }
 
 function getHouseById(id: string, list: any) {
@@ -167,7 +180,7 @@ watch(
             :columns="columns"
             :houses="houses"
             :index="currentRowIndex"
-            @onRowIndex="onTableRowIndex"
+            @onRowIndex="onTableRow"
             @onSort="onSortTableData"
           />
         </el-card>
@@ -193,8 +206,9 @@ watch(
         <el-card shadow="never" class="h-[950px]">
           <MapBox
             :detailData="currentRowData"
+            :isResetPoint="isResetPoint"
             :houses="houses"
-            @onRowIndex="onTableRowIndex"
+            @onRowIndex="onMapRowIndex"
             @onSearchArea="onSearchArea"
           />
         </el-card>

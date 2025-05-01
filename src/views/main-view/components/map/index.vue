@@ -22,6 +22,10 @@ const props = defineProps({
     default: () => {
       return {};
     }
+  },
+  isResetPoint: {
+    type: Boolean,
+    default: false
   }
 });
 const mapContainer = ref(null);
@@ -30,15 +34,17 @@ const filterStyle = ref({
   position: "relative",
   top: 0 + "px"
 });
-const emit = defineEmits(["onRowIndex","onSearchArea"]);
+const emit = defineEmits(["onRowIndex", "onSearchArea"]);
 let mapCom = null;
 const zoomLevel = ref(10);
 const isShowSearchBtnArea = ref(false);
 const minZoomLevel = ref(3);
 const maxZoomLevel = ref(21);
 let secondaryPointsLayers = [];
+let currentClickedMarker;
 const currentPoint = ref();
 let currentMarker;
+let pointMarkers;
 
 let currentWMSLayer: L.TileLayer | null = null;
 
@@ -333,42 +339,37 @@ function initMap() {
 
 function onMapMove() {
   // 监听地图移动（拖拽或缩放）事件
-  let timeoutID; 
+  let timeoutID;
   isShowSearchBtnArea.value = false;
-  mapCom.on('moveend', function() {
+  mapCom.on("moveend", function () {
     isShowSearchBtnArea.value = true;
     // 清除之前的定时器（如果存在）
     if (timeoutID) {
       clearTimeout(timeoutID);
       timeoutID = null;
     }
-    
+
     timeoutID = setTimeout(() => {
-        isShowSearchBtnArea.value = false;
-    }, 5000);
+      isShowSearchBtnArea.value = false;
+    }, 15000);
   });
 }
 
 function onSearchThisArea() {
   const bounds = mapCom?.getBounds();
   // 获取四个角的经纬度
-  const topLat = bounds.getNorth();    // 最北纬度（上边界）
+  const topLat = bounds.getNorth(); // 最北纬度（上边界）
   const bottomLat = bounds.getSouth(); // 最南纬度（下边界）
-  const leftLong = bounds.getWest();   // 最西经度（左边界）
-  const rightLong = bounds.getEast();  // 最东经度（右边界）
-  
-  console.log({
+  const leftLong = bounds.getWest(); // 最西经度（左边界）
+  const rightLong = bounds.getEast(); // 最东经度（右边界）
+
+  isShowSearchBtnArea.value = false;
+  emit("onSearchArea", {
     topLat,
     bottomLat,
     leftLong,
     rightLong
   });
-  emit("onSearchArea",{
-    topLat,
-    bottomLat,
-    leftLong,
-    rightLong
-  })
 }
 
 function isBetween(num, boundA, boundB) {
@@ -513,9 +514,20 @@ function addCurrentPoint(data: any) {
 
 function clearAllMarkers() {
   // 遍历并删除所有次点图层
-  secondaryPointsLayers.forEach(function (layer) {
+  /*secondaryPointsLayers.forEach(function (layer) {
     mapCom.removeLayer(layer);
-  });
+  });*/
+  if (pointMarkers) {
+    mapCom.removeLayer(pointMarkers); // 直接移除聚类组
+    // 确保所有 marker 都被移除
+    secondaryPointsLayers.forEach(marker => {
+      if (mapCom.hasLayer(marker)) {
+        mapCom.removeLayer(marker);
+      }
+    });
+    secondaryPointsLayers = [];
+    currentClickedMarker = null; // 清除高亮标记引用
+  }
 }
 
 function initData() {
@@ -561,6 +573,7 @@ function bindMarkerEvent() {
   secondaryPointsLayers.forEach(marker => {
     marker.on("click", function () {
       resetAllMarkers(true);
+      currentClickedMarker = marker;
       // 将当前点击的点的图标设置为高亮
       marker.setIcon(highlightIcon);
       if (!marker.isPopupOpen()) {
@@ -591,26 +604,8 @@ function getCurHouseIndex(latLng: any, list: any) {
 }
 
 function buildAllPoints(list: any) {
-  // 使用MarkerClusterer来聚合标记
-  /*const markers = L.markerClusterGroup({
-      // 可以在这里配置MarkerClusterer的选项，如最大聚类半径、图标等
-      maxClusterRadius: 80, // 例如，设置最大聚类半径为80像素
-      iconCreateFunction: function (cluster) {
-          // 自定义聚类图标的函数（可选）
-          const childCount = cluster.getChildCount();
-          let c = ' marker-cluster-';
-          if (childCount < 10) {
-              c += 'small';
-          } else if (childCount < 100) {
-              c += 'medium';
-          } else {
-              c += 'large';
-          }
-          return L.divIcon({ html: '<b>' + childCount + '</b>', className: c, iconSize: L.point(40, 40) });
-      }
-  });*/
   secondaryPointsLayers = [];
-  const markers = L.markerClusterGroup();
+  pointMarkers = L.markerClusterGroup();
   if (list?.length > 0) {
     //const points = [];
     for (let i = 0; i < list.length; i++) {
@@ -629,11 +624,11 @@ function buildAllPoints(list: any) {
           }
         );
         secondaryPointsLayers.push(layer);
-        markers.addLayer(layer);
+        pointMarkers.addLayer(layer);
       } else {
       }
     }
-    markers.addTo(mapCom);
+    pointMarkers.addTo(mapCom);
     //画多边形
     /*const polygon = L.polygon(points, {color: '#aa0000',fillColor:'#ff15c9',
 	              weight:1}).addTo(mapCom);*/
@@ -680,6 +675,7 @@ function resetAllMarkers(isClick: boolean) {
       m.setIcon(grayIcon);
     }*/
     m.setIcon(grayIcon);
+    m.closePopup();
   });
 }
 
@@ -694,7 +690,10 @@ function getElemTop() {
         if (window.innerWidth <= 760) {
           const overviewBox = document.getElementById("overview-main-box");
           const tableBox = document.getElementById("table-main-box");
-           offsetTop.value = offsetTop.value - overviewBox?.offsetHeight - tableBox?.offsetHeight;
+          offsetTop.value =
+            offsetTop.value -
+            overviewBox?.offsetHeight -
+            tableBox?.offsetHeight;
         }
         if (offsetTop.value > 0) {
           filterStyle.value = {
@@ -715,6 +714,7 @@ function getElemTop() {
 onMounted(() => {
   getElemTop();
   initMap();
+  //initData();
 });
 
 watch(
@@ -731,14 +731,16 @@ watch(
 watch(
   () => props.detailData,
   () => {
-    isShowSearchBtnArea.value = false;
-    currentPoint.value = props.detailData;
-    clearAllMarkers();
-    buildAllPoints(props.houses);
-    addCurrentPoint(currentPoint.value);
-    // 为每个点绑定点击事件
-    bindMarkerEvent();
-    //resetAllMarkers(false);
+    if (props.isResetPoint) {
+      isShowSearchBtnArea.value = false;
+      currentPoint.value = props.detailData;
+      clearAllMarkers();
+      buildAllPoints(props.houses);
+      addCurrentPoint(currentPoint.value);
+      // 为每个点绑定点击事件
+      bindMarkerEvent();
+      //resetAllMarkers(false);
+    }
   },
   {
     deep: true
@@ -765,7 +767,13 @@ watch(
       />
     </div>
     <div ref="mapContainer" class="map-container" />
-    <el-button @click="onSearchThisArea()" v-if="isShowSearchBtnArea" type="primary" class="btn-search-area">Search this area</el-button>
+    <el-button
+      v-if="isShowSearchBtnArea"
+      type="primary"
+      class="btn-search-area"
+      @click="onSearchThisArea()"
+      >Search this area</el-button
+    >
   </div>
 </template>
 
