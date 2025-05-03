@@ -686,14 +686,15 @@ function getElemTop() {
     const filter = document.getElementById("filter-main-box");
     if (filter && elements?.length > 1) {
       elements[1].addEventListener("scroll", function () {
-        offsetTop.value = this.scrollTop - filter.offsetHeight;
+        offsetTop.value = this.scrollTop - filter.offsetHeight - 60;
         if (window.innerWidth <= 760) {
           const overviewBox = document.getElementById("overview-main-box");
           const tableBox = document.getElementById("table-main-box");
           offsetTop.value =
             offsetTop.value -
             overviewBox?.offsetHeight -
-            tableBox?.offsetHeight;
+            tableBox?.offsetHeight -
+            35;
         }
         if (offsetTop.value > 0) {
           filterStyle.value = {
