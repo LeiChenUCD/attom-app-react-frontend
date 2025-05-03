@@ -41,6 +41,7 @@ export function useColumns() {
   const loading = ref(true);
   const route = useRoute();
   const { params, query } = route;
+  const queryTotal = ref(query.total ? Number(query.total) : 3000);
   const censustractId = ref(params.censustractId || "0");
   const queryParams = ref({});
   const searchAreaParams = ref(null);
@@ -242,39 +243,62 @@ export function useColumns() {
   }
 
   function getFilerParams() {
-    let res = "minorcivildivisionname='SAN JOSE'";
+    let res = ""; //"minorcivildivisionname='SAN JOSE'"; //SAN JOSE
     const params: any = queryParams.value || {};
     if (params.lotAreaLower) {
-      res += ` and arealotsf>=${params.lotAreaLower}`;
+      if (res) {
+        res += ` and`;
+      }
+      res += ` arealotsf>=${params.lotAreaLower}`;
     }
 
     if (params.lotAreaUpper) {
-      res += ` and arealotsf<=${params.lotAreaUpper}`;
+      if (res) {
+        res += ` and`;
+      }
+      res += ` arealotsf<=${params.lotAreaUpper}`;
     }
 
     if (params.bathcountLower) {
-      res += ` and bathcount>=${params.bathcountLower}`;
+      if (res) {
+        res += ` and`;
+      }
+      res += ` bathcount>=${params.bathcountLower}`;
     }
 
     if (params.bathcountUpper) {
-      res += ` and bathcount<=${params.bathcountUpper}`;
+      if (res) {
+        res += ` and`;
+      }
+      res += ` bathcount<=${params.bathcountUpper}`;
     }
 
     if (params.bedroomscountLower) {
-      res += ` and bedroomscount>=${params.bedroomscountLower}`;
+      if (res) {
+        res += ` and`;
+      }
+      res += ` bedroomscount>=${params.bedroomscountLower}`;
     }
 
     if (params.bedroomscountUpper) {
-      res += ` and bedroomscount<=${params.bedroomscountUpper}`;
+      if (res) {
+        res += ` and`;
+      }
+      res += ` bedroomscount<=${params.bedroomscountUpper}`;
     }
 
     if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
-      res += ` and zonedcodelocal='${params.zonedcodelocal}'`;
+      if (res) {
+        res += ` and`;
+      }
+      res += ` zonedcodelocal='${params.zonedcodelocal}'`;
     }
 
     if (params.addrFilter) {
-      //address
-      res += ` and propertyaddressfull LIKE '%${params.addrFilter}%' `;
+      if (res) {
+        res += ` and`;
+      }
+      res += ` propertyaddressfull LIKE '%${params.addrFilter}%' `;
     }
     return res;
   }
@@ -309,7 +333,7 @@ export function useColumns() {
     const params = {
       where: getFilerParams(), //`minorcivildivisionname='SAN JOSE'`,
       mlsWhere: getMlsFilterParams(),
-      maxResultSize: 3000,
+      maxResultSize: queryTotal.value,
       objectIds: "",
       resultOffset: 0,
       topLat: "",
