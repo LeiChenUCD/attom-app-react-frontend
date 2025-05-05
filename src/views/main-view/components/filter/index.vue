@@ -46,6 +46,45 @@ const sellerReplyOptions = ref([
   }
 ]);
 
+const mlsstatusOptions = ref([
+  {
+    value: "Sold",
+    label: "Sold"
+  },
+  {
+    value: "Canceled",
+    label: "Canceled"
+  },
+  {
+    value: "Expired",
+    label: "Expired"
+  },
+  {
+    value: "Active",
+    label: "Active"
+  },
+  {
+    value: "PendingDoNotShow",
+    label: "PendingDoNotShow"
+  },
+  {
+    value: "WithdrawnTemporaryOffMarket",
+    label: "WithdrawnTemporaryOffMarket"
+  },
+  {
+    value: "Contingent",
+    label: "Contingent"
+  },
+  {
+    value: "ComingSoon",
+    label: "ComingSoon"
+  },
+  {
+    value: "ExclusionEnded",
+    label: "ExclusionEnded"
+  }
+]);
+
 const dueDiligenceOptions = ref([
   {
     value: "Both",
@@ -111,6 +150,7 @@ const formValue = ref({
   closePriceUpper: null,
   lotSizeAreaLower: null,
   lotSizeAreaUpper: null,
+  mlsstatus: null,
   sellerReplyAddr: "Both",
   dueDiligence: "Both",
   noted: "Both",
@@ -139,6 +179,7 @@ function resetForm() {
     closePriceUpper: null,
     lotSizeAreaLower: null,
     lotSizeAreaUpper: null,
+    mlsstatus: null,
     sellerReplyAddr: "Both",
     dueDiligence: "Both",
     noted: "Both",
@@ -314,6 +355,16 @@ function onBack() {
           :max="9999999999"
           style="width: 42%"
           controls-position="right"
+        />
+      </el-form-item>
+
+      <el-form-item label="MLS status" prop="mlsstatus">
+        <el-select-v2
+          v-model="formValue.mlsstatus"
+          filterable
+          :options="mlsstatusOptions"
+          placeholder="Please select"
+          style="width: 100%"
         />
       </el-form-item>
 
