@@ -242,7 +242,7 @@ export function useColumns() {
         if (hasFilter) {
           res += " and ";
         }
-        res += `mlsstatus=${params.mlsstatus}`;
+        res += `mlsstatus='${params.mlsstatus}'`;
       }
     }
     /*if (searchAreaParams.value) {
