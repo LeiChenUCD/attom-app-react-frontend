@@ -177,6 +177,8 @@ export function useColumns() {
       res = true;
     } else if (params.lotSizeAreaLower || params.lotSizeAreaUpper) {
       res = true;
+    } else if (params.mlsstatus) {
+      res = true;
     } else if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
       res = true;
     } else if (params.addrFilter) {
@@ -195,7 +197,8 @@ export function useColumns() {
       params.closePriceLower ||
       params.closePriceUpper ||
       params.lotSizeAreaLower ||
-      params.lotSizeAreaUpper
+      params.lotSizeAreaUpper ||
+      params.mlsstatus
     ) {
       let hasFilter = false;
       if (params.closePriceLower && params.closePriceUpper) {
@@ -234,6 +237,12 @@ export function useColumns() {
           }
           res += `lotsizearea<=${params.lotSizeAreaUpper}`;
         }
+      }
+      if (params.mlsstatus) {
+        if (hasFilter) {
+          res += " and ";
+        }
+        res += `mlsstatus=${params.mlsstatus}`;
       }
     }
     /*if (searchAreaParams.value) {
