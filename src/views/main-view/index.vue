@@ -108,7 +108,7 @@ watch(
           }
         }"
       >
-        <el-card shadow="never" id="filter-main-box">
+        <el-card id="filter-main-box" shadow="never">
           <FilterBox
             :zonedcodelocalOptions="zonedcodelocalOptions"
             @onFiler="onFilerData"
@@ -133,7 +133,12 @@ watch(
           }
         }"
       >
-        <el-card id="overview-main-box" shadow="never" class="h-[350px]" style="margin-bottom: 20px">
+        <el-card
+          id="overview-main-box"
+          shadow="never"
+          class="h-[350px]"
+          style="margin-bottom: 20px"
+        >
           <div>
             <div class="text-md font-medium" style="margin-bottom: 5px">
               <!--?.propertyaddressfull}}-->
@@ -203,7 +208,11 @@ watch(
           }
         }"
       >
-        <el-card shadow="never" class="h-[950px]">
+        <el-card
+          shadow="never"
+          class="h-[950px]"
+          style="overflow: visible !important"
+        >
           <MapBox
             :detailData="currentRowData"
             :isResetPoint="isResetPoint"
