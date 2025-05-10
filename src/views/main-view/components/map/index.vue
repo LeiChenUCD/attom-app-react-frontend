@@ -74,6 +74,7 @@ const wsmLayerService = {
   floodZone: {
     layerName: "mygis:SJ_flood_hazard_area",
     layerTitle: "Flood Zone",
+    key: "floodZone",
     options: {
       bbox: "6066842.12822391,1785331.943761736,6354963.577898502,2001812.617098733",
       srs: "EPSG:2227"
@@ -103,16 +104,24 @@ const wsmLayerService = {
       srs: "EPSG:26710"
     }
   },
-  medianIncome: {
+  /*medianIncome: {
     layerName: "mygis:tl_2024_us_zcta520",
     layerTitle: "Median Income",
     options: {
       bbox: "-176.696692,-14.373776,145.830505,71.341324",
       srs: "EPSG:4269"
     }
+  },*/
+  medianIncome: {
+    layerName: "mygis:tl_2024_ca_B07011_zcta520", // 更新为新的图层名称
+    layerTitle: "Median Income", // 更新标题表明是加州范围
+    options: {
+      bbox: "-124.409591,32.534189,-114.22195,42.009503", // 加州地理范围
+      srs: "EPSG:4269" // NAD83地理坐标系
+    }
   },
   sjZoning: {
-    layerName: "mygis:SJ_zoning",
+    layerName: "mygis:SJ_zone",
     layerTitle: "San Jose Zoning",
     options: {
       bbox: "5823176.279241634,1724173.2793831213,7344103.223655108,2456022.576740115",
@@ -162,7 +171,7 @@ const wmsOptions = ref([
 ]);
 
 // 定义 EPSG:2227 投影
-const crs2227 = new L.Proj.CRS(
+/*const crs2227 = new L.Proj.CRS(
   "EPSG:2227",
   "+proj=lcc +lat_1=36.5 +lat_2=35.46666666666667 +lat_0=34.83333333333334 +lon_0=-120.5 +x_0=2000000.0001016 +y_0=500000.0001016 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs",
   {
@@ -177,6 +186,24 @@ const crs2227 = new L.Proj.CRS(
     ],
     origin: [0, 0],
     bounds: L.bounds([2000000, 500000], [2500000, 1000000]) // 示例范围，需调整
+  }
+);*/
+
+const crs2227 = new L.Proj.CRS(
+  "EPSG:2227",
+  "+proj=lcc +lat_1=36.5 +lat_2=35.46666666666667 +lat_0=34.83333333333334 +lon_0=-120.5 +x_0=2000000.0001016 +y_0=500000.0001016 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs +units=us-ft",
+  {
+    resolutions: [
+      2116.670900008467, 1058.3354500042335, 529.1677250021168,
+      264.5838625010584, 132.2919312505292, 66.1459656252646, 33.0729828126323,
+      16.53649140631615, 8.268245703158075, 4.134122851579037,
+      2.0670614257895186, 1.0335307128947593, 0.5167653564473796,
+      0.2583826782236898, 0.1291913391118449, 0.06459566955592245,
+      0.03229783477796123, 0.016148917388980614, 0.008074458694490307,
+      0.004037229347245154, 0.002018614673622577, 0.0010093073368112884
+    ],
+    origin: [2000000, 500000], // 假东/假北原点
+    bounds: L.bounds([2000000, 500000], [2500000, 1000000]) // 示例范围
   }
 );
 
@@ -214,6 +241,9 @@ const loadWMSLayer2 = () => {
   if (options.srs === "EPSG:2227") {
     layerOptions.crs = crs2227;
     layerOptions.srs = "EPSG:2227";
+  } else if (options.srs === "EPSG:4269") {
+    layerOptions.crs = L.CRS.EPSG4326; // Leaflet使用EPSG:4326
+    layerOptions.srs = "EPSG:4326"; // 请求WMS使用4326
   } else {
     layerOptions.crs = L.CRS.EPSG3857;
   }
@@ -234,11 +264,24 @@ const loadWMSLayer2 = () => {
     currentWMSLayer.addTo(mapCom);
 
     // 如果是EPSG:2227图层，设置合适的地图视图
-    if (options.srs === "EPSG:2227") {
+    if (wsmData.key !== "floodZone" && options.srs === "EPSG:2227") {
       const [minX, minY, maxX, maxY] = options.bbox.split(",").map(Number);
       const southWest = crs2227.projection.unproject(L.point(minX, minY));
       const northEast = crs2227.projection.unproject(L.point(maxX, maxY));
       mapCom.fitBounds(L.latLngBounds(southWest, northEast));
+
+      /*
+      // 设置地图视图
+      mapCom.fitBounds(L.latLngBounds(southWest, northEast), {
+        padding: [50, 50], // 添加边距
+        maxZoom: 15 // 限制最大缩放级别
+      });*/
+    } else if (options.srs === "EPSG:4269") {
+      // 调整视图到加州范围
+      mapCom.fitBounds([
+        [32.534189, -124.409591], // 西南角
+        [42.009503, -114.22195] // 东北角
+      ]);
     }
   }
 };
