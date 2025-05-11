@@ -534,6 +534,9 @@ function convexHull(points) {
 }
 
 function addCurrentPoint(data: any) {
+  if (!(data.propertylatitude && data.propertylongitude)) {
+    return;
+  }
   // 添加标记
   currentMarker = L.marker([data.propertylatitude, data.propertylongitude], {
     icon: highlightIcon,
@@ -821,6 +824,12 @@ watch(
   </div>
 </template>
 
+<style lang="scss">
+.leaflet-control-container {
+  display: none;
+}
+</style>
+
 <style scoped lang="scss">
 .map-com {
   position: relative;
@@ -847,7 +856,7 @@ watch(
   }
   .map-container {
     width: 100%;
-    height: calc(100vh - 50px);
+    height: 100vh;
   }
   &.map-com-fix {
     padding-top: 42px;

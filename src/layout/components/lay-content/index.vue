@@ -198,7 +198,7 @@ const transitionMain = defineComponent({
 .app-main {
   position: relative;
   width: 100%;
-  height: 100vh;
+  /**height: calc(100% - 80px);**/
   overflow-x: hidden;
 }
 
