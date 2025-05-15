@@ -2,7 +2,7 @@ import { delay } from "@pureadmin/utils";
 import { ref, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
-  getCensusListApi2,
+  getCensusListApi3,
   getNotedATTOMID,
   queryContactInfo,
   getPriorityInfoAll,
@@ -41,47 +41,47 @@ export function useColumns() {
   const loading = ref(true);
   const route = useRoute();
   const { params, query } = route;
-  const queryTotal = ref(query.total ? Number(query.total) : 3000);
+  const queryTotal = ref(query.total ? Number(query.total) : 100);
   const censustractId = ref(params.censustractId || "0");
   const queryParams = ref({});
   const searchAreaParams = ref(null);
   const zonedcodelocalOptions = ref([
-    {
-      value: "All",
+    /*{
+      value: "",
       label: "All"
-    }
+    }*/
   ]);
   const currentRowData = ref({});
   const isResetPoint = ref(false);
   const currentRowIndex = ref(0);
   const columns: Column<any>[] = [
     {
-      key: "propertyaddressfull",
-      title: "PropertyAddressFull",
-      dataKey: "propertyaddressfull",
-      slotName: "propertyaddressfull",
+      key: "address",
+      title: "address",
+      dataKey: "address",
+      slotName: "address",
       width: 200,
       sortable: true,
       fixed: true
     },
     {
-      key: "arealotsf",
+      key: "lotsize",
       title: "AreaLotSF",
-      dataKey: "arealotsf",
+      dataKey: "lotsize",
       sortable: true,
       width: 120
     },
     {
-      key: "zonedcodelocal",
+      key: "zoning",
       title: "Zonedcodelocal",
-      dataKey: "zonedcodelocal",
+      dataKey: "zoning",
       sortable: true,
       width: 130
     },
     {
-      key: "bedroomscount",
+      key: "bedrooms",
       title: "Bedroomscount",
-      dataKey: "bedroomscount",
+      dataKey: "bedrooms",
       sortable: true,
       width: 130
     },
@@ -93,6 +93,20 @@ export function useColumns() {
       width: 120
     },
     {
+      key: "closeprice",
+      title: "Closeprice",
+      dataKey: "closeprice",
+      sortable: true,
+      width: 120
+    },
+    {
+      key: "mlsstatus",
+      title: "MLS status",
+      dataKey: "mlsstatus",
+      sortable: true,
+      width: 120
+    },
+    /*{
       key: "priority",
       title: "Priority",
       dataKey: "priority",
@@ -120,7 +134,7 @@ export function useColumns() {
           {rowData.dueDiligence}
         </ElLink>
       )
-    }
+    }*/
   ];
 
   const sortState = ref<SortBy>({
@@ -169,9 +183,9 @@ export function useColumns() {
       res = true;
     } else if (params.bathcountUpper) {
       res = true;
-    } else if (params.bedroomscountLower) {
+    } else if (params.bedroomsLower) {
       res = true;
-    } else if (params.bedroomscountUpper) {
+    } else if (params.bedroomsUpper) {
       res = true;
     } else if (params.closePriceLower || params.closePriceUpper) {
       res = true;
@@ -179,7 +193,7 @@ export function useColumns() {
       res = true;
     } else if (params.mlsstatus) {
       res = true;
-    } else if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
+    } else if (params.zoning && params.zoning !== "All") {
       res = true;
     } else if (params.addrFilter) {
       //address
@@ -254,18 +268,26 @@ export function useColumns() {
   function getFilerParams() {
     let res = ""; //"minorcivildivisionname='SAN JOSE'"; //SAN JOSE
     const params: any = queryParams.value || {};
+
+    if (params.citySubset) {
+      if (res) {
+        res += ` and`;
+      }
+      res += ` city='${params.citySubset}'`;
+    }
+
     if (params.lotAreaLower) {
       if (res) {
         res += ` and`;
       }
-      res += ` arealotsf>=${params.lotAreaLower}`;
+      res += ` lotsize>=${params.lotAreaLower}`;
     }
 
     if (params.lotAreaUpper) {
       if (res) {
         res += ` and`;
       }
-      res += ` arealotsf<=${params.lotAreaUpper}`;
+      res += ` lotsize<=${params.lotAreaUpper}`;
     }
 
     if (params.bathcountLower) {
@@ -282,66 +304,62 @@ export function useColumns() {
       res += ` bathcount<=${params.bathcountUpper}`;
     }
 
-    if (params.bedroomscountLower) {
+    if (params.bedroomsLower) {
       if (res) {
         res += ` and`;
       }
-      res += ` bedroomscount>=${params.bedroomscountLower}`;
+      res += ` bedrooms>=${params.bedroomsLower}`;
     }
 
-    if (params.bedroomscountUpper) {
+    if (params.bedroomsUpper) {
       if (res) {
         res += ` and`;
       }
-      res += ` bedroomscount<=${params.bedroomscountUpper}`;
+      res += ` bedrooms<=${params.bedroomsUpper}`;
     }
 
-    if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
+    if (params.zoning && params.zoning !== "All") {
       if (res) {
         res += ` and`;
       }
-      res += ` zonedcodelocal='${params.zonedcodelocal}'`;
+      res += ` zoning LIKE '%${params.zoning.toUpperCase()}%'`;
     }
 
     if (params.addrFilter) {
       if (res) {
         res += ` and`;
       }
-      res += ` propertyaddressfull LIKE '%${params.addrFilter}%' `;
+      res += ` address LIKE '%${params.addrFilter}%' `;
     }
+
+    if (params.closePriceLower) {
+      if (res) {
+        res += ` and`;
+      }
+      res += ` closeprice>=${params.closePriceLower}`;
+    }
+
+    if (params.closePriceUpper) {
+      if (res) {
+        res += ` and`;
+      }
+      res += ` closeprice<=${params.closePriceUpper}`;
+    }
+
+    if (params.mlsstatus) {
+      if (res) {
+        res += " and";
+      }
+      res += ` mlsstatus='${params.mlsstatus}'`;
+    }
+
     return res;
   }
 
   async function loadHousesFromATTOMPostgresAll() {
-    const obj = {
-      query: `\
-        SELECT \
-        PropertyAddressFull, \
-        AreaLotSF, \
-        PropertyLatitude, \
-        PropertyLongitude, \
-        "[attom id]", \
-        zonedcodelocal, \
-        bedroomscount, \
-        bathcount, \
-        censustract, \
-        propertyaddresscity, \
-        parcelnumberraw \
-    FROM \
-        taxassessor \
-    where \
-        (PropertyAddressCity = 'CAMPBELL' OR PropertyAddressCity = 'LOS ALTOS') \
-        AND PropertyAddressFull IS NOT NULL \
-        AND AreaLotSF IS NOT NULL \
-        AND PropertyLatitude IS NOT NULL \
-        AND PropertyLongitude IS NOT NULL \
-     `
-    };
-    const param = JSON.stringify(obj);
-    //minorcivildivisionname='SAN JOSE' and arealotsf>8000 and arealotsf<10000 and bathcount=5 and bedroomscount>3 and zonedcodelocal='R1'
     const params = {
       where: getFilerParams(), //`minorcivildivisionname='SAN JOSE'`,
-      mlsWhere: getMlsFilterParams(),
+      //mlsWhere: getMlsFilterParams(),
       maxResultSize: queryTotal.value,
       objectIds: "",
       resultOffset: 0,
@@ -350,8 +368,8 @@ export function useColumns() {
       leftLong: "",
       rightLong: "",
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
-      outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
-      //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",arealotsf,bathcount,bedroomscount,censustract,parcelnumberraw,propertyaddresscity,propertyaddressfull,propertylatitude,propertylongitude,zonedcodeloca`
+      //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
+      outFields: `bathcount,bedrooms,lotsize,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice`
     };
 
     if (searchAreaParams.value) {
@@ -367,7 +385,7 @@ export function useColumns() {
     }
 
     const queryString = objectParamsToQueryString(params);
-    const houseRes = await getCensusListApi2(queryString, params);
+    const houseRes = await getCensusListApi3(queryString, params);
     pagination.total = houseRes?.totalSize || 0;
     return houseRes?.result || [];
   }
@@ -385,34 +403,7 @@ export function useColumns() {
     const housesRes = await loadHousesFromATTOMPostgresAll();
     return housesRes;
   }
-  /**
-   * 
-   * // console.log(houseRes)
-    // first false: has comments or not
-    // second false: has contact info or not
-    // 0 house.propertyaddressfull
-    // 1 house.arealotsf
-    // 2 house.propertylatitude
-    // 3 house.propertylongitude
-    // 4 have notes - false
-    // 5 house['[attom id]']
-    // 6 have contact info - false
-    // 7 house.zonedcodelocal
-    // 8 house.bedroomscount
-    // 9 house.bathcount
-    // 10 id for greyout / selective house table
-    // 11 keep or not (greyout for not keeping)
-    // 12 selective house?
-    // 13 priority table id
-    // 14 priority value
-    // 15 note
-    // 16 census track
-    // 17 link to seller reply
-    // 18 address of seller reply
-    // 19 apn
-    // 20 link to dd
-    // 21 house.propertyaddresscity
-   */
+
   function buildHousesList(
     list: any,
     notedATTOMIDSet: any,
@@ -425,15 +416,15 @@ export function useColumns() {
     if (list?.length > 0) {
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
-        const attomId = item["[attom id]"];
+        const attomId = item["fid"];
         if (notedATTOMIDSet.has(attomId)) {
           item.noted = true;
         } else {
           item.noted = false;
         }
-        if (contactInfo[item.propertyaddressfull]) {
+        if (contactInfo[item.address]) {
           item["haveContactInfo"] = true;
-          item["contactInfo"] = contactInfo[item.propertyaddressfull] || null;
+          item["contactInfo"] = contactInfo[item.address] || null;
         } else {
           item["haveContactInfo"] = false;
           item["contactInfo"] = null;
@@ -450,11 +441,9 @@ export function useColumns() {
           item["note"] = theNotes[attomId];
         }
 
-        if (item.propertyaddressfull in sellerReply) {
-          item["sellerReplyLink"] =
-            sellerReply[item.propertyaddressfull][0] || "";
-          item["sellerReplyAddr"] =
-            sellerReply[item.propertyaddressfull][1] || "";
+        if (item.address in sellerReply) {
+          item["sellerReplyLink"] = sellerReply[item.address][0] || "";
+          item["sellerReplyAddr"] = sellerReply[item.address][1] || "";
           item["sellerReplyState"] = "matched";
         } else {
           item["sellerReplyLink"] = "";
@@ -478,10 +467,10 @@ export function useColumns() {
           item["dueDiligence"] = "";
         }
 
-        if (item["zonedcodelocal"]) {
+        if (item["zoning"]) {
           const zonedcodelocalItem = {
-            value: item["zonedcodelocal"],
-            label: item["zonedcodelocal"]
+            value: item["zoning"],
+            label: item["zoning"]
           };
           let alreadyExists = zonedcodelocalOptions.value.some(
             item => item.value === zonedcodelocalItem.value
@@ -532,19 +521,19 @@ export function useColumns() {
     loading.value = true;
     const loadingData = ElLoading.service({
       lock: true,
-      text: "Loading 0%",
+      text: "Loading",
       background: "rgba(0, 0, 0, 0.7)"
     });
-    if (init) {
+    /*if (init) {
       await onQueryContactInfo();
-    }
-    loadingData.setText("Loading 10%");
+    }*/
+    //loadingData.setText("Loading 10%");
     if (censustractId.value === "0") {
       if (init || isNeedLoadData()) {
         const housesRes = await queryAllData();
         housesResData.value = housesRes || [];
       }
-      if (init) {
+      /*if (init) {
         notedATTOMIDSetData.value = await getNotedATTOMIDSet();
       }
       loadingData.setText("Loading 20%");
@@ -563,8 +552,6 @@ export function useColumns() {
       if (init) {
         dDPdfsData.value = await getDDPdfs({});
       }
-
-      loadingData.setText("Loading 100%");
       houses.value = buildHousesList(
         housesResData.value,
         notedATTOMIDSetData.value,
@@ -572,8 +559,9 @@ export function useColumns() {
         theNotesData.value,
         sellerReplyData.value,
         dDPdfsData.value
-      );
-      //houses.value = res.housesRes;
+      );*/
+      houses.value = housesResData.value;
+      //loadingData.setText("Loading 100%");
       allTableData.value = cloneDeep(houses.value);
       loadingData.close();
       initCurrentRowData();
@@ -589,29 +577,29 @@ export function useColumns() {
 
   async function queryTabelData() {
     await initTableData(false);
-    let filteredData = allTableData.value;
+    /*let filteredData = allTableData.value;
     const params: any = queryParams.value || {};
     if (params.lotAreaLower) {
       filteredData = filteredData.filter(
-        house => house.arealotsf >= params.lotAreaLower
+        house => Number(house.lotsize) >= params.lotAreaLower
       );
     }
 
     if (params.lotAreaUpper) {
       filteredData = filteredData.filter(
-        house => house.arealotsf <= params.lotAreaUpper
+        house => Number(house.lotsize) <= params.lotAreaUpper
       );
     }
 
-    if (params.bedroomscountLower) {
+    if (params.bedroomsLower) {
       filteredData = filteredData.filter(
-        house => house.bedroomscount >= params.bedroomscountLower
+        house => Number(house.bedrooms) >= params.bedroomsLower
       );
     }
 
-    if (params.bedroomscountUpper) {
+    if (params.bedroomsUpper) {
       filteredData = filteredData.filter(
-        house => house.bedroomscount <= params.bedroomscountUpper
+        house => Number(house.bedrooms) <= params.bedroomsUpper
       );
     }
 
@@ -641,9 +629,7 @@ export function useColumns() {
 
     if (params.addrFilter) {
       filteredData = filteredData.filter(house =>
-        house.propertyaddressfull
-          ?.toLowerCase()
-          .includes(params.addrFilter?.toLowerCase())
+        house.address?.toLowerCase().includes(params.addrFilter?.toLowerCase())
       );
     }
 
@@ -659,11 +645,11 @@ export function useColumns() {
       );
     }
 
-    if (params.zonedcodelocal && params.zonedcodelocal !== "All") {
+    if (params.zoning && params.zoning !== "All") {
       filteredData = filteredData.filter(
-        house => house.zonedcodelocal === params.zonedcodelocal
+        house => house.zoning === params.zoning
       );
-    }
+    }*/
 
     /*if (keptSubset === "Kept Houses") {
         filteredData = filteredData.filter(house => house[11] === true)
@@ -677,7 +663,7 @@ export function useColumns() {
         filteredData = filteredData.filter(house => house[12] === false)
     }*/
 
-    if (params.sellerReplyAddr === "With Seller Reply") {
+    /*if (params.sellerReplyAddr === "With Seller Reply") {
       filteredData = filteredData.filter(
         house => house.sellerReplyAddr && house.sellerReplyAddr !== ""
       );
@@ -707,7 +693,7 @@ export function useColumns() {
       );
     }
     houses.value = filteredData;
-    initCurrentRowData();
+    initCurrentRowData();*/
   }
 
   function onFilerData(params: any) {

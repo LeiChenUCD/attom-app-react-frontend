@@ -17,10 +17,10 @@ const props = defineProps({
 });
 const emit = defineEmits(["onFiler"]);
 const citySubsetOptions = ref([
-  {
-    value: "All",
+  /*{
+    value: "",
     label: "All"
-  },
+  },*/
   {
     value: "CAMPBELL",
     label: "CAMPBELL"
@@ -134,14 +134,14 @@ const loading = ref(false);
 const isMore = ref(false);
 const formRef = ref();
 const formValue = ref({
-  citySubset: "All",
+  citySubset: "",
   addrFilter: "",
   noteFilter: "",
   lotAreaLower: null,
   lotAreaUpper: null,
-  zonedcodelocal: "All",
-  bedroomscountLower: null,
-  bedroomscountUpper: null,
+  zoning: "",
+  bedroomsLower: null,
+  bedroomsUpper: null,
   bathcountLower: null,
   bathcountUpper: null,
   priorityLower: null,
@@ -163,14 +163,14 @@ function onSearch() {
 
 function resetForm() {
   formValue.value = {
-    citySubset: "All",
+    citySubset: "",
     addrFilter: "",
     noteFilter: "",
     lotAreaLower: null,
     lotAreaUpper: null,
-    zonedcodelocal: "All",
-    bedroomscountLower: null,
-    bedroomscountUpper: null,
+    zoning: "",
+    bedroomsLower: null,
+    bedroomsUpper: null,
     bathcountLower: null,
     bathcountUpper: null,
     priorityLower: null,
@@ -206,6 +206,7 @@ function onBack() {
         <el-select-v2
           v-model="formValue.citySubset"
           filterable
+          clearable
           :options="citySubsetOptions"
           placeholder="Please select"
           style="width: 100%"
@@ -219,14 +220,14 @@ function onBack() {
           style="width: 100%"
         />
       </el-form-item>
-      <el-form-item label="Note" prop="noteFilter">
+      <!--el-form-item label="Note" prop="noteFilter">
         <el-input
           v-model="formValue.noteFilter"
           placeholder="Please enter"
           clearable
           style="width: 100%"
         />
-      </el-form-item>
+      </el-form-item-->
 
       <el-form-item label="AreaLotSF" prop="lotArea">
         <el-input-number
@@ -248,19 +249,26 @@ function onBack() {
         />
       </el-form-item>
 
-      <el-form-item label="Zonedcodelocal" prop="zonedcodelocal">
-        <el-select-v2
-          v-model="formValue.zonedcodelocal"
+      <el-form-item label="Zonedcodelocal" prop="zoning">
+        <!--el-select-v2
+          v-model="formValue.zoning"
           filterable
+          clearable
           :options="zonedcodelocalOptions"
           placeholder="Please select"
+          style="width: 100%"
+        /-->
+        <el-input
+          v-model="formValue.zoning"
+          placeholder="Please enter"
+          clearable
           style="width: 100%"
         />
       </el-form-item>
 
-      <el-form-item label="Bedroomscount" prop="bedroomscount">
+      <el-form-item label="Bedroomscount" prop="bedrooms">
         <el-input-number
-          v-model="formValue.bedroomscountLower"
+          v-model="formValue.bedroomsLower"
           placeholder=" "
           :min="0"
           :max="9999"
@@ -269,7 +277,7 @@ function onBack() {
         />
         <span style="margin: 0 10px">~</span>
         <el-input-number
-          v-model="formValue.bedroomscountUpper"
+          v-model="formValue.bedroomsUpper"
           placeholder=" "
           :min="0"
           :max="9999"
@@ -298,7 +306,7 @@ function onBack() {
         />
       </el-form-item>
 
-      <el-form-item label="Priority" prop="priority">
+      <!--el-form-item label="Priority" prop="priority">
         <el-input-number
           v-model="formValue.priorityLower"
           placeholder=" "
@@ -316,7 +324,7 @@ function onBack() {
           style="width: 42%"
           controls-position="right"
         />
-      </el-form-item>
+      </el-form-item-->
 
       <el-form-item label="ClosePrice" prop="closePrice">
         <el-input-number
@@ -338,7 +346,7 @@ function onBack() {
         />
       </el-form-item>
 
-      <el-form-item label="LotSizeArea" prop="lotSizeArea">
+      <!--el-form-item label="LotSizeArea" prop="lotSizeArea">
         <el-input-number
           v-model="formValue.lotSizeAreaLower"
           placeholder=" "
@@ -356,7 +364,7 @@ function onBack() {
           style="width: 42%"
           controls-position="right"
         />
-      </el-form-item>
+      </el-form-item-->
 
       <el-form-item label="MLS status" prop="mlsstatus">
         <el-select-v2
@@ -368,7 +376,7 @@ function onBack() {
         />
       </el-form-item>
 
-      <el-form-item label="Seller Reply?" prop="sellerReplyAddr">
+      <!--el-form-item label="Seller Reply?" prop="sellerReplyAddr">
         <el-select-v2
           v-model="formValue.sellerReplyAddr"
           filterable
@@ -406,7 +414,7 @@ function onBack() {
           placeholder="Please select"
           style="width: 100%"
         />
-      </el-form-item>
+      </el-form-item-->
     </el-form>
     <div class="operators">
       <el-button

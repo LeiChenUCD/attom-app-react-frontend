@@ -190,7 +190,7 @@ export function useRole() {
             taxassessor \
         where \
             (PropertyAddressCity = 'CAMPBELL' OR PropertyAddressCity = 'LOS ALTOS') \
-            AND PropertyAddressFull IS NOT NULL \
+            AND address IS NOT NULL \
             AND AreaLotSF IS NOT NULL \
             AND PropertyLatitude IS NOT NULL \
             AND PropertyLongitude IS NOT NULL \
