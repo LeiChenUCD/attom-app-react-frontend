@@ -203,12 +203,18 @@ function onBack() {
       class="search-form bg-bg_color w-[99/100] pt-[12px]"
     >
       <el-form-item label="City" prop="citySubset">
-        <el-select-v2
+        <!--el-select-v2
           v-model="formValue.citySubset"
           filterable
           clearable
           :options="citySubsetOptions"
           placeholder="Please select"
+          style="width: 100%"
+        /-->
+        <el-input
+          v-model="formValue.citySubset"
+          placeholder="Please enter"
+          clearable
           style="width: 100%"
         />
       </el-form-item>
