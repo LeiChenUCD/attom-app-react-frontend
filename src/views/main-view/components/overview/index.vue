@@ -51,8 +51,8 @@ function loadScript(url) {
 function initMap() {
   if (mapContainer.value) {
     const fenway = {
-      lat: props.detailData.propertylatitude,
-      lng: props.detailData.propertylongitude
+      lat: props.detailData.lat,
+      lng: props.detailData.lon
     };
     const panorama = new google.maps.StreetViewPanorama(mapContainer.value, {
       position: fenway,

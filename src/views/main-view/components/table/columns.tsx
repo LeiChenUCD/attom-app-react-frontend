@@ -318,8 +318,8 @@ export function useColumns() {
         SELECT \
         address, \
         AreaLotSF, \
-        PropertyLatitude, \
-        PropertyLongitude, \
+        lat, \
+        lon, \
         "[attom id]", \
         zonedcodelocal, \
         bedroomscount, \
@@ -333,8 +333,8 @@ export function useColumns() {
         (PropertyAddressCity = 'CAMPBELL' OR PropertyAddressCity = 'LOS ALTOS') \
         AND address IS NOT NULL \
         AND AreaLotSF IS NOT NULL \
-        AND PropertyLatitude IS NOT NULL \
-        AND PropertyLongitude IS NOT NULL \
+        AND lat IS NOT NULL \
+        AND lon IS NOT NULL \
      `
     };
     const param = JSON.stringify(obj);

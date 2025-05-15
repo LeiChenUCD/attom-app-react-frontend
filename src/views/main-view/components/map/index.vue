@@ -424,11 +424,11 @@ function getNortheastLatitude(houses) {
     return 0;
   }
 
-  let maxLatitude = houses[0]["propertylatitude"]; // Assuming houses are in [lat, long] format
+  let maxLatitude = houses[0]["lat"]; // Assuming houses are in [lat, long] format
 
   // Iterate through the list of houses
   for (let i = 1; i < houses.length; i++) {
-    const latitude = houses[i]["propertylatitude"];
+    const latitude = houses[i]["lat"];
     if (latitude > maxLatitude) {
       maxLatitude = latitude;
     }
@@ -442,11 +442,11 @@ function getNortheastLongitude(houses) {
     return 0;
   }
 
-  let maxLongitude = houses[0]["propertylongitude"]; // Assuming houses are in [lat, long] format
+  let maxLongitude = houses[0]["lon"]; // Assuming houses are in [lat, long] format
 
   // Iterate through the list of houses
   for (let i = 1; i < houses.length; i++) {
-    const longitude = houses[i]["propertylongitude"];
+    const longitude = houses[i]["lon"];
     if (longitude > maxLongitude) {
       maxLongitude = longitude;
     }
@@ -460,11 +460,11 @@ function getSouthwestLatitude(houses) {
     return 0;
   }
 
-  let minLatitude = houses[0]["propertylatitude"]; // Assuming houses are in [lat, long] format
+  let minLatitude = houses[0]["lat"]; // Assuming houses are in [lat, long] format
 
   // Iterate through the list of houses
   for (let i = 1; i < houses.length; i++) {
-    const latitude = houses[i]["propertylatitude"];
+    const latitude = houses[i]["lat"];
     if (latitude < minLatitude) {
       minLatitude = latitude;
     }
@@ -478,11 +478,11 @@ function getSouthwestLongitude(houses) {
     return 0;
   }
 
-  let minLongitude = houses[0]["propertylongitude"]; // Assuming houses are in [lat, long] format
+  let minLongitude = houses[0]["lon"]; // Assuming houses are in [lat, long] format
 
   // Iterate through the list of houses
   for (let i = 1; i < houses.length; i++) {
-    const longitude = houses[i]["propertylongitude"];
+    const longitude = houses[i]["lon"];
     if (longitude < minLongitude) {
       minLongitude = longitude;
     }
@@ -534,11 +534,11 @@ function convexHull(points) {
 }
 
 function addCurrentPoint(data: any) {
-  if (!(data.propertylatitude && data.propertylongitude)) {
+  if (!(data.lat && data.lon)) {
     return;
   }
   // 添加标记
-  currentMarker = L.marker([data.propertylatitude, data.propertylongitude], {
+  currentMarker = L.marker([data.lat, data.lon], {
     icon: highlightIcon,
     title: data.address //鼠标hover显示
   }).addTo(mapCom);
@@ -552,7 +552,7 @@ function addCurrentPoint(data: any) {
   });
   // 自动定位到标记的位置
   //mapCom.setView(marker.getLatLng(), zoomLevel.value);
-  mapCom.panTo([data.propertylatitude, data.propertylongitude]);
+  mapCom.panTo([data.lat, data.lon]);
   if (!currentMarker.isPopupOpen()) {
     currentMarker.openPopup();
   }
@@ -587,26 +587,20 @@ function initData() {
     const right = getNortheastLongitude(props.houses);
     const bottom = getSouthwestLatitude(props.houses);
     const left = getSouthwestLongitude(props.houses);
-    const center = [
-      props.houses[0]["propertylatitude"],
-      props.houses[0]["propertylongitude"]
-    ];
+    const center = [props.houses[0]["lat"], props.houses[0]["lon"]];
     //mapCom.value.setView([center[0], center[1]], zoomLevel);
     //mapCom.panTo([center[0], center[1]]);
     currentPoint.value = props.houses[0];
-    mapCom.panTo([
-      currentPoint.value.propertylatitude,
-      currentPoint.value.propertylongitude
-    ]);
+    mapCom.panTo([currentPoint.value.lat, currentPoint.value.lon]);
     buildAllPoints(props.houses);
     addCurrentPoint(props.houses[0]);
     /*const subsetOnMap = props.houses.filter(house => {
-      return isBetween(house['propertylatitude'], top, bottom) && isBetween(house['propertylongitude'], left, right)
+      return isBetween(house['lat'], top, bottom) && isBetween(house['lon'], left, right)
     }).filter(house => {
-      return !(house['propertylatitude'] === center[0] && house['propertylongitude'] === center[1])
+      return !(house['lat'] === center[0] && house['lon'] === center[1])
     })
     
-    const points = subsetOnMap.map((house, idx) => [house['propertylatitude'], house['propertylongitude']]);
+    const points = subsetOnMap.map((house, idx) => [house['lat'], house['lon']]);
     const polygon = L.polygon(points, {color: '#aa0000',fillColor:'#ff15c9',
 	              weight:1}).addTo(mapCom);
                 */
@@ -637,10 +631,7 @@ function getCurHouseIndex(latLng: any, list: any) {
   if (latLng && list?.length > 0) {
     for (let i = 0; i < list.length; i++) {
       const item = list[i];
-      if (
-        latLng.lat === item.propertylatitude &&
-        latLng.lng === item.propertylongitude
-      ) {
+      if (latLng.lat === item.lat && latLng.lng === item.lon) {
         res = i;
         break;
       }
@@ -656,7 +647,7 @@ function buildAllPoints(list: any) {
     //const points = [];
     for (let i = 0; i < list.length; i++) {
       const item = list[i];
-      const point = [item.propertylatitude, item.propertylongitude];
+      const point = [item.lat, item.lon];
       let layer;
       if (currentPoint.value["[attom id]"] !== item["[attom id]"]) {
         //points.push(point);
@@ -703,13 +694,13 @@ function resetAllMarkers(isClick: boolean) {
     if (m.isPopupOpen()) {
       m.closePopup();
     }
-    if (latLng.lat === currentPoint.value.propertylatitude && latLng.lng === currentPoint.value.propertylongitude) {
+    if (latLng.lat === currentPoint.value.lat && latLng.lng === currentPoint.value.lon) {
       if (isClick) {
         m.setIcon(grayIcon);
       } else {
         m.setZIndexOffset(999999);
         m.setIcon(highlightIcon);
-        mapCom.panTo([currentPoint.value.propertylatitude, currentPoint.value.propertylongitude]);
+        mapCom.panTo([currentPoint.value.lat, currentPoint.value.lon]);
         if (!m.isPopupOpen()) {
           m.openPopup();
         }
