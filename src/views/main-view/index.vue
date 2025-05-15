@@ -67,7 +67,7 @@ function getHouseById(id: string, list: any) {
   if (id && list?.length > 0) {
     for (let i = 0; i < list.length; i++) {
       const item = list[i];
-      if (id === item["[attom id]"]) {
+      if (id === item["fid"]) {
         onTableRowIndex(i);
         res = item;
         break;
@@ -80,7 +80,7 @@ function getHouseById(id: string, list: any) {
 watch(
   () => currentRowData,
   () => {
-    houseId.value = currentRowData.value["[attom id]"] || "";
+    houseId.value = currentRowData.value["fid"] || "";
   },
   {
     deep: true
@@ -148,7 +148,7 @@ watch(
                 :options="houses"
                 :props="{
                   label: 'address',
-                  value: '[attom id]'
+                  value: 'fid'
                 }"
                 placeholder="Please select"
                 style="width: 50%"
@@ -169,7 +169,7 @@ watch(
             <div class="text-md font-medium">Houses</div>
             <div>
               <span style="margin-right: 20px"
-                >Total: {{ houses?.length }}</span
+                >Total: {{ pagination.total }}</span
               >
               <el-link
                 type="primary"

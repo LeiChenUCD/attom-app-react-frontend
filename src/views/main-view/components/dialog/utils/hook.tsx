@@ -53,7 +53,7 @@ export function useDialog() {
       return;
     }
     const param = {
-      ATTOMID: row["[attom id]"] ?? ""
+      fid: row["fid"] ?? ""
     };
     const loadingData = ElLoading.service({
       lock: true,
@@ -116,7 +116,7 @@ export function useDialog() {
         : "";
 
     const commentContent = `${overallNotes}${ending}[${dayjs(new Date().toISOString()).format("YYYY-MM-DD HH:mm")}] ${userInfo.username}: ${comment}`;
-    const ATTOMID = row["[attom id]"] ? row["[attom id]"].toString() : "";
+    const fid = row["fid"] ? row["fid"].toString() : "";
     const params = {
       id: currentComment.value?.record_id || "",
       censusTract: row.censustract,
@@ -125,7 +125,7 @@ export function useDialog() {
         fields: {
           Address: row.address,
           Notes: commentContent,
-          ATTOMID: ATTOMID,
+          ATTOMID: fid,
           "Census Tract": row.censustract
         }
       }

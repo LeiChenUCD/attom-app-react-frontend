@@ -53,9 +53,13 @@ const tabList = ref([
     name: "taxAssessor",
     label: "Taxassessor"
   },
-  {
+  /*{
     name: "contactinfo",
     label: "Contactinfo"
+  },*/
+  {
+    name: "alphax",
+    label: "Alphax"
   }
 ]);
 
@@ -89,7 +93,7 @@ async function getDetailApi(init: boolean) {
     return;
   }
   const param = {
-    ATTOMID: detail.value["[attom id]"] ?? "",
+    ATTOMID: detail.value["fid"] ?? "",
     db: activeTab.value
   };
   const apiParams = {
@@ -113,7 +117,7 @@ async function getDetailApi(init: boolean) {
 
 async function getHouseDetail() {
   const params = {
-    attomid: detail.value["[attom id]"] ?? ""
+    fid: detail.value["fid"] ?? ""
   };
   const queryString = objectParamsToQueryString(params);
   isLoading.value = true;

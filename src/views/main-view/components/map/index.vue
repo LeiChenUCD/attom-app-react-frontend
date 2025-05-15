@@ -649,7 +649,7 @@ function buildAllPoints(list: any) {
       const item = list[i];
       const point = [item.lat, item.lon];
       let layer;
-      if (currentPoint.value["[attom id]"] !== item["[attom id]"]) {
+      if (currentPoint.value["fid"] !== item["fid"]) {
         //points.push(point);
         layer = L.marker(point, { icon: grayIcon }).bindPopup(item.address, {
           permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）

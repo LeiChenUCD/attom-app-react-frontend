@@ -86,9 +86,9 @@ async function getDataImages(listingkeynumeric: any) {
 
 async function getHouseDetail() {
   const params = {
-    attomid: props.detailData["[attom id]"] ?? ""
+    fid: props.detailData["fid"] ?? ""
   };
-  if (params.attomid) {
+  if (params.fid) {
     const queryString = objectParamsToQueryString(params);
     const res = await getHouseDetailApi(queryString, params);
     if (res?.mls?.length > 0) {
@@ -129,9 +129,9 @@ watch(
       <div class="item right">
         <dl>
           <dt class="title">Properties</dt>
-          <dd class="text">Size: {{ detailData?.arealotsf }}</dd>
+          <dd class="text">Size: {{ detailData?.lotsize }}</dd>
           <dd class="text">BathCount: {{ detailData?.bathcount }}</dd>
-          <dd class="text">BedroomCount: {{ detailData?.bedroomscount }}</dd>
+          <dd class="text">BedroomCount: {{ detailData?.bedrooms }}</dd>
         </dl>
         <dl style="margin-top: 20px">
           <dt class="title">Comments</dt>
