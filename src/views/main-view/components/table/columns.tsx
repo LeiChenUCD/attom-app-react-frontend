@@ -2,7 +2,7 @@ import { delay } from "@pureadmin/utils";
 import { ref, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
-  getCensusListApi2,
+  getCensusListApi3,
   getNotedATTOMID,
   queryContactInfo,
   getPriorityInfoAll,
@@ -341,7 +341,7 @@ export function useColumns() {
     //minorcivildivisionname='SAN JOSE' and arealotsf>8000 and arealotsf<10000 and bathcount=5 and bedroomscount>3 and zonedcodelocal='R1'
     const params = {
       where: getFilerParams(), //`minorcivildivisionname='SAN JOSE'`,
-      mlsWhere: getMlsFilterParams(),
+      //mlsWhere: getMlsFilterParams(),
       maxResultSize: queryTotal.value,
       objectIds: "",
       resultOffset: 0,
@@ -350,8 +350,8 @@ export function useColumns() {
       leftLong: "",
       rightLong: "",
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
-      outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
-      //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",arealotsf,bathcount,bedroomscount,censustract,parcelnumberraw,propertyaddresscity,propertyaddressfull,propertylatitude,propertylongitude,zonedcodeloca`
+      //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
+      outFields: `bathcount,bedrooms,lotsize,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice`
     };
 
     if (searchAreaParams.value) {
@@ -367,7 +367,7 @@ export function useColumns() {
     }
 
     const queryString = objectParamsToQueryString(params);
-    const houseRes = await getCensusListApi2(queryString, params);
+    const houseRes = await getCensusListApi3(queryString, params);
     pagination.total = houseRes?.totalSize || 0;
     return houseRes?.result || [];
   }

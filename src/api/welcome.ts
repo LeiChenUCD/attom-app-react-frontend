@@ -26,6 +26,15 @@ export const getCensusListApi2 = (queryString: string, data: any) => {
   );
 };
 
+/** 获取列表 */
+export const getCensusListApi3 = (queryString: string, data: any) => {
+  return http.request<any>(
+    "post",
+    `${baseApiUrl}/api/recorder-records-combined?${queryString}`,
+    { data }
+  );
+};
+
 export const getHouseDetailApi = (queryString: string, data: any) => {
   return http.request<any>(
     "post",
