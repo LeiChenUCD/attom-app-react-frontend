@@ -521,13 +521,13 @@ export function useColumns() {
     loading.value = true;
     const loadingData = ElLoading.service({
       lock: true,
-      text: "Loading 0%",
+      text: "Loading",
       background: "rgba(0, 0, 0, 0.7)"
     });
     /*if (init) {
       await onQueryContactInfo();
     }*/
-    loadingData.setText("Loading 10%");
+    //loadingData.setText("Loading 10%");
     if (censustractId.value === "0") {
       if (init || isNeedLoadData()) {
         const housesRes = await queryAllData();
@@ -561,7 +561,7 @@ export function useColumns() {
         dDPdfsData.value
       );*/
       houses.value = housesResData.value;
-      loadingData.setText("Loading 100%");
+      //loadingData.setText("Loading 100%");
       allTableData.value = cloneDeep(houses.value);
       loadingData.close();
       initCurrentRowData();
