@@ -273,7 +273,7 @@ export function useColumns() {
       if (res) {
         res += ` and`;
       }
-      res += ` city='${params.citySubset}'`;
+      res += ` city LIKE '%${params.citySubset}%'`;
     }
 
     if (params.lotAreaLower) {
