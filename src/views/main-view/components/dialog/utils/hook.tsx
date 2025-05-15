@@ -123,7 +123,7 @@ export function useDialog() {
       author: userInfo.username,
       fields: {
         fields: {
-          Address: row.propertyaddressfull,
+          Address: row.address,
           Notes: commentContent,
           ATTOMID: ATTOMID,
           "Census Tract": row.censustract

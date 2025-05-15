@@ -114,7 +114,7 @@ watch(
 
 <template>
   <div class="overview-container">
-    <!--div class="address">{{detailData?.propertyaddressfull}}</div-->
+    <!--div class="address">{{detailData?.address}}</div-->
     <div class="content">
       <div class="item left">
         <div v-if="imageList?.length > 0">

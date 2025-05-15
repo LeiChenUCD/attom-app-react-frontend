@@ -56,10 +56,10 @@ export function useColumns() {
   const currentRowIndex = ref(0);
   const columns: Column<any>[] = [
     {
-      key: "propertyaddressfull",
-      title: "PropertyAddressFull",
-      dataKey: "propertyaddressfull",
-      slotName: "propertyaddressfull",
+      key: "address",
+      title: "address",
+      dataKey: "address",
+      slotName: "address",
       width: 200,
       sortable: true,
       fixed: true
@@ -307,7 +307,7 @@ export function useColumns() {
       if (res) {
         res += ` and`;
       }
-      res += ` propertyaddressfull LIKE '%${params.addrFilter}%' `;
+      res += ` address LIKE '%${params.addrFilter}%' `;
     }
     return res;
   }
@@ -316,7 +316,7 @@ export function useColumns() {
     const obj = {
       query: `\
         SELECT \
-        PropertyAddressFull, \
+        address, \
         AreaLotSF, \
         PropertyLatitude, \
         PropertyLongitude, \
@@ -331,7 +331,7 @@ export function useColumns() {
         taxassessor \
     where \
         (PropertyAddressCity = 'CAMPBELL' OR PropertyAddressCity = 'LOS ALTOS') \
-        AND PropertyAddressFull IS NOT NULL \
+        AND address IS NOT NULL \
         AND AreaLotSF IS NOT NULL \
         AND PropertyLatitude IS NOT NULL \
         AND PropertyLongitude IS NOT NULL \
@@ -431,9 +431,9 @@ export function useColumns() {
         } else {
           item.noted = false;
         }
-        if (contactInfo[item.propertyaddressfull]) {
+        if (contactInfo[item.address]) {
           item["haveContactInfo"] = true;
-          item["contactInfo"] = contactInfo[item.propertyaddressfull] || null;
+          item["contactInfo"] = contactInfo[item.address] || null;
         } else {
           item["haveContactInfo"] = false;
           item["contactInfo"] = null;
@@ -450,11 +450,9 @@ export function useColumns() {
           item["note"] = theNotes[attomId];
         }
 
-        if (item.propertyaddressfull in sellerReply) {
-          item["sellerReplyLink"] =
-            sellerReply[item.propertyaddressfull][0] || "";
-          item["sellerReplyAddr"] =
-            sellerReply[item.propertyaddressfull][1] || "";
+        if (item.address in sellerReply) {
+          item["sellerReplyLink"] = sellerReply[item.address][0] || "";
+          item["sellerReplyAddr"] = sellerReply[item.address][1] || "";
           item["sellerReplyState"] = "matched";
         } else {
           item["sellerReplyLink"] = "";
@@ -641,9 +639,7 @@ export function useColumns() {
 
     if (params.addrFilter) {
       filteredData = filteredData.filter(house =>
-        house.propertyaddressfull
-          ?.toLowerCase()
-          .includes(params.addrFilter?.toLowerCase())
+        house.address?.toLowerCase().includes(params.addrFilter?.toLowerCase())
       );
     }
 

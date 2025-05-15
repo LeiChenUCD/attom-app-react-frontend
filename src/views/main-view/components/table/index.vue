@@ -77,7 +77,7 @@ watch(
     >
       <template #cell="{ row, column, rowIndex }">
         <el-tooltip
-          v-if="column.dataKey === 'propertyaddressfull'"
+          v-if="column.dataKey === 'address'"
           class="box-item"
           effect="dark"
           :content="houses[rowIndex][column.dataKey]"

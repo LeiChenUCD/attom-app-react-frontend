@@ -141,13 +141,13 @@ watch(
         >
           <div>
             <div class="text-md font-medium" style="margin-bottom: 5px">
-              <!--?.propertyaddressfull}}-->
+              <!--?.address}}-->
               <el-select-v2
                 v-model="houseId"
                 filterable
                 :options="houses"
                 :props="{
-                  label: 'propertyaddressfull',
+                  label: 'address',
                   value: '[attom id]'
                 }"
                 placeholder="Please select"

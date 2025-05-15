@@ -540,11 +540,11 @@ function addCurrentPoint(data: any) {
   // 添加标记
   currentMarker = L.marker([data.propertylatitude, data.propertylongitude], {
     icon: highlightIcon,
-    title: data.propertyaddressfull //鼠标hover显示
+    title: data.address //鼠标hover显示
   }).addTo(mapCom);
   secondaryPointsLayers.push(currentMarker);
   // 绑定工具提示
-  currentMarker.bindPopup(data.propertyaddressfull, {
+  currentMarker.bindPopup(data.address, {
     permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
     direction: "top" // 提示框显示的方向（top, bottom, left, right）
     //offset: [0, -65], //偏移量
@@ -660,15 +660,12 @@ function buildAllPoints(list: any) {
       let layer;
       if (currentPoint.value["[attom id]"] !== item["[attom id]"]) {
         //points.push(point);
-        layer = L.marker(point, { icon: grayIcon }).bindPopup(
-          item.propertyaddressfull,
-          {
-            permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
-            direction: "top" // 提示框显示的方向（top, bottom, left, right）
-            //offset: [0, -65], //偏移量
-            //opacity: 0.9 // 提示框的透明度
-          }
-        );
+        layer = L.marker(point, { icon: grayIcon }).bindPopup(item.address, {
+          permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
+          direction: "top" // 提示框显示的方向（top, bottom, left, right）
+          //offset: [0, -65], //偏移量
+          //opacity: 0.9 // 提示框的透明度
+        });
         secondaryPointsLayers.push(layer);
         pointMarkers.addLayer(layer);
       } else {
