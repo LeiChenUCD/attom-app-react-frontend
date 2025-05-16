@@ -41,7 +41,7 @@ export function useColumns() {
   const loading = ref(true);
   const route = useRoute();
   const { params, query } = route;
-  const queryTotal = ref(query.total ? Number(query.total) : 100);
+  const queryTotal = ref(query.total ? Number(query.total) : 500);
   const censustractId = ref(params.censustractId || "0");
   const queryParams = ref({});
   const searchAreaParams = ref(null);
