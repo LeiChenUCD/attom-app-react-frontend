@@ -44,6 +44,7 @@ export function useColumns() {
   const queryTotal = ref(query.total ? Number(query.total) : 500);
   const censustractId = ref(params.censustractId || "0");
   const queryParams = ref({});
+  const queryOffset = ref(0);
   const searchAreaParams = ref(null);
   const zonedcodelocalOptions = ref([
     /*{
@@ -112,7 +113,7 @@ export function useColumns() {
       dataKey: "mlsstatus",
       sortable: true,
       width: 120
-    },
+    }
     /*{
       key: "priority",
       title: "Priority",
@@ -369,7 +370,7 @@ export function useColumns() {
       //mlsWhere: getMlsFilterParams(),
       maxResultSize: queryTotal.value,
       objectIds: "",
-      resultOffset: 0,
+      resultOffset: queryOffset.value || 0,
       topLat: "",
       bottomLat: "",
       leftLong: "",
@@ -728,6 +729,20 @@ export function useColumns() {
     queryTabelData();
   }
 
+  function onSearchPage(params: any) {
+    queryTotal.value = params?.pageSize || 500;
+    const page = params?.currentPage || 1;
+    queryOffset.value = calculateOffset(page, queryTotal.value);
+    queryTabelData();
+  }
+
+  function calculateOffset(page: number, pageSize: number) {
+    if (page <= 1) {
+      return 0;
+    }
+    return (page - 1) * pageSize;
+  }
+
   onMounted(() => {
     initTableData(true);
   });
@@ -748,6 +763,7 @@ export function useColumns() {
     onSort,
     onTableRowIndex,
     onFilerData,
-    onSearchArea
+    onSearchArea,
+    onSearchPage
   };
 }

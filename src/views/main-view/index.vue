@@ -27,6 +27,7 @@ const {
   onTableRowIndex,
   onSearchArea,
   onFilerData,
+  onSearchPage,
   onCurrentChange
 } = useColumns();
 const { form, openCommentDialog, openViewDetailDialog } = useDialog();
@@ -185,8 +186,10 @@ watch(
             :columns="columns"
             :houses="houses"
             :index="currentRowIndex"
+            :dataTotal="pagination.total"
             @onRowIndex="onTableRow"
             @onSort="onSortTableData"
+            @onPage="onSearchPage"
           />
         </el-card>
       </re-col>
