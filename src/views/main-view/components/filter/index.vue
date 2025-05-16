@@ -3,6 +3,7 @@ import { ref } from "vue";
 import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { getCityListApi } from "@/api/welcome";
 
 defineOptions({
   name: "Filter"
@@ -16,26 +17,13 @@ const props = defineProps({
   }
 });
 const emit = defineEmits(["onFiler"]);
-const citySubsetOptions = ref([
-  /*{
-    value: "",
-    label: "All"
-  },*/
-  {
-    value: "CAMPBELL",
-    label: "CAMPBELL"
-  },
-  {
-    value: "LOS ALTOS",
-    label: "LOS ALTOS"
-  }
-]);
+const citySubsetOptions = ref([]);
 
 const sellerReplyOptions = ref([
-  {
+  /*{
     value: "Both",
     label: "Both"
-  },
+  },*/
   {
     value: "With Seller Reply",
     label: "With Seller Reply"
@@ -86,10 +74,10 @@ const mlsstatusOptions = ref([
 ]);
 
 const dueDiligenceOptions = ref([
-  {
+  /*{
     value: "Both",
     label: "Both"
-  },
+  },*/
   {
     value: "With Due Diligence",
     label: "With Due Diligence"
@@ -101,10 +89,10 @@ const dueDiligenceOptions = ref([
 ]);
 
 const notedOptions = ref([
-  {
+  /*{
     value: "Both",
     label: "Both"
-  },
+  },*/
   {
     value: "Noted Addresses",
     label: "Noted Addresses"
@@ -116,10 +104,10 @@ const notedOptions = ref([
 ]);
 
 const contactInfoOptions = ref([
-  {
+  /*{
     value: "Both",
     label: "Both"
-  },
+  },*/
   {
     value: "With Contact Info",
     label: "With Contact Info"
@@ -157,6 +145,28 @@ const formValue = ref({
   contactInfo: "Both"
 });
 
+async function queryCityList() {
+  const params = {};
+  const res = await getCityListApi(params);
+  citySubsetOptions.value = getCityOptions(res);
+}
+
+function getCityOptions(list) {
+  const res = [];
+  if (list?.length > 0) {
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i];
+      if (item) {
+        res.push({
+          value: item,
+          label: item
+        });
+      }
+    }
+  }
+  return res;
+}
+
 function onSearch() {
   onBack();
 }
@@ -191,6 +201,8 @@ function resetForm() {
 function onBack() {
   emit("onFiler", formValue.value);
 }
+
+queryCityList();
 </script>
 
 <template>
@@ -203,18 +215,12 @@ function onBack() {
       class="search-form bg-bg_color w-[99/100] pt-[12px]"
     >
       <el-form-item label="City" prop="citySubset">
-        <!--el-select-v2
+        <el-select-v2
           v-model="formValue.citySubset"
           filterable
           clearable
           :options="citySubsetOptions"
           placeholder="Please select"
-          style="width: 100%"
-        /-->
-        <el-input
-          v-model="formValue.citySubset"
-          placeholder="Please enter"
-          clearable
           style="width: 100%"
         />
       </el-form-item>
@@ -376,6 +382,7 @@ function onBack() {
         <el-select-v2
           v-model="formValue.mlsstatus"
           filterable
+          clearable
           :options="mlsstatusOptions"
           placeholder="Please select"
           style="width: 100%"
@@ -386,6 +393,7 @@ function onBack() {
         <el-select-v2
           v-model="formValue.sellerReplyAddr"
           filterable
+          clearable
           :options="sellerReplyOptions"
           placeholder="Please select"
           style="width: 100%"
@@ -396,6 +404,7 @@ function onBack() {
         <el-select-v2
           v-model="formValue.dueDiligence"
           filterable
+          clearable
           :options="dueDiligenceOptions"
           placeholder="Please select"
           style="width: 100%"
@@ -406,6 +415,7 @@ function onBack() {
         <el-select-v2
           v-model="formValue.noted"
           filterable
+          clearable
           :options="notedOptions"
           placeholder="Please select"
           style="width: 100%"
@@ -416,6 +426,7 @@ function onBack() {
         <el-select-v2
           v-model="formValue.contactInfo"
           filterable
+          clearable
           :options="contactInfoOptions"
           placeholder="Please select"
           style="width: 100%"

@@ -23,7 +23,7 @@ const footerButtons = computed(() => {
     return options?.footerButtons?.length > 0
       ? options.footerButtons
       : ([
-          {
+          /*{
             label: "Cancel",
             text: true,
             bg: true,
@@ -36,7 +36,7 @@ const footerButtons = computed(() => {
                 done();
               }
             }
-          },
+          },*/
           {
             label: "Confirm",
             type: "primary",
