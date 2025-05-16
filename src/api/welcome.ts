@@ -1,6 +1,13 @@
 import { http } from "@/utils/http";
 import { baseApiUrl } from "./base";
 
+/** 获取列表 */
+export const getCityListApi = (data: any) => {
+  return http.request<any>("post", `${baseApiUrl}/api/distinct-cities`, {
+    data
+  });
+};
+
 /** 获取图片列表 */
 export const getImagesListApi = (data: any) => {
   return http.request<any>(

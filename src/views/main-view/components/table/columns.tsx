@@ -65,6 +65,13 @@ export function useColumns() {
       fixed: true
     },
     {
+      key: "city",
+      title: "City",
+      dataKey: "city",
+      sortable: true,
+      width: 150
+    },
+    {
       key: "lotsize",
       title: "AreaLotSF",
       dataKey: "lotsize",
@@ -329,7 +336,7 @@ export function useColumns() {
       if (res) {
         res += ` and`;
       }
-      res += ` address LIKE '%${params.addrFilter}%' `;
+      res += ` address LIKE '%${params.addrFilter.toUpperCase()}%' `;
     }
 
     if (params.closePriceLower) {

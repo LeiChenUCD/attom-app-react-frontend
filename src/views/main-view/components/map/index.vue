@@ -824,7 +824,7 @@ watch(
   .btn-search-area {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 20%;
     margin-left: -67px;
     margin-top: -16px;
     z-index: 999;
