@@ -339,7 +339,15 @@ const highlightIcon = L.icon({
 
 // 灰色图标
 const grayIcon = L.icon({
-  iconUrl: "marker-icon-2x.png", // 灰色图标路径
+  iconUrl: "location-sky.svg", // 灰色图标路径
+  iconSize: [50, 50], // 图标大小
+  popupAnchor: [5, -90],
+  iconAnchor: [22, 94] // 图标锚点
+});
+
+// 灰色图标
+const skyIcon = L.icon({
+  iconUrl: "location-green.svg", // 灰色图标路径
   iconSize: [50, 50], // 图标大小
   popupAnchor: [5, -90],
   iconAnchor: [22, 94] // 图标锚点
@@ -534,7 +542,7 @@ function convexHull(points) {
 }
 
 function addCurrentPoint(data: any) {
-  if (!(data.lat && data.lon)) {
+  if (!data.lat) {
     return;
   }
   // 添加标记
@@ -647,19 +655,25 @@ function buildAllPoints(list: any) {
     //const points = [];
     for (let i = 0; i < list.length; i++) {
       const item = list[i];
-      const point = [item.lat, item.lon];
-      let layer;
-      if (currentPoint.value["fid"] !== item["fid"]) {
-        //points.push(point);
-        layer = L.marker(point, { icon: grayIcon }).bindPopup(item.address, {
-          permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
-          direction: "top" // 提示框显示的方向（top, bottom, left, right）
-          //offset: [0, -65], //偏移量
-          //opacity: 0.9 // 提示框的透明度
-        });
-        secondaryPointsLayers.push(layer);
-        pointMarkers.addLayer(layer);
-      } else {
+      if (item.lat) {
+        const point = [item.lat, item.lon];
+        let layer;
+        if (currentPoint.value["fid"] !== item["fid"]) {
+          //points.push(point);
+          let icon = grayIcon;
+          if (item["alphaxheld"]) {
+            icon = skyIcon;
+          }
+          layer = L.marker(point, { icon: icon }).bindPopup(item.address, {
+            permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
+            direction: "top" // 提示框显示的方向（top, bottom, left, right）
+            //offset: [0, -65], //偏移量
+            //opacity: 0.9 // 提示框的透明度
+          });
+          secondaryPointsLayers.push(layer);
+          pointMarkers.addLayer(layer);
+        } else {
+        }
       }
     }
     pointMarkers.addTo(mapCom);
@@ -688,8 +702,8 @@ function rendWmsLayer() {
 
 function resetAllMarkers(isClick: boolean) {
   // 将所有点的图标设置为灰色
-  secondaryPointsLayers.forEach(m => {
-    /*const latLng = m.getLatLng();
+  /*secondaryPointsLayers.forEach(m => {
+    const latLng = m.getLatLng();
     m.setZIndexOffset(1);
     if (m.isPopupOpen()) {
       m.closePopup();
@@ -707,10 +721,20 @@ function resetAllMarkers(isClick: boolean) {
       }
     } else {
       m.setIcon(grayIcon);
-    }*/
-    m.setIcon(grayIcon);
-    m.closePopup();
-  });
+    }
+  });*/
+  if (secondaryPointsLayers?.length > 0) {
+    for (let i = 0; i < secondaryPointsLayers.length; i++) {
+      const m = secondaryPointsLayers[i];
+      const house: any = props.houses[i];
+      if (house?.alphaxheld) {
+        m.setIcon(skyIcon);
+      } else {
+        m.setIcon(grayIcon);
+      }
+      m.closePopup();
+    }
+  }
 }
 
 function getElemTop() {

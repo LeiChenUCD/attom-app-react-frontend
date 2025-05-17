@@ -58,7 +58,7 @@ export function useColumns() {
   const columns: Column<any>[] = [
     {
       key: "address",
-      title: "address",
+      title: "Address",
       dataKey: "address",
       slotName: "address",
       width: 200,
@@ -71,6 +71,13 @@ export function useColumns() {
       dataKey: "city",
       sortable: true,
       width: 150
+    },
+    {
+      key: "alphaxheld",
+      title: "AlphaX project",
+      dataKey: "alphaxheld",
+      sortable: true,
+      width: 130
     },
     {
       key: "lotsize",
@@ -359,6 +366,13 @@ export function useColumns() {
         res += " and";
       }
       res += ` mlsstatus='${params.mlsstatus}'`;
+    }
+
+    if (params.alphaxheld) {
+      if (res) {
+        res += " and";
+      }
+      res += ` alphaxheld=true`;
     }
 
     return res;
