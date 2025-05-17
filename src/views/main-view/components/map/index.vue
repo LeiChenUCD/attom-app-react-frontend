@@ -339,7 +339,7 @@ const highlightIcon = L.icon({
 
 // 灰色图标
 const grayIcon = L.icon({
-  iconUrl: "location-green.svg", // 灰色图标路径
+  iconUrl: "location-sky.svg", // 灰色图标路径
   iconSize: [50, 50], // 图标大小
   popupAnchor: [5, -90],
   iconAnchor: [22, 94] // 图标锚点
@@ -347,7 +347,7 @@ const grayIcon = L.icon({
 
 // 灰色图标
 const skyIcon = L.icon({
-  iconUrl: "location-sky.svg", // 灰色图标路径
+  iconUrl: "location-green.svg", // 灰色图标路径
   iconSize: [50, 50], // 图标大小
   popupAnchor: [5, -90],
   iconAnchor: [22, 94] // 图标锚点
