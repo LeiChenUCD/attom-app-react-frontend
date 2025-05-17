@@ -142,7 +142,8 @@ const formValue = ref({
   sellerReplyAddr: "Both",
   dueDiligence: "Both",
   noted: "Both",
-  contactInfo: "Both"
+  contactInfo: "Both",
+  alphaxheld: false
 });
 
 async function queryCityList() {
@@ -193,7 +194,8 @@ function resetForm() {
     sellerReplyAddr: "Both",
     dueDiligence: "Both",
     noted: "Both",
-    contactInfo: "Both"
+    contactInfo: "Both",
+    alphaxheld: false
   };
   onBack();
 }
@@ -432,6 +434,9 @@ queryCityList();
           style="width: 100%"
         />
       </el-form-item-->
+      <el-form-item label="AlphaX project" prop="alphaxheld">
+        <el-checkbox v-model="formValue.alphaxheld" label="" size="large" />
+      </el-form-item>
     </el-form>
     <div class="operators">
       <el-button

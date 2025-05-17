@@ -86,7 +86,7 @@ function onBackPage() {
 
 onMounted(() => {
   if (parentContainer.value) {
-    boxHeight.value = parentContainer.value.offsetHeight;
+    boxHeight.value = parentContainer.value.offsetHeight - 62;
     boxWidth.value = parentContainer.value.offsetWidth;
   }
 });
@@ -145,6 +145,24 @@ watch(
             >{{ houses[rowIndex][column.dataKey] }}</el-button
           >
         </el-tooltip>
+        <div v-else-if="column.dataKey === 'alphaxheld'">
+          {{ houses[rowIndex][column.dataKey] ? "Yes" : "No" }}
+        </div>
+        <div
+          v-else-if="
+            column.dataKey === 'lotsize' ||
+            column.dataKey === 'bedrooms' ||
+            column.dataKey === 'bathcount'
+          "
+        >
+          {{
+            houses[rowIndex] &&
+            houses[rowIndex][column.dataKey] !== undefined &&
+            houses[rowIndex][column.dataKey] !== null
+              ? Number(houses[rowIndex][column.dataKey]).toFixed(0)
+              : "--"
+          }}
+        </div>
         <div v-else :class="{ 'current-item': currentRowIndex == rowIndex }">
           {{ houses[rowIndex][column.dataKey] }}
         </div>

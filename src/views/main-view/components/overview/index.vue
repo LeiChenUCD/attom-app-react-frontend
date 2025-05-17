@@ -129,9 +129,30 @@ watch(
       <div class="item right">
         <dl>
           <dt class="title">Properties</dt>
-          <dd class="text">Size: {{ detailData?.lotsize }}</dd>
-          <dd class="text">BathCount: {{ detailData?.bathcount }}</dd>
-          <dd class="text">BedroomCount: {{ detailData?.bedrooms }}</dd>
+          <dd class="text">
+            Size:
+            {{
+              detailData?.lotsize
+                ? Number(detailData?.lotsize).toFixed(0)
+                : "--"
+            }}
+          </dd>
+          <dd class="text">
+            BathCount:
+            {{
+              detailData?.bathcount
+                ? Number(detailData?.bathcount).toFixed(0)
+                : "--"
+            }}
+          </dd>
+          <dd class="text">
+            BedroomCount:
+            {{
+              detailData?.bedrooms
+                ? Number(detailData?.bedrooms).toFixed(0)
+                : "--"
+            }}
+          </dd>
         </dl>
         <dl style="margin-top: 20px">
           <dt class="title">Comments</dt>
