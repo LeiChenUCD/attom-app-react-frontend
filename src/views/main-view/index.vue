@@ -187,6 +187,7 @@ watch(
             :columns="columns"
             :houses="houses"
             :index="currentRowIndex"
+            :curPage="pagination.currentPage"
             :dataTotal="pagination.total"
             @onRowIndex="onTableRow"
             @onSort="onSortTableData"

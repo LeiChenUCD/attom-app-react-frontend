@@ -722,6 +722,7 @@ export function useColumns() {
   function onFilerData(params: any) {
     queryParams.value = params;
     searchAreaParams.value = null;
+    pagination.currentPage = 1;
     queryTabelData();
   }
 
@@ -741,12 +742,14 @@ export function useColumns() {
 
   function onSearchArea(params: any) {
     searchAreaParams.value = params;
+    pagination.currentPage = 1;
     queryTabelData();
   }
 
   function onSearchPage(params: any) {
     queryTotal.value = params?.pageSize || 500;
     const page = params?.currentPage || 1;
+    pagination.currentPage = page;
     queryOffset.value = calculateOffset(page, queryTotal.value);
     queryTabelData();
   }
