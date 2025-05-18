@@ -67,12 +67,14 @@ function onClickRow(index: number) {
 }
 
 const handleSizeChange = (val: number) => {
+  currentRowIndex.value = 0;
   currentPage.value = 1;
   pageSize.value = val || 500;
   onBackPage();
 };
 
 const handleCurrentChange = (val: number) => {
+  currentRowIndex.value = 0;
   currentPage.value = val;
   onBackPage();
 };
@@ -82,6 +84,10 @@ function onBackPage() {
     currentPage: currentPage.value,
     pageSize: pageSize.value
   });
+}
+
+function scrollByRows() {
+  tableRef.value?.scrollToRow(currentRowIndex.value);
 }
 
 onMounted(() => {
@@ -95,6 +101,7 @@ watch(
   () => props.index,
   val => {
     currentRowIndex.value = val;
+    scrollByRows();
   },
   {
     deep: true,
@@ -121,6 +128,7 @@ watch(
     </div>
 
     <el-table-v2
+      ref="tableRef"
       :columns="tableColumns"
       :data="houses"
       :width="boxWidth"
@@ -154,6 +162,7 @@ watch(
             column.dataKey === 'bedrooms' ||
             column.dataKey === 'bathcount'
           "
+          :class="{ 'current-item': currentRowIndex == rowIndex }"
         >
           {{
             houses[rowIndex] &&
