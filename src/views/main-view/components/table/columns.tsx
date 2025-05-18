@@ -598,6 +598,7 @@ export function useColumns() {
   }
 
   async function queryTabelData() {
+    currentRowIndex.value = 0;
     await initTableData(false);
     /*let filteredData = allTableData.value;
     const params: any = queryParams.value || {};

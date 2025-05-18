@@ -39,7 +39,7 @@ let mapCom = null;
 const zoomLevel = ref(10);
 const isShowSearchBtnArea = ref(false);
 const minZoomLevel = ref(3);
-const maxZoomLevel = ref(21);
+const maxZoomLevel = ref(18);
 let secondaryPointsLayers = [];
 let currentClickedMarker;
 const currentPoint = ref();
@@ -548,7 +548,7 @@ function convexHull(points) {
   return Array.from(hull);
 }
 
-function addCurrentPoint(data: any) {
+function addCurrentPoint(data: any, isMax: boolean) {
   if (!data.lat) {
     return;
   }
@@ -565,6 +565,12 @@ function addCurrentPoint(data: any) {
     //offset: [0, -65], //偏移量
     //opacity: 0.9 // 提示框的透明度
   });
+  // 缩放到最大级别（maxZoom）
+  if (isMax) {
+    mapCom.setView([data.lat, data.lon], mapCom.getMaxZoom());
+  } else {
+    mapCom.setView([data.lat, data.lon], zoomLevel.value);
+  }
   // 自动定位到标记的位置
   //mapCom.setView(marker.getLatLng(), zoomLevel.value);
   mapCom.panTo([data.lat, data.lon]);
@@ -608,7 +614,7 @@ function initData() {
     currentPoint.value = props.houses[0];
     mapCom.panTo([currentPoint.value.lat, currentPoint.value.lon]);
     buildAllPoints(props.houses);
-    addCurrentPoint(props.houses[0]);
+    addCurrentPoint(props.houses[0], false);
     /*const subsetOnMap = props.houses.filter(house => {
       return isBetween(house['lat'], top, bottom) && isBetween(house['lon'], left, right)
     }).filter(house => {
@@ -802,7 +808,7 @@ watch(
       currentPoint.value = props.detailData;
       clearAllMarkers();
       buildAllPoints(props.houses);
-      addCurrentPoint(currentPoint.value);
+      addCurrentPoint(currentPoint.value, true);
       // 为每个点绑定点击事件
       bindMarkerEvent();
       //resetAllMarkers(false);
