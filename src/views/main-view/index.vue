@@ -22,6 +22,7 @@ const {
   sortState,
   zonedcodelocalOptions,
   pagination,
+  searchAreaParams,
   Empty,
   onSort,
   onTableRowIndex,
@@ -224,6 +225,7 @@ watch(
           <MapBox
             :detailData="currentRowData"
             :isResetPoint="isResetPoint"
+            :isSearch="searchAreaParams"
             :houses="houses"
             @onRowIndex="onMapRowIndex"
             @onSearchArea="onSearchArea"
