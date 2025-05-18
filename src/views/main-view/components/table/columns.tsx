@@ -774,6 +774,7 @@ export function useColumns() {
     isResetPoint,
     pagination,
     zonedcodelocalOptions,
+    searchAreaParams,
     onCurrentChange,
     onSort,
     onTableRowIndex,

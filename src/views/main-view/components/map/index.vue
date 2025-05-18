@@ -26,6 +26,10 @@ const props = defineProps({
   isResetPoint: {
     type: Boolean,
     default: false
+  },
+  isSearch: {
+    type: Boolean,
+    default: false
   }
 });
 const mapContainer = ref(null);
@@ -566,7 +570,7 @@ function addCurrentPoint(data: any, isMax: boolean) {
     //opacity: 0.9 // 提示框的透明度
   });
   // 缩放到最大级别（maxZoom）
-  if (isMax) {
+  if (isMax || props.isSearch) {
     mapCom.setView([data.lat, data.lon], mapCom.getMaxZoom());
   } else {
     mapCom.setView([data.lat, data.lon], zoomLevel.value);
