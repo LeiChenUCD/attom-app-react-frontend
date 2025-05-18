@@ -329,28 +329,35 @@ const loadWMSLayer = () => {
 };
 
 // 高亮图标
-const highlightIcon = L.icon({
+/*const highlightIcon = L.icon({
   iconUrl: "marker-cur.svg", // 图标路径
   iconSize: [50, 50], // 图标大小
   popupAnchor: [5, -90],
   iconAnchor: [22, 94] // 图标锚点
   //popupAnchor: [-3, -56] // 弹出框锚点
+});*/
+
+const highlightIcon = L.icon({
+  iconUrl: "marker-cur.svg",
+  iconSize: [50, 50], // 图标尺寸 [width, height]
+  iconAnchor: [25, 50], // 调整锚点（假设图标底部中心是 [25,50]）
+  popupAnchor: [0, -50] // 调整弹出框位置（相对于 iconAnchor）
 });
 
 // 灰色图标
 const grayIcon = L.icon({
   iconUrl: "location-sky.svg", // 灰色图标路径
   iconSize: [50, 50], // 图标大小
-  popupAnchor: [5, -90],
-  iconAnchor: [22, 94] // 图标锚点
+  iconAnchor: [25, 50],
+  popupAnchor: [0, -50]
 });
 
 // 灰色图标
 const skyIcon = L.icon({
   iconUrl: "location-green.svg", // 灰色图标路径
   iconSize: [50, 50], // 图标大小
-  popupAnchor: [5, -90],
-  iconAnchor: [22, 94] // 图标锚点
+  iconAnchor: [25, 50], // 假设是底部居中的指针图标
+  popupAnchor: [0, -50] // 弹窗出现在图标正上方
 });
 
 function onChangeWms() {
@@ -845,6 +852,7 @@ watch(
 <style scoped lang="scss">
 .map-com {
   position: relative;
+  height: 100%;
   .btn-search-area {
     position: absolute;
     left: 50%;
@@ -868,7 +876,7 @@ watch(
   }
   .map-container {
     width: 100%;
-    height: 100vh;
+    height: calc(100% - 50px);
   }
   &.map-com-fix {
     padding-top: 42px;

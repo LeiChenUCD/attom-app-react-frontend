@@ -113,7 +113,7 @@ watch(
         :size="paginationParams.size"
         :disabled="false"
         :background="paginationParams.background"
-        layout="sizes, prev, pager, next, jumper"
+        layout="prev, pager, next, jumper"
         :total="dataTotal"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
