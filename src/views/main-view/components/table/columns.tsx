@@ -723,6 +723,7 @@ export function useColumns() {
     queryParams.value = params;
     searchAreaParams.value = null;
     pagination.currentPage = 1;
+    queryOffset.value = 0;
     queryTabelData();
   }
 
@@ -743,6 +744,7 @@ export function useColumns() {
   function onSearchArea(params: any) {
     searchAreaParams.value = params;
     pagination.currentPage = 1;
+    queryOffset.value = 0;
     queryTabelData();
   }
 
