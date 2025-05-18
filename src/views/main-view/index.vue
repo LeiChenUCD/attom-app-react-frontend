@@ -211,10 +211,15 @@ watch(
           }
         }"
       >
-        <el-card
+        <div
           shadow="never"
           class="h-[950px]"
-          style="overflow: visible !important"
+          style="
+            height: 950px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 3px;
+          "
         >
           <MapBox
             :detailData="currentRowData"
@@ -223,7 +228,7 @@ watch(
             @onRowIndex="onMapRowIndex"
             @onSearchArea="onSearchArea"
           />
-        </el-card>
+        </div>
       </re-col>
     </el-row>
   </div>
