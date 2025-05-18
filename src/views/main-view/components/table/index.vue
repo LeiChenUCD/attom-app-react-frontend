@@ -11,6 +11,10 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  curPage: {
+    type: Number,
+    default: 1
+  },
   columns: {
     type: Array,
     default: () => {
@@ -108,6 +112,18 @@ watch(
     immediate: true
   }
 );
+
+watch(
+  () => props.curPage,
+  val => {
+    currentPage.value = val;
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+);
+
 </script>
 
 <template>
