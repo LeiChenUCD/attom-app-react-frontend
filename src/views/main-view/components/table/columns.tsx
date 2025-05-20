@@ -598,6 +598,7 @@ export function useColumns() {
   }
 
   async function queryTabelData() {
+    currentRowIndex.value = 0;
     await initTableData(false);
     /*let filteredData = allTableData.value;
     const params: any = queryParams.value || {};
@@ -721,6 +722,8 @@ export function useColumns() {
   function onFilerData(params: any) {
     queryParams.value = params;
     searchAreaParams.value = null;
+    pagination.currentPage = 1;
+    queryOffset.value = 0;
     queryTabelData();
   }
 
@@ -740,12 +743,15 @@ export function useColumns() {
 
   function onSearchArea(params: any) {
     searchAreaParams.value = params;
+    pagination.currentPage = 1;
+    queryOffset.value = 0;
     queryTabelData();
   }
 
   function onSearchPage(params: any) {
     queryTotal.value = params?.pageSize || 500;
     const page = params?.currentPage || 1;
+    pagination.currentPage = page;
     queryOffset.value = calculateOffset(page, queryTotal.value);
     queryTabelData();
   }
@@ -773,6 +779,7 @@ export function useColumns() {
     isResetPoint,
     pagination,
     zonedcodelocalOptions,
+    searchAreaParams,
     onCurrentChange,
     onSort,
     onTableRowIndex,

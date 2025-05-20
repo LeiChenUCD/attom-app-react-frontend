@@ -26,6 +26,10 @@ const props = defineProps({
   isResetPoint: {
     type: Boolean,
     default: false
+  },
+  isSearch: {
+    type: Boolean,
+    default: false
   }
 });
 const mapContainer = ref(null);
@@ -39,7 +43,7 @@ let mapCom = null;
 const zoomLevel = ref(10);
 const isShowSearchBtnArea = ref(false);
 const minZoomLevel = ref(3);
-const maxZoomLevel = ref(21);
+const maxZoomLevel = ref(18);
 let secondaryPointsLayers = [];
 let currentClickedMarker;
 const currentPoint = ref();
@@ -548,7 +552,7 @@ function convexHull(points) {
   return Array.from(hull);
 }
 
-function addCurrentPoint(data: any) {
+function addCurrentPoint(data: any, isMax: boolean) {
   if (!data.lat) {
     return;
   }
@@ -557,7 +561,7 @@ function addCurrentPoint(data: any) {
     icon: highlightIcon,
     title: data.address //鼠标hover显示
   }).addTo(mapCom);
-  secondaryPointsLayers.push(currentMarker);
+  //secondaryPointsLayers.push(currentMarker);
   // 绑定工具提示
   currentMarker.bindPopup(data.address, {
     permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
@@ -565,6 +569,12 @@ function addCurrentPoint(data: any) {
     //offset: [0, -65], //偏移量
     //opacity: 0.9 // 提示框的透明度
   });
+  // 缩放到最大级别（maxZoom）
+  if (isMax || props.isSearch) {
+    mapCom.setView([data.lat, data.lon], mapCom.getMaxZoom());
+  } else {
+    mapCom.setView([data.lat, data.lon], zoomLevel.value);
+  }
   // 自动定位到标记的位置
   //mapCom.setView(marker.getLatLng(), zoomLevel.value);
   mapCom.panTo([data.lat, data.lon]);
@@ -608,7 +618,6 @@ function initData() {
     currentPoint.value = props.houses[0];
     mapCom.panTo([currentPoint.value.lat, currentPoint.value.lon]);
     buildAllPoints(props.houses);
-    addCurrentPoint(props.houses[0]);
     /*const subsetOnMap = props.houses.filter(house => {
       return isBetween(house['lat'], top, bottom) && isBetween(house['lon'], left, right)
     }).filter(house => {
@@ -621,11 +630,12 @@ function initData() {
                 */
     // 为每个点绑定点击事件
     bindMarkerEvent();
+    addCurrentPoint(props.houses[0], false);
   }
 }
 
 function bindMarkerEvent() {
-  secondaryPointsLayers.forEach(marker => {
+  /*secondaryPointsLayers.forEach(marker => {
     marker.on("click", function () {
       resetAllMarkers(true);
       currentClickedMarker = marker;
@@ -638,7 +648,24 @@ function bindMarkerEvent() {
       const curHouseIndex = getCurHouseIndex(latLng, props.houses);
       emit("onRowIndex", curHouseIndex);
     });
-  });
+  });*/
+  if (secondaryPointsLayers?.length > 0) {
+    for (let i = 0; i < secondaryPointsLayers.length; i++) {
+      const marker = secondaryPointsLayers[i];
+      marker.on("click", function () {
+        resetAllMarkers(true);
+        currentClickedMarker = marker;
+        // 将当前点击的点的图标设置为高亮
+        marker.setIcon(highlightIcon);
+        if (!marker.isPopupOpen()) {
+          marker.openPopup();
+        }
+        // const latLng = marker.getLatLng();
+        // const curHouseIndex = getCurHouseIndex(latLng, props.houses);
+        emit("onRowIndex", i);
+      });
+    }
+  }
 }
 
 function getCurHouseIndex(latLng: any, list: any) {
@@ -677,10 +704,19 @@ function buildAllPoints(list: any) {
             //offset: [0, -65], //偏移量
             //opacity: 0.9 // 提示框的透明度
           });
-          secondaryPointsLayers.push(layer);
-          pointMarkers.addLayer(layer);
         } else {
+          layer = L.marker(point, { icon: highlightIcon }).bindPopup(
+            item.address,
+            {
+              permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
+              direction: "top" // 提示框显示的方向（top, bottom, left, right）
+              //offset: [0, -65], //偏移量
+              //opacity: 0.9 // 提示框的透明度
+            }
+          );
         }
+        secondaryPointsLayers.push(layer);
+        pointMarkers.addLayer(layer);
       }
     }
     pointMarkers.addTo(mapCom);
@@ -802,7 +838,7 @@ watch(
       currentPoint.value = props.detailData;
       clearAllMarkers();
       buildAllPoints(props.houses);
-      addCurrentPoint(currentPoint.value);
+      addCurrentPoint(currentPoint.value, true);
       // 为每个点绑定点击事件
       bindMarkerEvent();
       //resetAllMarkers(false);
