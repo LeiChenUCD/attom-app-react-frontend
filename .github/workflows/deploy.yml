@@ -21,14 +21,21 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 18.18.0
           cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Build project
-        run: git config --global user.email "leichen753@gmail.com" && git config --global user.name "LeiChenUCD" && pnpm run build
+        run: pnpm run build
+
+      - name: Setup git for GitHub Pages
+        run: |
+          git config --global user.email "leichen753@gmail.com"
+          git config --global user.name "LeiChenUCD"
 
       - name: Deploy to GitHub Pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm exec gh-pages -d dist
