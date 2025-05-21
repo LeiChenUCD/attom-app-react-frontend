@@ -8,6 +8,13 @@ export const getCityListApi = (data: any) => {
   });
 };
 
+/** 获取zone列表 */
+export const getZoneListApi = (data: any) => {
+  return http.request<any>("post", `${baseApiUrl}/api/distinct-zoning`, {
+    data
+  });
+};
+
 /** 获取图片列表 */
 export const getImagesListApi = (data: any) => {
   return http.request<any>(
@@ -90,7 +97,8 @@ export const getNoteById = (data: any) => {
 };
 
 export const insertNote = (data: any) => {
-  return http.request<any>("post", `${baseApiUrl}/api/insertNote`, { data });
+  //return http.request<any>("post", `${baseApiUrl}/api/insertNote`, { data });
+  return http.request<any>("post", `${baseApiUrl}/api/comments`, { data });
 };
 
 /** 创建 */

@@ -3,7 +3,7 @@ import { ref } from "vue";
 import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { getCityListApi } from "@/api/welcome";
+import { getCityListApi, getZoneListApi } from "@/api/welcome";
 
 defineOptions({
   name: "Filter"
@@ -18,6 +18,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["onFiler"]);
 const citySubsetOptions = ref([]);
+const zoneOptions = ref([])
 
 const sellerReplyOptions = ref([
   /*{
@@ -143,13 +144,20 @@ const formValue = ref({
   dueDiligence: "Both",
   noted: "Both",
   contactInfo: "Both",
-  alphaxheld: false
+  alphaxheld: false,
+  comments: null,
 });
 
 async function queryCityList() {
   const params = {};
   const res = await getCityListApi(params);
   citySubsetOptions.value = getCityOptions(res);
+}
+
+async function queryZoneList() {
+  const params = {};
+  const res = await getZoneListApi(params);
+  zoneOptions.value = getCityOptions(res);
 }
 
 function getCityOptions(list) {
@@ -195,7 +203,8 @@ function resetForm() {
     dueDiligence: "Both",
     noted: "Both",
     contactInfo: "Both",
-    alphaxheld: false
+    alphaxheld: false,
+    comments: null,
   };
   onBack();
 }
@@ -205,6 +214,7 @@ function onBack() {
 }
 
 queryCityList();
+queryZoneList();
 </script>
 
 <template>
@@ -264,20 +274,20 @@ queryCityList();
       </el-form-item>
 
       <el-form-item label="Zonedcodelocal" prop="zoning">
-        <!--el-select-v2
+        <el-select-v2
           v-model="formValue.zoning"
           filterable
           clearable
-          :options="zonedcodelocalOptions"
+          :options="zoneOptions"
           placeholder="Please select"
           style="width: 100%"
-        /-->
-        <el-input
+        />
+        <!--el-input
           v-model="formValue.zoning"
           placeholder="Please enter"
           clearable
           style="width: 100%"
-        />
+        /-->
       </el-form-item>
 
       <el-form-item label="Bedroomscount" prop="bedrooms">
@@ -434,6 +444,14 @@ queryCityList();
           style="width: 100%"
         />
       </el-form-item-->
+      <el-form-item label="Comments" prop="comments">
+        <el-input
+          v-model="formValue.comments"
+          placeholder="Please enter"
+          clearable
+          style="width: 100%"
+        />
+      </el-form-item>
       <el-form-item label="AlphaX project" prop="alphaxheld">
         <el-checkbox v-model="formValue.alphaxheld" label="" size="large" />
       </el-form-item>
