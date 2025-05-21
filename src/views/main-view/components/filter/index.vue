@@ -3,7 +3,7 @@ import { ref } from "vue";
 import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { getCityListApi } from "@/api/welcome";
+import { getCityListApi, getZoneListApi } from "@/api/welcome";
 
 defineOptions({
   name: "Filter"
@@ -18,6 +18,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["onFiler"]);
 const citySubsetOptions = ref([]);
+const zoneOptions = ref([])
 
 const sellerReplyOptions = ref([
   /*{
@@ -153,6 +154,12 @@ async function queryCityList() {
   citySubsetOptions.value = getCityOptions(res);
 }
 
+async function queryZoneList() {
+  const params = {};
+  const res = await getZoneListApi(params);
+  zoneOptions.value = getCityOptions(res);
+}
+
 function getCityOptions(list) {
   const res = [];
   if (list?.length > 0) {
@@ -207,6 +214,7 @@ function onBack() {
 }
 
 queryCityList();
+queryZoneList();
 </script>
 
 <template>
@@ -266,20 +274,20 @@ queryCityList();
       </el-form-item>
 
       <el-form-item label="Zonedcodelocal" prop="zoning">
-        <!--el-select-v2
+        <el-select-v2
           v-model="formValue.zoning"
           filterable
           clearable
-          :options="zonedcodelocalOptions"
+          :options="zoneOptions"
           placeholder="Please select"
           style="width: 100%"
-        /-->
-        <el-input
+        />
+        <!--el-input
           v-model="formValue.zoning"
           placeholder="Please enter"
           clearable
           style="width: 100%"
-        />
+        /-->
       </el-form-item>
 
       <el-form-item label="Bedroomscount" prop="bedrooms">

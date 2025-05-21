@@ -344,7 +344,7 @@ export function useColumns() {
       if (res) {
         res += ` and`;
       }
-      res += ` zoning LIKE '%${params.zoning.toUpperCase()}%'`;
+      res += ` zoning='${params.zoning.toUpperCase()}'`;
     }
 
     if (params.addrFilter) {
