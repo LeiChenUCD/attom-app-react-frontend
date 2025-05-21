@@ -100,7 +100,7 @@ export function useDialog() {
   }
 
   async function onSaveData(comment, row, chores) {
-    console.dir([comment, row, chores])
+    console.dir([comment, row, chores]);
     const fid = row["fid"] ? row["fid"].toString() : "";
     /*const note = row.note || '';
     let Notes = '';
@@ -132,19 +132,12 @@ export function useDialog() {
         }
       }
     };*/
-    const comments = row?.comments || '';
-    const newComment = `[${dayjs(new Date().toISOString()).format("YYYY-MM-DD HH:mm")}] ${userInfo.username}: ${comment}`;
-    let content = '';
-    if (comments) {
-      content = `${comments}\n${newComment}`;
-    } else {
-      content = `${newComment}`;
-    }
+    const comments = row?.comments || "";
     const commentParams = {
-      "user": userInfo.username,
-      "content": content,
-      "fid": fid
-    }
+      user: userInfo.username,
+      content: comment,
+      fid: fid
+    };
     const loadingData = ElLoading.service({
       lock: true,
       text: "Loading...",
@@ -152,14 +145,24 @@ export function useDialog() {
     });
     let res = await insertNote(commentParams);
     loadingData.close();
-    if (res?.content) {
-      //row.note = commentContent;
-      row.comments = res.content;
+    if (res) {
+      const newComment = `[${dayjs(res.timestamp).format("YYYY-MM-DD HH:mm")}] ${userInfo.username}: ${comment}`;
+      let content = "";
+      if (comments) {
+        content = `${comments}\n${newComment}`;
+      } else {
+        content = `${newComment}`;
+      }
+      if (comments) {
+        row.comments = `${content}`;
+      } else {
+        row.comments = content;
+      }
       chores();
     }
   }
 
-  onMounted(() => { });
+  onMounted(() => {});
 
   return {
     form,
