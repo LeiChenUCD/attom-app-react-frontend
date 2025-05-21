@@ -295,7 +295,7 @@ export function useColumns() {
       if (res) {
         res += ` and`;
       }
-      res += ` comments LIKE '%${params.comments}%'`;
+      res += ` lower(comments) LIKE '%${params.comments.toLowerCase()}%'`;
     }
 
     if (params.lotAreaLower) {
