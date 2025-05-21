@@ -185,7 +185,7 @@ export function useColumns() {
     //background: true
   });
 
-  function onCurrentChange(page: number) {}
+  function onCurrentChange(page: number) { }
 
   function isNeedLoadData() {
     let res = true;
@@ -291,6 +291,13 @@ export function useColumns() {
       res += ` city LIKE '%${params.citySubset}%'`;
     }
 
+    if (params.comments) {
+      if (res) {
+        res += ` and`;
+      }
+      res += ` comments LIKE '%${params.comments}%'`;
+    }
+
     if (params.lotAreaLower) {
       if (res) {
         res += ` and`;
@@ -391,7 +398,7 @@ export function useColumns() {
       rightLong: "",
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
-      outFields: `bathcount,bedrooms,lotsize,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice`
+      outFields: `bathcount,bedrooms,lotsize,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice,comments`
     };
 
     if (searchAreaParams.value) {
@@ -537,7 +544,7 @@ export function useColumns() {
     return theNotes;
   }
 
-  function queryDataByCensustractId() {}
+  function queryDataByCensustractId() { }
 
   async function initTableData(init: boolean) {
     loading.value = true;

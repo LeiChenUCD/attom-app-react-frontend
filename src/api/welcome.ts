@@ -90,7 +90,8 @@ export const getNoteById = (data: any) => {
 };
 
 export const insertNote = (data: any) => {
-  return http.request<any>("post", `${baseApiUrl}/api/insertNote`, { data });
+  //return http.request<any>("post", `${baseApiUrl}/api/insertNote`, { data });
+  return http.request<any>("post", `${baseApiUrl}/api/comments`, { data });
 };
 
 /** 创建 */

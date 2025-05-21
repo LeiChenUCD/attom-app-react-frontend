@@ -35,7 +35,16 @@ const commentList = ref([{
 }])
 const ruleFormRef = ref();
 const newFormInline = ref(props.formInline);
-const commentHistory = buildCommentHistory();
+const commentHistory = buildComments();
+
+function buildComments() {
+  const note = newFormInline.value?.detail?.comments || "";
+  let res = [];
+  if (note) {
+    res = note.split("\n").map(line => line.trim());
+  }
+  return res;
+}
 
 function buildCommentHistory() {
   const notes = props.formInline?.currentComment?.fields?.Notes || [];
@@ -83,8 +92,9 @@ defineExpose({ getRef });
         <div class="item" 
           v-for="(comment, index) in commentHistory" 
           :key="index">
-          <div v-for="(item, index) in comment.list" :key="index">{{ item }}</div>
+          <!--div v-for="(item, index) in comment.list" :key="index">{{ item }}</div-->
           <!--div v-html="comment?.text"></div-->
+          {{ comment }}
         </div>
       </div>
     </el-form-item>

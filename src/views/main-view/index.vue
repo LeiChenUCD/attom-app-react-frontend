@@ -170,15 +170,15 @@ watch(
           <div class="flex justify-between">
             <div class="text-md font-medium">Houses</div>
             <div>
-              <span style="margin-right: 20px"
+              <span style="margin-right: 0px"
                 >Total: {{ pagination.total }}</span
               >
-              <el-link
+              <!--el-link
                 type="primary"
                 href="https://z1wxnr4c1l.larksuite.com/base/ZJYxbUZW0ah85TssgMqupEZJsB8?table=tbliAQ068PH77Eli&view=vewM7zhIkl"
                 target="_blank"
                 >Lark Table</el-link
-              >
+            -->
             </div>
           </div>
           <WelcomeTable

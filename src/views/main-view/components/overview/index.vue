@@ -63,7 +63,7 @@ function initMap() {
 }
 
 function buildComments() {
-  const note = props.detailData?.note || "";
+  const note = props.detailData?.comments || "";
   let res = [];
   if (note) {
     res = note.split("\n").map(line => line.trim());
