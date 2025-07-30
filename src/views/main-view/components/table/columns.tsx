@@ -288,7 +288,7 @@ export function useColumns() {
       if (res) {
         res += ` and`;
       }
-      res += ` city LIKE '%${params.citySubset}%'`;
+      res += ` city='${params.citySubset}'`;
     }
 
     if (params.comments) {
