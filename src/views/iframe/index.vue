@@ -91,7 +91,8 @@ watch(
 </script>
 
 <template>
-  <div>
+  <div class="page-box">
+    <div class="page-title">Explore Your ldeal Home Now</div>
     <el-row :gutter="24" justify="space-around">
       <re-col
         v-motion
@@ -264,5 +265,13 @@ watch(
 
 .main-content {
   margin: 20px 20px 0 !important;
+}
+
+.page-box {
+  .page-title {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+  }
 }
 </style>
