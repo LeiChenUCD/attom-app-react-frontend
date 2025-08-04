@@ -55,6 +55,7 @@ declare global {
      * （主要用于通过`query`或`params`传参的路由，当它们通过配置`showLink: false`后不在菜单中显示，就不会有任何菜单高亮，
      * 而通过设置`activePath`指定激活菜单即可获得高亮，`activePath`为指定激活菜单的`path`）
      */
+    noRequiresAuth: boolean;
     activePath?: string;
   }
 
@@ -96,6 +97,7 @@ declare global {
       showLink?: boolean;
       /** 菜单升序排序，值越高排的越后（只针对顶级路由）`可选` */
       rank?: number;
+      noRequiresAuth?: boolean;
     };
     /** 子路由配置项 */
     children?: Array<RouteChildrenConfigsTable>;

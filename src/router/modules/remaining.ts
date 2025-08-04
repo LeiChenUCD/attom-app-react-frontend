@@ -34,6 +34,7 @@ export default [
     meta: {
       title: "Home",
       showLink: false,
+      noRequiresAuth: true,
       rank: 103
     },
     children: [
@@ -42,6 +43,7 @@ export default [
         name: "iframeIndex",
         meta: {
           title: "Home",
+          noRequiresAuth: true,
           showLink: false
         },
         component: () => import("@/views/iframe/index.vue")
