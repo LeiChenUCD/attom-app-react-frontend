@@ -226,6 +226,77 @@ queryZoneList();
       :class="{ more: isMore }"
       class="search-form bg-bg_color w-[99/100] pt-[12px]"
     >
+      <el-form-item label="Status" prop="mlsstatus">
+        <el-select-v2
+          v-model="formValue.mlsstatus"
+          filterable
+          clearable
+          :options="mlsstatusOptions"
+          placeholder="Please select"
+          style="width: 100%"
+        />
+      </el-form-item>
+
+      <el-form-item label="Price" prop="closePrice">
+        <el-input-number
+          v-model="formValue.closePriceLower"
+          placeholder=" "
+          :min="0"
+          :max="9999999999"
+          style="width: 42%"
+          controls-position="right"
+        />
+        <span style="margin: 0 10px">~</span>
+        <el-input-number
+          v-model="formValue.closePriceUpper"
+          placeholder=" "
+          :min="0"
+          :max="9999999999"
+          style="width: 42%"
+          controls-position="right"
+        />
+      </el-form-item>
+
+      <el-form-item label="Bedroomscount" prop="bedrooms">
+        <el-input-number
+          v-model="formValue.bedroomsLower"
+          placeholder=" "
+          :min="0"
+          :max="9999"
+          style="width: 42%"
+          controls-position="right"
+        />
+        <span style="margin: 0 10px">~</span>
+        <el-input-number
+          v-model="formValue.bedroomsUpper"
+          placeholder=" "
+          :min="0"
+          :max="9999"
+          style="width: 42%"
+          controls-position="right"
+        />
+      </el-form-item>
+
+      <el-form-item label="Bathcount" prop="bathcount">
+        <el-input-number
+          v-model="formValue.bathcountLower"
+          placeholder=" "
+          :min="0"
+          :max="9999"
+          style="width: 42%"
+          controls-position="right"
+        />
+        <span style="margin: 0 10px">~</span>
+        <el-input-number
+          v-model="formValue.bathcountUpper"
+          placeholder=" "
+          :min="0"
+          :max="9999"
+          style="width: 42%"
+          controls-position="right"
+        />
+      </el-form-item>
+
       <el-form-item label="City" prop="citySubset">
         <el-select-v2
           v-model="formValue.citySubset"
@@ -290,46 +361,6 @@ queryZoneList();
         /-->
       </el-form-item>
 
-      <el-form-item label="Bedroomscount" prop="bedrooms">
-        <el-input-number
-          v-model="formValue.bedroomsLower"
-          placeholder=" "
-          :min="0"
-          :max="9999"
-          style="width: 42%"
-          controls-position="right"
-        />
-        <span style="margin: 0 10px">~</span>
-        <el-input-number
-          v-model="formValue.bedroomsUpper"
-          placeholder=" "
-          :min="0"
-          :max="9999"
-          style="width: 42%"
-          controls-position="right"
-        />
-      </el-form-item>
-
-      <el-form-item label="Bathcount" prop="bathcount">
-        <el-input-number
-          v-model="formValue.bathcountLower"
-          placeholder=" "
-          :min="0"
-          :max="9999"
-          style="width: 42%"
-          controls-position="right"
-        />
-        <span style="margin: 0 10px">~</span>
-        <el-input-number
-          v-model="formValue.bathcountUpper"
-          placeholder=" "
-          :min="0"
-          :max="9999"
-          style="width: 42%"
-          controls-position="right"
-        />
-      </el-form-item>
-
       <!--el-form-item label="Priority" prop="priority">
         <el-input-number
           v-model="formValue.priorityLower"
@@ -350,26 +381,6 @@ queryZoneList();
         />
       </el-form-item-->
 
-      <el-form-item label="ClosePrice" prop="closePrice">
-        <el-input-number
-          v-model="formValue.closePriceLower"
-          placeholder=" "
-          :min="0"
-          :max="9999999999"
-          style="width: 42%"
-          controls-position="right"
-        />
-        <span style="margin: 0 10px">~</span>
-        <el-input-number
-          v-model="formValue.closePriceUpper"
-          placeholder=" "
-          :min="0"
-          :max="9999999999"
-          style="width: 42%"
-          controls-position="right"
-        />
-      </el-form-item>
-
       <!--el-form-item label="LotSizeArea" prop="lotSizeArea">
         <el-input-number
           v-model="formValue.lotSizeAreaLower"
@@ -389,17 +400,6 @@ queryZoneList();
           controls-position="right"
         />
       </el-form-item-->
-
-      <el-form-item label="MLS status" prop="mlsstatus">
-        <el-select-v2
-          v-model="formValue.mlsstatus"
-          filterable
-          clearable
-          :options="mlsstatusOptions"
-          placeholder="Please select"
-          style="width: 100%"
-        />
-      </el-form-item>
 
       <!--el-form-item label="Seller Reply?" prop="sellerReplyAddr">
         <el-select-v2
@@ -444,17 +444,17 @@ queryZoneList();
           style="width: 100%"
         />
       </el-form-item-->
-      <el-form-item label="Comments" prop="comments">
+      <!--el-form-item label="Comments" prop="comments">
         <el-input
           v-model="formValue.comments"
           placeholder="Please enter"
           clearable
           style="width: 100%"
         />
-      </el-form-item>
-      <el-form-item label="AlphaX project" prop="alphaxheld">
+      </el-form-item-->
+      <!--el-form-item label="AlphaX project" prop="alphaxheld">
         <el-checkbox v-model="formValue.alphaxheld" label="" size="large" />
-      </el-form-item>
+      </el-form-item-->
     </el-form>
     <div class="operators">
       <el-button
