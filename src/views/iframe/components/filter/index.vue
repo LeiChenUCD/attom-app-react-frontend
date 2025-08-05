@@ -18,7 +18,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["onFiler"]);
 const citySubsetOptions = ref([]);
-const zoneOptions = ref([])
+const zoneOptions = ref([]);
 
 const sellerReplyOptions = ref([
   /*{
@@ -145,7 +145,7 @@ const formValue = ref({
   noted: "Both",
   contactInfo: "Both",
   alphaxheld: false,
-  comments: null,
+  comments: null
 });
 
 async function queryCityList() {
@@ -204,7 +204,7 @@ function resetForm() {
     noted: "Both",
     contactInfo: "Both",
     alphaxheld: false,
-    comments: null,
+    comments: null
   };
   onBack();
 }
@@ -510,14 +510,22 @@ queryZoneList();
 .filter-main {
   display: flex;
   align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 0 10px 0 20px;
   .search-form {
+    display: flex;
+    flex-wrap: wrap;
     :deep(.el-form-item) {
       margin-bottom: 12px;
-      margin-right: 50px;
-      width: 350px;
+      margin-right: 0;
+      padding-right: 10px;
+      display: inline-block;
+      flex: 1 1 20%;
+      min-width: 200px;
     }
     flex: 1;
-    height: 55px;
+    /**height: 55px;**/
     overflow: hidden;
     &.more {
       height: auto;
@@ -528,6 +536,7 @@ queryZoneList();
     width: 230px;
     display: flex;
     align-items: center;
+    display: none;
     svg {
       cursor: pointer;
       margin: 0 0 0 10px;

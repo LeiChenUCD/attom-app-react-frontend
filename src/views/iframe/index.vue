@@ -93,32 +93,13 @@ watch(
 <template>
   <div class="page-box">
     <div class="page-title">Explore Your ldeal Home Now</div>
+    <div class="filter-box">
+      <FilterBox
+        :zonedcodelocalOptions="zonedcodelocalOptions"
+        @onFiler="onFilerData"
+      />
+    </div>
     <el-row :gutter="24" justify="space-around">
-      <re-col
-        v-motion
-        class="mb-[18px]"
-        :value="24"
-        :xs="24"
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 560
-          }
-        }"
-      >
-        <el-card id="filter-main-box" shadow="never">
-          <FilterBox
-            :zonedcodelocalOptions="zonedcodelocalOptions"
-            @onFiler="onFilerData"
-          />
-        </el-card>
-      </re-col>
-
       <re-col
         v-motion
         class="mb-[18px]"
@@ -179,8 +160,7 @@ watch(
                 href="https://z1wxnr4c1l.larksuite.com/base/ZJYxbUZW0ah85TssgMqupEZJsB8?table=tbliAQ068PH77Eli&view=vewM7zhIkl"
                 target="_blank"
                 >Lark Table</el-link
-            -->
-            </div>
+            --></div>
           </div>
           <WelcomeTable
             :loading="loading"
@@ -269,9 +249,12 @@ watch(
 
 .page-box {
   .page-title {
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 26px;
+    font-weight: 400;
     padding: 10px 20px;
+  }
+  .filter-box {
+    margin: 0 20px;
   }
 }
 </style>
