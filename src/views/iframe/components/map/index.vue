@@ -265,7 +265,7 @@ const loadWMSLayer2 = () => {
   });
 
   if (mapCom) {
-    currentWMSLayer.addTo(mapCom);
+    //currentWMSLayer.addTo(mapCom);
 
     // 如果是EPSG:2227图层，设置合适的地图视图
     if (wsmData.key !== "floodZone" && options.srs === "EPSG:2227") {
@@ -852,7 +852,7 @@ watch(
 
 <template>
   <div class="map-com" :class="{ 'map-com-fix': offsetTop > 0 }">
-    <div class="map-filter-box" :style="filterStyle">
+    <!--div class="map-filter-box" :style="filterStyle">
       <span>WMS:</span>
       <el-select-v2
         v-model="currentWms"
@@ -867,7 +867,7 @@ watch(
         style="width: 400px"
         @change="onChangeWms"
       />
-    </div>
+    </div-->
     <div ref="mapContainer" class="map-container" />
     <el-button
       v-if="isShowSearchBtnArea"
@@ -912,7 +912,7 @@ watch(
   }
   .map-container {
     width: 100%;
-    height: calc(100% - 50px);
+    height: 100%;
   }
   &.map-com-fix {
     padding-top: 42px;

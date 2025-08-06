@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch,onUnmounted, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ReCol from "@/components/ReCol";
 import WelcomeTable from "./components/table/index.vue";
@@ -42,6 +42,21 @@ const { params, query } = route;
 const censustractId = ref(params.censustractId || "");
 const houseId = ref("");
 
+const filterElement = ref(null);
+const mapHeight = ref(500);
+
+const calculateMapHeight = () => {
+  if (filterElement.value) {
+    const windowHeight = window.innerHeight;
+    const elementHeight = filterElement.value.getBoundingClientRect().height;
+    let height = windowHeight - elementHeight;
+    if (height < 400) {
+      height = 400;
+    }
+    mapHeight.value = height;
+  }
+};
+
 function onSortTableData(sortBy: SortBy) {
   onSort(sortBy);
 }
@@ -79,6 +94,15 @@ function getHouseById(id: string, list: any) {
   return res;
 }
 
+onMounted(() => {
+  calculateMapHeight(); // 初始计算
+  window.addEventListener('resize', calculateMapHeight); // 监听窗口变化
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', calculateMapHeight); // 组件卸载时移除监听
+});
+
 watch(
   () => currentRowData,
   () => {
@@ -92,14 +116,52 @@ watch(
 
 <template>
   <div class="page-box">
-    <div class="page-title">Explore Your ldeal Home Now</div>
-    <div class="filter-box">
-      <FilterBox
-        :zonedcodelocalOptions="zonedcodelocalOptions"
-        @onFiler="onFilerData"
-      />
+    <div ref="filterElement">
+      <div class="page-title">Explore Your ldeal Home Now</div>
+      <div class="filter-box">
+        <FilterBox
+          :zonedcodelocalOptions="zonedcodelocalOptions"
+          @onFiler="onFilerData"
+        />
+      </div>
     </div>
     <el-row :gutter="24" justify="space-around">
+       <re-col
+        v-motion
+        class="mb-[18px]"
+        :value="14"
+        :xs="24"
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 640
+          }
+        }"
+      >
+        <div
+          shadow="never"
+          style="
+            background: #fff;
+            padding: 10px;
+            border-radius: 3px;
+          "
+          :style="{height: mapHeight+'px'}"
+        >
+          <MapBox
+            :detailData="currentRowData"
+            :isResetPoint="isResetPoint"
+            :isSearch="searchAreaParams"
+            :houses="houses"
+            @onRowIndex="onMapRowIndex"
+            @onSearchArea="onSearchArea"
+          />
+        </div>
+      </re-col>
       <re-col
         v-motion
         class="mb-[18px]"
@@ -175,44 +237,6 @@ watch(
             @onPage="onSearchPage"
           />
         </el-card>
-      </re-col>
-
-      <re-col
-        v-motion
-        class="mb-[18px]"
-        :value="14"
-        :xs="24"
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 640
-          }
-        }"
-      >
-        <div
-          shadow="never"
-          class="h-[950px]"
-          style="
-            height: 950px;
-            background: #fff;
-            padding: 10px;
-            border-radius: 3px;
-          "
-        >
-          <MapBox
-            :detailData="currentRowData"
-            :isResetPoint="isResetPoint"
-            :isSearch="searchAreaParams"
-            :houses="houses"
-            @onRowIndex="onMapRowIndex"
-            @onSearchArea="onSearchArea"
-          />
-        </div>
       </re-col>
     </el-row>
   </div>
