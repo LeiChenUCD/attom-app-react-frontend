@@ -147,7 +147,7 @@ watch(
           shadow="never"
           style="
             background: #fff;
-            padding: 10px;
+            padding: 20px;
             border-radius: 3px;
           "
           :style="{height: mapHeight+'px'}"
