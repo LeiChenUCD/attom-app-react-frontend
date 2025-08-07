@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import type { SortBy } from "element-plus";
+import { objectParamsToQueryString } from "@/utils/common";
+import {
+  getCensusListApi3,
+} from "@/api/welcome";
 
 const props = defineProps({
   loading: {
@@ -42,6 +46,10 @@ const props = defineProps({
       };
     }
   },
+  whereParams: {
+    type: String,
+    default: () => ''
+  },
   dataTotal: {
     type: Number,
     default: () => 0
@@ -60,6 +68,20 @@ const currentRowIndex = ref(0);
 const tableRef = ref();
 const currentPage = ref(props.paginationParams.currentPage || 1);
 const pageSize = ref(props.paginationParams.pageSize || 500);
+const queryOffset = ref(0);
+const totalSize = ref(0);
+const housesData = ref([])
+
+const loading = ref(false)
+const noMore = computed(() => count.value >= 20)
+const disabled = computed(() => loading.value || noMore.value)
+const loadData = () => {
+  loading.value = true
+  setTimeout(() => {
+    count.value += 2
+    loading.value = false
+  }, 2000)
+}
 
 function onSortTable(sortBy: SortBy) {
   emit("onSort", sortBy);
@@ -68,6 +90,36 @@ function onSortTable(sortBy: SortBy) {
 function onClickRow(index: number) {
   currentRowIndex.value = index;
   emit("onRowIndex", index);
+}
+
+async function loadHousesFromATTOMPostgresAll() {
+  queryOffset.value = calculateOffset(currentPage.value, pageSize.value);
+  const params = {
+    where: props.whereParams, //`minorcivildivisionname='SAN JOSE'`,
+    //mlsWhere: getMlsFilterParams(),
+    maxResultSize: pageSize.value,
+    objectIds: "",
+    resultOffset: queryOffset.value || 0,
+    topLat: "",
+    bottomLat: "",
+    leftLong: "",
+    rightLong: "",
+    //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
+    //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
+    outFields: `bathcount,bedrooms,lotsize,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice,comments`
+  };
+
+  const queryString = objectParamsToQueryString(params);
+  const houseRes = await getCensusListApi3(queryString, params);
+  totalSize.value = houseRes?.totalSize || 0;
+  housesData.value = houseRes?.result || [];
+}
+
+function calculateOffset(page: number, pageSize: number) {
+  if (page <= 1) {
+    return 0;
+  }
+  return (page - 1) * pageSize;
 }
 
 const handleSizeChange = (val: number) => {
@@ -128,62 +180,36 @@ watch(
 
 <template>
   <div ref="parentContainer" v-loading="loading" class="main-view-table">
+    <ul v-infinite-scroll="loadData" class="infinite-list" style="overflow: auto">
+      <li v-for="item in housesData" :key="item.fid" class="infinite-list-item">{{ item.address }}</li>
+    </ul>
     <div style="margin: 10px 0; display: flex; justify-content: end">
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :page-sizes="paginationParams.pageSizes"
-        :size="paginationParams.size"
-        :disabled="false"
-        :background="paginationParams.background"
-        layout="prev, pager, next, jumper"
-        :total="dataTotal"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+      <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize"
+        :page-sizes="paginationParams.pageSizes" :size="paginationParams.size" :disabled="false"
+        :background="paginationParams.background" layout="prev, pager, next, jumper" :total="dataTotal"
+        @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
 
-    <el-table-v2
-      ref="tableRef"
-      :columns="tableColumns"
-      :data="houses"
-      :width="boxWidth"
-      :height="boxHeight"
-      :sort-by="sortState"
-      fixed
-      @column-sort="onSortTable"
-    >
+    <el-table-v2 ref="tableRef" :columns="tableColumns" :data="houses" :width="boxWidth" :height="boxHeight"
+      :sort-by="sortState" fixed @column-sort="onSortTable">
       <template #cell="{ row, column, rowIndex }">
-        <el-tooltip
-          v-if="column.dataKey === 'address'"
-          class="box-item"
-          effect="dark"
-          :content="houses[rowIndex][column.dataKey]"
-          placement="top"
-        >
-          <el-button
-            :class="{ 'current-item': currentRowIndex == rowIndex }"
-            link
-            type="primary"
-            @click="onClickRow(rowIndex)"
-            >{{ houses[rowIndex][column.dataKey] }}</el-button
-          >
+        <el-tooltip v-if="column.dataKey === 'address'" class="box-item" effect="dark"
+          :content="houses[rowIndex][column.dataKey]" placement="top">
+          <el-button :class="{ 'current-item': currentRowIndex == rowIndex }" link type="primary"
+            @click="onClickRow(rowIndex)">{{ houses[rowIndex][column.dataKey] }}</el-button>
         </el-tooltip>
         <div v-else-if="column.dataKey === 'alphaxheld'">
           {{ houses[rowIndex][column.dataKey] ? "Yes" : "No" }}
         </div>
-        <div
-          v-else-if="
-            column.dataKey === 'lotsize' ||
-            column.dataKey === 'bedrooms' ||
-            column.dataKey === 'bathcount'
-          "
-          :class="{ 'current-item': currentRowIndex == rowIndex }"
-        >
+        <div v-else-if="
+          column.dataKey === 'lotsize' ||
+          column.dataKey === 'bedrooms' ||
+          column.dataKey === 'bathcount'
+        " :class="{ 'current-item': currentRowIndex == rowIndex }">
           {{
             houses[rowIndex] &&
-            houses[rowIndex][column.dataKey] !== undefined &&
-            houses[rowIndex][column.dataKey] !== null
+              houses[rowIndex][column.dataKey] !== undefined &&
+              houses[rowIndex][column.dataKey] !== null
               ? Number(houses[rowIndex][column.dataKey]).toFixed(0)
               : "--"
           }}

@@ -44,6 +44,7 @@ export function useColumns() {
   const queryTotal = ref(query.total ? Number(query.total) : 500);
   const censustractId = ref(params.censustractId || "0");
   const queryParams = ref({});
+  const whereParams = ref('')
   const queryOffset = ref(0);
   const searchAreaParams = ref(null);
   const zonedcodelocalOptions = ref([
@@ -387,7 +388,7 @@ export function useColumns() {
 
   async function loadHousesFromATTOMPostgresAll() {
     const params = {
-      where: getFilerParams(), //`minorcivildivisionname='SAN JOSE'`,
+      where: whereParams.value, //`minorcivildivisionname='SAN JOSE'`,
       //mlsWhere: getMlsFilterParams(),
       maxResultSize: queryTotal.value,
       objectIds: "",
@@ -731,6 +732,7 @@ export function useColumns() {
     searchAreaParams.value = null;
     pagination.currentPage = 1;
     queryOffset.value = 0;
+    whereParams.value = getFilerParams()
     queryTabelData();
   }
 
@@ -777,6 +779,7 @@ export function useColumns() {
   return {
     Empty,
     loading,
+    whereParams,
     columns,
     sortState,
     isResetMap,

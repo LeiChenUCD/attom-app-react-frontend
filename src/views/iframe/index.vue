@@ -14,6 +14,7 @@ import type { SortBy } from "element-plus";
 const {
   loading,
   columns,
+  whereParams,
   houses,
   isResetMap,
   currentRowIndex,
@@ -226,6 +227,7 @@ watch(
           </div>
           <WelcomeTable
             :loading="loading"
+            :whereParams="whereParams"
             :sortState="sortState"
             :columns="columns"
             :houses="houses"
