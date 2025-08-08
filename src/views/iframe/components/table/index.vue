@@ -203,7 +203,7 @@ watch(
       :infinite-scroll-disabled="disabled">
       <li v-for="item in housesData" :key="item.fid" class="infinite-list-item">{{ item.address }}</li>
     </ul>
-    <div style="margin: 10px 0; display: flex; justify-content: end">
+    <!--div style="margin: 10px 0; display: flex; justify-content: end">
       <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize"
         :page-sizes="paginationParams.pageSizes" :size="paginationParams.size" :disabled="false"
         :background="paginationParams.background" layout="prev, pager, next, jumper" :total="dataTotal"
@@ -238,7 +238,7 @@ watch(
           {{ houses[rowIndex][column.dataKey] }}
         </div>
       </template>
-    </el-table-v2>
+    </el-table-v2-->
   </div>
 </template>
 
