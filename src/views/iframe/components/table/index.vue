@@ -54,6 +54,10 @@ const props = defineProps({
     type: Number,
     default: () => 0
   },
+  height: {
+    type: Number,
+    default: () => 200
+  },
   sortState: {
     type: null as PropType<any>
   }
@@ -196,8 +200,8 @@ watch(
 <template>
   <div ref="parentContainer" v-loading="loading" class="main-view-table">
     <ul v-infinite-scroll="loadData" 
-      class="infinite-list" 
       style="overflow: auto" 
+      :style="{height: height+'px'}"
       :infinite-scroll-distance="100" 
       :infinite-scroll-immediate="false"
       :infinite-scroll-disabled="disabled">
@@ -245,5 +249,10 @@ watch(
 <style scoped lang="scss">
 .current-item {
   font-weight: bold;
+}
+.main-view-table {
+  .infinite-list {
+    overflow: auto;
+  }
 }
 </style>

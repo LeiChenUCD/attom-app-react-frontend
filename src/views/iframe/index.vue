@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch,onUnmounted, onMounted } from "vue";
+import { ref, watch, onUnmounted, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ReCol from "@/components/ReCol";
 import WelcomeTable from "./components/table/index.vue";
@@ -50,7 +50,7 @@ const calculateMapHeight = () => {
   if (filterElement.value) {
     const windowHeight = window.innerHeight;
     const elementHeight = filterElement.value.getBoundingClientRect().height;
-    let height = windowHeight - elementHeight;
+    let height = windowHeight - elementHeight - 40;
     if (height < 400) {
       height = 400;
     }
@@ -120,125 +120,55 @@ watch(
     <div ref="filterElement">
       <div class="page-title">Explore Your ldeal Home Now</div>
       <div class="filter-box">
-        <FilterBox
-          :zonedcodelocalOptions="zonedcodelocalOptions"
-          @onFiler="onFilerData"
-        />
+        <FilterBox :zonedcodelocalOptions="zonedcodelocalOptions" @onFiler="onFilerData" />
       </div>
     </div>
-    <el-row :gutter="24" justify="space-around">
-       <re-col
-        v-motion
-        class="mb-[18px]"
-        :value="14"
-        :xs="24"
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 640
-          }
-        }"
-      >
-        <div
-          shadow="never"
-          style="
-            background: #fff;
-            padding: 20px;
-            border-radius: 3px;
-          "
-          :style="{height: mapHeight+'px'}"
-        >
-          <MapBox
-            :detailData="currentRowData"
-            :isResetPoint="isResetPoint"
-            :isSearch="searchAreaParams"
-            :houses="houses"
-            @onRowIndex="onMapRowIndex"
-            @onSearchArea="onSearchArea"
-          />
-        </div>
-      </re-col>
-      <re-col
-        v-motion
-        class="mb-[18px]"
-        :value="10"
-        :xs="24"
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 560
-          }
-        }"
-      >
-        <!--el-card
-          id="overview-main-box"
-          shadow="never"
-          class="h-[350px]"
-          style="margin-bottom: 20px"
-        >
-          <div>
-            <div class="text-md font-medium" style="margin-bottom: 5px">
-              <el-select-v2
-                v-model="houseId"
-                filterable
-                :options="houses"
-                :props="{
-                  label: 'address',
-                  value: 'fid'
-                }"
-                placeholder="Please select"
-                style="width: 50%"
-                @change="onChangeHouse"
-              />
-            </div>
-          </div>
-          <div>
-            <OverviewBox
-              :detailData="currentRowData"
-              @onComment="openCommentDialog"
-              @onViewDetail="openViewDetailDialog"
-            />
-          </div>
-        </el-card-->
-        <el-card id="table-main-box" shadow="never" class="h-[580px]">
-          <!--div class="flex justify-between">
-            <div class="text-md font-medium">Houses</div>
-            <div>
-              <span style="margin-right: 0px"
-                >Total: {{ pagination.total }}</span
-              >
-            </div>
-          </div-->
-          <WelcomeTable
-            :loading="loading"
-            :whereParams="whereParams"
-            :sortState="sortState"
-            :columns="columns"
-            :houses="houses"
-            :index="currentRowIndex"
-            :curPage="pagination.currentPage"
-            :dataTotal="pagination.total"
-            @onRowIndex="onTableRow"
-            @onSort="onSortTableData"
-            @onPage="onSearchPage"
-          />
-        </el-card>
-      </re-col>
-    </el-row>
+    <div class="page-conent">
+      <div class="map-box" :style="{ height: mapHeight + 'px' }">
+        <MapBox :detailData="currentRowData" :isResetPoint="isResetPoint" :isSearch="searchAreaParams" :houses="houses"
+          @onRowIndex="onMapRowIndex" @onSearchArea="onSearchArea" />
+      </div>
+      <div class="list-box">
+        <WelcomeTable :loading="loading" :whereParams="whereParams" :sortState="sortState" :columns="columns"
+          :houses="houses" :height="mapHeight" :index="currentRowIndex" :curPage="pagination.currentPage"
+          :dataTotal="pagination.total" @onRowIndex="onTableRow" @onSort="onSortTableData" @onPage="onSearchPage" />
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.page-conent {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+
+  /* 允许换行（移动端时左右分行） */
+  .map-box {
+    flex: 1;
+    /* 左边自适应，占满剩余空间 */
+    min-width: 0;
+    /* 防止内容溢出 */
+  }
+
+  .list-box {
+    width: 300px;
+    margin-left: 10px;
+    /* 右边固定宽度 */
+  }
+  /* 移动端适配（如屏幕宽度 ≤ 768px） */
+  @media (max-width: 768px) {
+    .map-box, .list-box {
+      width: 100%;          /* 左右均占满整行 */
+      flex: none;           /* 取消 flex 伸缩 */
+    }
+    .list-box {
+      margin-left: 0;
+      margin-top: 10px;
+    }
+  }
+}
+
 :deep(.el-card) {
   --el-card-border-color: none;
 
@@ -273,6 +203,7 @@ watch(
     font-weight: 400;
     padding: 10px 20px;
   }
+
   .filter-box {
     margin: 0 20px;
   }
