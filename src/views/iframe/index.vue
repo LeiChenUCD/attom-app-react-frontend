@@ -180,7 +180,7 @@ watch(
           }
         }"
       >
-        <el-card
+        <!--el-card
           id="overview-main-box"
           shadow="never"
           class="h-[350px]"
@@ -188,7 +188,6 @@ watch(
         >
           <div>
             <div class="text-md font-medium" style="margin-bottom: 5px">
-              <!--?.address}}-->
               <el-select-v2
                 v-model="houseId"
                 filterable
@@ -210,7 +209,7 @@ watch(
               @onViewDetail="openViewDetailDialog"
             />
           </div>
-        </el-card>
+        </el-card-->
         <el-card id="table-main-box" shadow="never" class="h-[580px]">
           <div class="flex justify-between">
             <div class="text-md font-medium">Houses</div>

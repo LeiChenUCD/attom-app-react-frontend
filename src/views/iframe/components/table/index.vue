@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import type { SortBy } from "element-plus";
 import { objectParamsToQueryString } from "@/utils/common";
 import {
@@ -36,7 +36,7 @@ const props = defineProps({
     default: () => {
       return {
         currentPage: 1,
-        pageSize: 500,
+        pageSize: 20,
         pageSizes: [
           100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 15000,
           20000, 25000, 30000, 35000, 40000, 45000, 50000, 100000, 1000000
@@ -67,20 +67,19 @@ const emit = defineEmits(["onSort", "onRowIndex", "onPage"]);
 const currentRowIndex = ref(0);
 const tableRef = ref();
 const currentPage = ref(props.paginationParams.currentPage || 1);
-const pageSize = ref(props.paginationParams.pageSize || 500);
+const pageSize = ref(props.paginationParams.pageSize || 20);
 const queryOffset = ref(0);
 const totalSize = ref(0);
 const housesData = ref([])
 
 const loading = ref(false)
-const noMore = computed(() => count.value >= 20)
-const disabled = computed(() => loading.value || noMore.value)
+
+const canLoadMore = computed(() => {
+  return currentPage.value === 1 || housesData.value.length < totalSize.value;
+});
+const disabled = computed(() => loading.value || !canLoadMore.value)
 const loadData = () => {
-  loading.value = true
-  setTimeout(() => {
-    count.value += 2
-    loading.value = false
-  }, 2000)
+  loadListData()
 }
 
 function onSortTable(sortBy: SortBy) {
@@ -92,7 +91,11 @@ function onClickRow(index: number) {
   emit("onRowIndex", index);
 }
 
-async function loadHousesFromATTOMPostgresAll() {
+async function loadListData() {
+  if (disabled.value) {
+    return;
+  }
+   loading.value = true
   queryOffset.value = calculateOffset(currentPage.value, pageSize.value);
   const params = {
     where: props.whereParams, //`minorcivildivisionname='SAN JOSE'`,
@@ -100,10 +103,11 @@ async function loadHousesFromATTOMPostgresAll() {
     maxResultSize: pageSize.value,
     objectIds: "",
     resultOffset: queryOffset.value || 0,
-    topLat: "",
-    bottomLat: "",
-    leftLong: "",
-    rightLong: "",
+    //pic: true,
+    //topLat: "",
+    //bottomLat: "",
+    //leftLong: "",
+    //rightLong: "",
     //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
     //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
     outFields: `bathcount,bedrooms,lotsize,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice,comments`
@@ -111,8 +115,18 @@ async function loadHousesFromATTOMPostgresAll() {
 
   const queryString = objectParamsToQueryString(params);
   const houseRes = await getCensusListApi3(queryString, params);
+  // 关键修改：根据页码决定是覆盖还是合并数据
+  if (currentPage.value === 1) {
+    // 第一页：直接覆盖
+    housesData.value = houseRes?.result || [];
+  } else {
+    // 非第一页：合并结果（避免重复数据）
+    const newData = houseRes?.result || [];
+    housesData.value = [...housesData.value, ...newData];
+  }
+  currentPage.value++;
   totalSize.value = houseRes?.totalSize || 0;
-  housesData.value = houseRes?.result || [];
+  loading.value = false
 }
 
 function calculateOffset(page: number, pageSize: number) {
@@ -151,6 +165,7 @@ onMounted(() => {
     boxHeight.value = parentContainer.value.offsetHeight - 62;
     boxWidth.value = parentContainer.value.offsetWidth;
   }
+  loadListData()
 });
 
 watch(
@@ -180,7 +195,12 @@ watch(
 
 <template>
   <div ref="parentContainer" v-loading="loading" class="main-view-table">
-    <ul v-infinite-scroll="loadData" class="infinite-list" style="overflow: auto">
+    <ul v-infinite-scroll="loadData" 
+      class="infinite-list" 
+      style="overflow: auto" 
+      :infinite-scroll-distance="100" 
+      :infinite-scroll-immediate="false"
+      :infinite-scroll-disabled="disabled">
       <li v-for="item in housesData" :key="item.fid" class="infinite-list-item">{{ item.address }}</li>
     </ul>
     <div style="margin: 10px 0; display: flex; justify-content: end">
