@@ -2,9 +2,8 @@
 import { ref, onMounted, watch, computed } from "vue";
 import type { SortBy } from "element-plus";
 import { objectParamsToQueryString } from "@/utils/common";
-import {
-  getCensusListApi3,
-} from "@/api/welcome";
+import { getCensusListApi3 } from "@/api/welcome";
+import OverviewBox from "../overview/index.vue";
 
 const props = defineProps({
   loading: {
@@ -48,7 +47,7 @@ const props = defineProps({
   },
   whereParams: {
     type: String,
-    default: () => ''
+    default: () => ""
   },
   dataTotal: {
     type: Number,
@@ -74,17 +73,20 @@ const currentPage = ref(props.paginationParams.currentPage || 1);
 const pageSize = ref(props.paginationParams.pageSize || 20);
 const queryOffset = ref(0);
 const totalSize = ref(0);
-const housesData = ref([])
+const housesData = ref([]);
 
-const loading = ref(false)
+const loading = ref(false);
 
 const canLoadMore = computed(() => {
   return currentPage.value === 1 || housesData.value.length < totalSize.value;
 });
-const disabled = computed(() => loading.value || !canLoadMore.value)
+const noMore = computed(() => {
+  return housesData.value.length >= totalSize.value;
+});
+const disabled = computed(() => loading.value || !canLoadMore.value);
 const loadData = () => {
-  loadListData()
-}
+  loadListData();
+};
 
 function onSortTable(sortBy: SortBy) {
   emit("onSort", sortBy);
@@ -99,7 +101,7 @@ async function loadListData() {
   if (disabled.value) {
     return;
   }
-   loading.value = true
+  loading.value = true;
   queryOffset.value = calculateOffset(currentPage.value, pageSize.value);
   const params = {
     where: props.whereParams, //`minorcivildivisionname='SAN JOSE'`,
@@ -107,7 +109,7 @@ async function loadListData() {
     maxResultSize: pageSize.value,
     objectIds: "",
     resultOffset: queryOffset.value || 0,
-    //pic: true,
+    pic: true,
     //topLat: "",
     //bottomLat: "",
     //leftLong: "",
@@ -130,7 +132,7 @@ async function loadListData() {
   }
   currentPage.value++;
   totalSize.value = houseRes?.totalSize || 0;
-  loading.value = false
+  loading.value = false;
 }
 
 function calculateOffset(page: number, pageSize: number) {
@@ -164,12 +166,14 @@ function scrollByRows() {
   tableRef.value?.scrollToRow(currentRowIndex.value);
 }
 
+function openViewDetailDialog() {}
+
 onMounted(() => {
   if (parentContainer.value) {
     boxHeight.value = parentContainer.value.offsetHeight - 62;
     boxWidth.value = parentContainer.value.offsetWidth;
   }
-  loadListData()
+  loadListData();
 });
 
 watch(
@@ -194,18 +198,27 @@ watch(
     immediate: true
   }
 );
-
 </script>
 
 <template>
-  <div ref="parentContainer" v-loading="loading" class="main-view-table">
-    <ul v-infinite-scroll="loadData" 
-      style="overflow: auto" 
-      :style="{height: height+'px'}"
-      :infinite-scroll-distance="100" 
+  <div ref="parentContainer" class="main-view-table">
+    <ul
+      v-infinite-scroll="loadData"
+      style="overflow: auto"
+      :style="{ height: height + 'px' }"
+      :infinite-scroll-distance="100"
       :infinite-scroll-immediate="false"
-      :infinite-scroll-disabled="disabled">
-      <li v-for="item in housesData" :key="item.fid" class="infinite-list-item">{{ item.address }}</li>
+      :infinite-scroll-disabled="disabled"
+    >
+      <li v-for="item in housesData" :key="item.fid" class="infinite-list-item">
+        <OverviewBox :detailData="item" @onViewDetail="openViewDetailDialog" />
+      </li>
+      <li v-if="loading" style="text-align: center; margin: 10px 0">
+        Loading...
+      </li>
+      <li v-if="noMore && !loading" style="text-align: center; margin: 10px 0">
+        No more
+      </li>
     </ul>
     <!--div style="margin: 10px 0; display: flex; justify-content: end">
       <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize"
