@@ -20,7 +20,7 @@ const emit = defineEmits(["onComment", "onViewDetail"]);
 const mapContainer = ref();
 const comments = ref([]);
 const imageList = ref([]);
-const bannerHeight = ref("255px");
+const bannerHeight = ref("150px");
 const loadingMap = ref(true);
 
 function onShowViewDetail() {
@@ -159,7 +159,7 @@ watch(
           <template #template>
             <el-skeleton-item
               variant="image"
-              style="width: 100%; height: 100px"
+              style="width: 100%; height: 150px"
             />
           </template>
         </el-skeleton>
@@ -167,7 +167,10 @@ watch(
       </div>
       <div class="item right">
         <dl>
-          <dt class="title">Properties</dt>
+          <!--dt class="title">Properties</dt-->
+          <dd class="text">
+            {{ detailData?.address }}
+          </dd>
           <dd class="text">
             Size:
             {{
@@ -213,18 +216,27 @@ watch(
 
 <style scoped lang="scss">
 .overview-container {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 10px;
+  overflow: hidden;
   .content {
-    display: flex;
     width: 100%;
-    height: 255px;
-    overflow: auto;
     .item {
-      width: 50%;
       .title {
         font-weight: bold;
       }
       &.right {
-        padding-left: 10px;
+        padding: 10px;
+        dl {
+          dd {
+            font-size: 14px;
+          }
+        }
+      }
+      &.left {
+        height: 150px;
+        width: 100%;
       }
     }
   }

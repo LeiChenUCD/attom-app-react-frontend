@@ -152,7 +152,7 @@ watch(
   }
 
   .list-box {
-    width: 400px;
+    width: 600px;
     margin-left: 20px;
     /* 右边固定宽度 */
   }

@@ -204,9 +204,9 @@ watch(
   <div ref="parentContainer" class="main-view-table">
     <ul
       v-infinite-scroll="loadData"
-      style="overflow: auto"
+      class="infinite-list"
       :style="{ height: height + 'px' }"
-      :infinite-scroll-distance="100"
+      :infinite-scroll-distance="160"
       :infinite-scroll-immediate="false"
       :infinite-scroll-disabled="disabled"
     >
@@ -266,6 +266,17 @@ watch(
 .main-view-table {
   .infinite-list {
     overflow: auto;
+    .infinite-list-item {
+      width: 50%;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    /* 移动端适配（如屏幕宽度 ≤ 768px） */
+    @media (max-width: 768px) {
+      .infinite-list-item {
+        width: 100%;
+      }
+    }
   }
 }
 </style>
