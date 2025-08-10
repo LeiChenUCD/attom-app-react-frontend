@@ -4,6 +4,7 @@ import type { SortBy } from "element-plus";
 import { objectParamsToQueryString } from "@/utils/common";
 import { getCensusListApi3 } from "@/api/welcome";
 import OverviewBox from "../overview/index.vue";
+import { useDialog } from "../dialog/utils/hook";
 
 const props = defineProps({
   loading: {
@@ -74,7 +75,7 @@ const pageSize = ref(props.paginationParams.pageSize || 20);
 const queryOffset = ref(0);
 const totalSize = ref(0);
 const housesData = ref([]);
-
+const { openViewDetailDialog } = useDialog();
 const loading = ref(false);
 
 const canLoadMore = computed(() => {
@@ -165,8 +166,6 @@ function onBackPage() {
 function scrollByRows() {
   tableRef.value?.scrollToRow(currentRowIndex.value);
 }
-
-function openViewDetailDialog() {}
 
 onMounted(() => {
   if (parentContainer.value) {
