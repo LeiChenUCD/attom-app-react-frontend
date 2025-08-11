@@ -4,7 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import ReCol from "@/components/ReCol";
 import WelcomeTable from "./components/table/index.vue";
 import FilterBox from "./components/filter/index.vue";
-import OverviewBox from "./components/overview/index.vue";
+//import OverviewBox from "./components/overview/index.vue";
 import MapBox from "./components/map/index.vue";
 import { latestNewsData } from "./data";
 import { useColumns } from "./components/table/columns";
@@ -152,7 +152,7 @@ watch(
   }
 
   .list-box {
-    width: 400px;
+    width: 600px;
     margin-left: 20px;
     /* 右边固定宽度 */
   }

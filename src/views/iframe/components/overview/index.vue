@@ -3,6 +3,7 @@ import { getImagesListApi, getHouseDetailApi } from "@/api/welcome";
 import { objectParamsToQueryString } from "@/utils/common";
 import { ref, onMounted, watch } from "vue";
 const { VITE_GOOGLE_MAP_API_KEY } = import.meta.env;
+import { Loader } from "@googlemaps/js-api-loader";
 
 defineOptions({
   name: "Overview"
@@ -19,7 +20,9 @@ const emit = defineEmits(["onComment", "onViewDetail"]);
 const mapContainer = ref();
 const comments = ref([]);
 const imageList = ref([]);
-const bannerHeight = ref("255px");
+const bannerHeight = ref("150px");
+const loadingMap = ref(true);
+
 function onShowViewDetail() {
   emit("onViewDetail", props.detailData);
 }
@@ -29,12 +32,34 @@ function onShowAddComment() {
 }
 
 async function loadGoogleMaps() {
-  if (!window.google) {
-    await loadScript(
-      `https://maps.googleapis.com/maps/api/js?key=${VITE_GOOGLE_MAP_API_KEY}`
-    );
+  if (
+    !(
+      typeof props.detailData.lat === "number" &&
+      typeof props.detailData.lon === "number"
+    )
+  ) {
+    return;
   }
-  initMap();
+  const loader = new Loader({
+    apiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
+    version: "weekly"
+  });
+
+  const google = await loader.load();
+
+  const fenway = {
+    lat: props.detailData.lat,
+    lng: props.detailData.lon
+  };
+  loadingMap.value = false; // 地图初始化完成，切换显示
+
+  setTimeout(() => {
+    new google.maps.StreetViewPanorama(mapContainer.value, {
+      position: fenway,
+      pov: { heading: 165, pitch: 0 },
+      zoom: 1
+    });
+  }, 200);
 }
 
 function loadScript(url) {
@@ -102,12 +127,18 @@ async function getHouseDetail() {
 watch(
   () => props.detailData,
   () => {
-    imageList.value = [];
-    getHouseDetail();
-    comments.value = buildComments();
+    if (props.detailData?.MediaURLs.length > 0) {
+      imageList.value = props.detailData?.MediaURLs;
+    } else {
+      imageList.value = [];
+      loadGoogleMaps();
+    }
+    //getHouseDetail();
+    //comments.value = buildComments();
   },
   {
-    deep: true
+    deep: true,
+    immediate: true
   }
 );
 </script>
@@ -124,11 +155,22 @@ watch(
             </el-carousel-item>
           </el-carousel>
         </div>
+        <el-skeleton v-else-if="loadingMap" style="width: 100%">
+          <template #template>
+            <el-skeleton-item
+              variant="image"
+              style="width: 100%; height: 150px"
+            />
+          </template>
+        </el-skeleton>
         <div v-else ref="mapContainer" style="width: 100%; height: 100%" />
       </div>
       <div class="item right">
         <dl>
-          <dt class="title">Properties</dt>
+          <!--dt class="title">Properties</dt-->
+          <dd class="text">
+            {{ detailData?.address }}
+          </dd>
           <dd class="text">
             Size:
             {{
@@ -174,18 +216,27 @@ watch(
 
 <style scoped lang="scss">
 .overview-container {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 10px;
+  overflow: hidden;
   .content {
-    display: flex;
     width: 100%;
-    height: 255px;
-    overflow: auto;
     .item {
-      width: 50%;
       .title {
         font-weight: bold;
       }
       &.right {
-        padding-left: 10px;
+        padding: 10px;
+        dl {
+          dd {
+            font-size: 14px;
+          }
+        }
+      }
+      &.left {
+        height: 150px;
+        width: 100%;
       }
     }
   }

@@ -39,6 +39,7 @@
     "url": ""
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.10",
     "@pureadmin/descriptions": "1.2.1",
     "@pureadmin/table": "3.2.1",
     "@pureadmin/utils": "2.5.0",

@@ -37,9 +37,9 @@ export function useDialog() {
           detail: row
         }
       },
-      width: "80%",
+      width: "100%",
       draggable: true,
-      fullscreenIcon: true,
+      fullscreenIcon: false,
       closeOnClickModal: false,
       contentRenderer: () => h(ViewDetail, { ref: formRef }),
       beforeSure: (done, { options }) => {
