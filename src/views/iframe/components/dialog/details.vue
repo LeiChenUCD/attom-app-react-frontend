@@ -36,6 +36,7 @@ const houseDetail = ref({
   recorder: [],
   taxAssessor: []
 });
+const bodyHeight = ref(400);
 const activeName = ref("1");
 const tabList = ref([
   {
@@ -128,9 +129,16 @@ async function getHouseDetail() {
   isLoading.value = false;
 }
 
+const calculateMapHeight = () => {
+  const windowHeight = window.innerHeight;
+  let height = windowHeight - 80;
+  bodyHeight.value = height;
+};
+
 function init() {
   getHouseDetail();
   //getDetailApi(true);
+  calculateMapHeight();
 }
 
 init();
@@ -139,8 +147,8 @@ defineExpose({ getRef });
 </script>
 
 <template>
-  <div class="view-detail-box">
-    <DetailsBanner :detailData="detail"/>
+  <div class="view-detail-box" :style="{ height: bodyHeight + 'px' }">
+    <DetailsBanner :detailData="detail" />
     <div class="address" />
     <div class="content">
       <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
@@ -193,6 +201,7 @@ defineExpose({ getRef });
 </template>
 <style lang="scss" scoped>
 .view-detail-box {
+  overflow: auto;
   .address {
   }
   .content {
