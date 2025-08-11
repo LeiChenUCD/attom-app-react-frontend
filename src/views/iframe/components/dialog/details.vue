@@ -8,6 +8,7 @@ import {
   queryContactInfo
 } from "@/api/welcome";
 import { objectParamsToQueryString } from "@/utils/common";
+import DetailsBanner from "./details-banner.vue";
 
 const props = withDefaults(defineProps<CommentFormProps>(), {
   formInline: () => ({
@@ -139,6 +140,7 @@ defineExpose({ getRef });
 
 <template>
   <div class="view-detail-box">
+    <DetailsBanner :detailData="detail"/>
     <div class="address" />
     <div class="content">
       <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
