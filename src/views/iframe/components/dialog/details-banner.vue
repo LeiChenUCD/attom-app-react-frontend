@@ -151,7 +151,17 @@ watch(
         <div v-if="imageList?.length > 0">
           <el-carousel indicator-position="none" :height="bannerHeight">
             <el-carousel-item v-for="(item, index) in imageList" :key="index">
-              <img style="width: 100%; height: 100%" :src="item" />
+              <el-image
+                style="width: 100%; height: 100%"
+                :src="item"
+                :zoom-rate="1.2"
+                :max-scale="7"
+                :min-scale="0.2"
+                :preview-src-list="imageList"
+                show-progress
+                :initial-index="index"
+                fit="cover"
+              />
             </el-carousel-item>
           </el-carousel>
         </div>
