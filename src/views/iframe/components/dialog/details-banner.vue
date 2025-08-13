@@ -47,6 +47,40 @@ const chartData = ref([
   }
 ]);
 
+const interiorFeatures = ref([{
+  name: "Hardwood floors throughout"
+},{
+  name: "Gourmet kitchen with island"
+},{
+  name: "Stainless steel appliances"
+},{
+  name: "Quartz countertops"
+},{
+  name: "Walk-in closets"
+},{
+  name: "Fireplace in living room"
+},{
+  name: "Home office/den"
+},{
+  name: "Smart home features"
+}])
+
+const exteriorFeatures = ref([{
+  name: "Landscaped garden"
+},{
+  name: "Outdoor patio"
+},{
+  name: "lrrigation system"
+},{
+  name: "Two-car garage"
+},{
+  name: "EV charging station"
+},{
+  name: "Solar panels"
+},{
+  name: "Security system"
+}])
+
 function onShowViewDetail() {
   emit("onViewDetail", props.detailData);
 }
@@ -176,7 +210,27 @@ watch(
         <dl>
           <dt>Property Details</dt>
           <dd>
-
+            <div class="flex-container-2">
+              <div class="item">
+                <div class="title">Interior Features</div>
+                <ul>
+                  <li v-for="(item, index) in interiorFeatures"
+                    :key="index">
+                    {{ item.name }}
+                  </li>
+                </ul>
+              </div>
+              <div class="item">
+                <div class="title">Exterior Features</div>
+                <ul>
+                   <li v-for="(item, index) in exteriorFeatures"
+                    :key="index">
+                    {{ item.name }}
+                  </li>
+                </ul>
+              </div>
+             
+            </div>
           </dd>
         </dl>
 
@@ -306,6 +360,31 @@ watch(
       font-size: 20px;
       font-weight: bold;
       color: #000;
+    }
+  }
+}
+
+.flex-container-2 {
+  display: flex;
+  .item {
+    flex: 1;
+    min-width: 0;
+    padding: 10px;
+    text-align: left;
+    .title {
+      margin: 20px 0;
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .flex-container-2 {
+    flex-direction: column;
+    .item {
+      width: 100%;
     }
   }
 }
