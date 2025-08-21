@@ -198,7 +198,10 @@ watch(
       </div>
     </div>
     <div class="operator">
-      <el-button style="width: 100%;background: #9a89bb;color: #fff;" @click="onShowViewDetail()">View Detail</el-button>
+      <el-button style="width: 100%;background: #9a89bb;color: #fff;" @click="onShowViewDetail()">
+        <svg style="display: inline-block;margin-right: 10px;" t="1755762865702" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8483" width="20" height="20"><path d="M512 283.456c-165.248 0-299.392 74.304-408.128 228.864C211.072 666.432 345.152 740.544 512 740.544c166.848 0 300.928-74.112 408.128-228.224C811.392 357.76 677.248 283.52 512 283.52zM512 832C298.112 832 127.488 725.312 0 512c129.408-213.312 300.032-320 512-320 211.968 0 382.592 106.688 512 320-127.488 213.312-298.112 320-512 320z m0-137.152a182.848 182.848 0 1 0 0-365.696 182.848 182.848 0 0 0 0 365.696zM512 576a64 64 0 1 1 0-128 64 64 0 0 1 0 128z" fill="#ffffff" p-id="8484"></path></svg>
+        View Detail
+      </el-button>
       <!--el-button type="primary" @click="onShowAddComment"
         >Add Comment</el-button
     -->
