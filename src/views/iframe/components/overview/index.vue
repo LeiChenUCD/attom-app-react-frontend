@@ -164,6 +164,7 @@ watch(
           </template>
         </el-skeleton>
         <div v-else ref="mapContainer" style="width: 100%; height: 100%" />
+        <div class="mlsstatus" v-if="detailData?.mlsstatus">{{ detailData?.mlsstatus }}</div>
       </div>
       <div class="item right">
         <dl>
@@ -218,6 +219,18 @@ watch(
   .content {
     width: 100%;
     .item {
+      position: relative;
+      .mlsstatus {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        padding: 2px 10px;
+        border-radius: 5px;
+        background: #fff;
+        color: #333;
+        z-index: 1;
+        border: 1px solid #ddd;
+      }
       .title {
         font-weight: bold;
       }
