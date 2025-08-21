@@ -149,7 +149,6 @@ defineExpose({ getRef });
 <template>
   <div class="view-detail-box" :style="{ height: bodyHeight + 'px' }">
     <DetailsBanner :detailData="detail" />
-    <div class="address" />
     <div class="content">
       <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
         <el-tab-pane
@@ -202,8 +201,6 @@ defineExpose({ getRef });
 <style lang="scss" scoped>
 .view-detail-box {
   overflow: auto;
-  .address {
-  }
   .content {
     margin-bottom: 20px;
   }

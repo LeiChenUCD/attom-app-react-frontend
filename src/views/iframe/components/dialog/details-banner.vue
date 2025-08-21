@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { getImagesListApi, getHouseDetailApi } from "@/api/welcome";
-import { objectParamsToQueryString } from "@/utils/common";
+import DetailsMap from "./map.vue";
 import { ref, onMounted, watch } from "vue";
 const { VITE_GOOGLE_MAP_API_KEY } = import.meta.env;
 import { Loader } from "@googlemaps/js-api-loader";
@@ -237,7 +236,7 @@ watch(
         <dl>
           <dt>Location & Neighborhood</dt>
           <dd>
-
+            <DetailsMap :detailData="detailData"/>
           </dd>
         </dl>
 
