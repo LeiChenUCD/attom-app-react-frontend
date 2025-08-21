@@ -50,7 +50,7 @@ const calculateMapHeight = () => {
   if (filterElement.value) {
     const windowHeight = window.innerHeight;
     const elementHeight = filterElement.value.getBoundingClientRect().height;
-    let height = windowHeight - elementHeight - 40;
+    let height = windowHeight - elementHeight - 50;
     if (height < 400) {
       height = 400;
     }
