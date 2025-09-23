@@ -123,6 +123,7 @@ const loading = ref(false);
 const isMore = ref(false);
 const formRef = ref();
 const formValue = ref({
+  location: "",
   citySubset: "",
   addrFilter: "",
   noteFilter: "",
@@ -182,6 +183,7 @@ function onSearch() {
 
 function resetForm() {
   formValue.value = {
+    location: "",
     citySubset: "",
     addrFilter: "",
     noteFilter: "",
@@ -226,6 +228,20 @@ queryZoneList();
       :class="{ more: isMore }"
       class="search-form bg-bg_color w-[99/100] pt-[12px]"
     >
+      <el-form-item prop="location">
+        <template #label>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg data-v-1d2a0c97="" data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:176:13:svg" t="1755760665346" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5055" width="20" height="20"><path data-v-1d2a0c97="" data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:176:157:path" d="M512 64C317.92 64 160 221.92 160 416c0 187.36 315.424 520.032 328.832 534.08C494.88 956.448 503.264 960 512 960c0.224 0 0.48 0 0.704 0 8.992 0 17.472-4.192 23.392-10.944l109.216-125.12C790.432 646.176 864 508.928 864 416 864 221.92 706.08 64 512 64zM512 576c-88.384 0-160-71.616-160-160s71.616-160 160-160 160 71.616 160 160S600.384 576 512 576z" p-id="5056"></path></svg>
+            <span>Location</span>
+          </div>
+        </template>
+        <el-input
+          v-model="formValue.location"
+          placeholder="Please enter"
+          clearable
+          style="width: 100%"
+        />
+      </el-form-item>
       <el-form-item label="Status" prop="mlsstatus">
         <el-select-v2
           v-model="formValue.mlsstatus"
