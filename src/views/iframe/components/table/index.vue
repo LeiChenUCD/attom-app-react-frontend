@@ -7,7 +7,7 @@ import OverviewBox from "../overview/index.vue";
 import { useDialog } from "../dialog/utils/hook";
 
 const props = defineProps({
-  loading: {
+  isRestData: {
     type: Boolean,
     default: false
   },
@@ -197,6 +197,22 @@ watch(
     immediate: true
   }
 );
+
+watch(
+  () => props.isRestData,
+  val => {
+    if (val) {
+      currentPage.value = 1;
+      loading.value = false;
+      loadListData();
+    }
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+);
+
 </script>
 
 <template>

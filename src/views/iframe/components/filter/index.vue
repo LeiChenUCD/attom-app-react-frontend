@@ -220,6 +220,8 @@ function onFilerPrice(data: any) {
 }
 
 function onFilerBedBath(data: any) {
+  formValue.value.bedroomsLower = data?.bed || '';
+  formValue.value.bathcountLower = data?.bath || '';
   onBack();
 }
 

@@ -39,6 +39,7 @@ export function useColumns() {
   const sellerReplyData = ref({});
   const dDPdfsData = ref({});
   const loading = ref(true);
+  const isRestData = ref(false);
   const route = useRoute();
   const { params, query } = route;
   const queryTotal = ref(query.total ? Number(query.total) : 500);
@@ -728,6 +729,10 @@ export function useColumns() {
   }
 
   function onFilerData(params: any) {
+    isRestData.value = true;
+    setTimeout(() => {
+      isRestData.value = false;
+    }, 1000);
     queryParams.value = params;
     searchAreaParams.value = null;
     pagination.currentPage = 1;
@@ -790,6 +795,7 @@ export function useColumns() {
     pagination,
     zonedcodelocalOptions,
     searchAreaParams,
+    isRestData,
     onCurrentChange,
     onSort,
     onTableRowIndex,

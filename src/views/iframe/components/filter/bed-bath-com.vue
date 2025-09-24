@@ -10,75 +10,75 @@ const props = defineProps({
 const emit = defineEmits(["onFiler"]);
 
 
-const minOptions = ref([
+const bedOptions = ref([
   {
-    value: "",
-    label: "No Min."
+    value: "0",
+    label: "0+"
   },
   {
-    value: "60",
-    label: "$60k"
+    value: "1",
+    label: "1+"
   },
   {
-    value: "180",
-    label: "$180k"
+    value: "2",
+    label: "2+"
   },
   {
-    value: "350",
-    label: "$350k"
+    value: "3",
+    label: "3+"
   },
   {
-    value: "500",
-    label: "$500k"
+    value: "4",
+    label: "4+"
   },
   {
-    value: "600",
-    label: "$600k"
+    value: "5",
+    label: "5+"
   },
   {
-    value: "700",
-    label: "$700k"
+    value: "6",
+    label: "6+"
   }
 ]);
 
-const maxOptions = ref([
+const bathOptions = ref([
   {
-    value: "",
-    label: "No Max."
+    value: "0",
+    label: "0+"
   },
   {
-    value: "60",
-    label: "$60k"
+    value: "1",
+    label: "1+"
   },
   {
-    value: "180",
-    label: "$180k"
+    value: "2",
+    label: "2+"
   },
   {
-    value: "350",
-    label: "$350k"
+    value: "3",
+    label: "3+"
   },
   {
-    value: "500",
-    label: "$500k"
+    value: "4",
+    label: "4+"
   },
   {
-    value: "600",
-    label: "$600k"
+    value: "5",
+    label: "5+"
   },
   {
-    value: "700",
-    label: "$700k"
+    value: "6",
+    label: "6+"
   }
 ]);
 
 const priceValueText = ref({
-  min: minOptions.value[0].label,
-  max: maxOptions.value[0].label,
+  bed: bedOptions.value[0].label,
+  bath: bathOptions.value[0].label,
 });
 const priceValue = ref({
-  min: '',
-  max: ''
+  bed: '0',
+  bath: '0'
 })
 const priceValueDisplay = ref('');
 const isShowPopover = ref(false);
@@ -86,9 +86,16 @@ const isShowPopover = ref(false);
 function setPriceValue(item: any, filed: string) {
   priceValue.value[filed] = item.value; 
   priceValueText.value[filed] = item.label; 
-  priceValueDisplay.value = `${priceValueText.value.min} ~ ${priceValueText.value.max}`;
+}
+
+function onApply() {
+  priceValueDisplay.value = `${priceValueText.value.bed},${priceValueText.value.bath}`;
   onHidePopover();
   onBack();
+}
+
+function onCancel() {
+  onHidePopover();
 }
 
 function onShowPopover() {
@@ -106,7 +113,7 @@ function onBack() {
 </script>
 
 <template>
-  <div class="price-com-main">
+  <div class="bed-bath-com-main">
     <el-popover
       class="box-item"
       placement="bottom"
@@ -128,31 +135,43 @@ function onBack() {
         </el-input>
       </template>
       <template #default>
-        <div class="price-com-content">
+        <div class="bed-bath-com-content">
           <div class="left">
             <div class="title">
-              Min. Price
+              Beds
             </div>
             <div class="list">
               <div class="item" 
-                :class="{'current':item.value === priceValue.min}"
-                @click="setPriceValue(item, 'min')"
-                v-for="(item, index) in minOptions" :key="index">
+                :class="{'current':item.value === priceValue.bed}"
+                @click="setPriceValue(item, 'bed')"
+                v-for="(item, index) in bedOptions" :key="index">
                 {{ item.label }}
               </div>
             </div>
           </div>
           <div class="right">
             <div class="title">
-              Max. Price
+              Baths
             </div>
             <div class="list">
               <div class="item" 
-                :class="{'current':item.value === priceValue.max}"
-                @click="setPriceValue(item, 'max')"
-                v-for="(item, index) in maxOptions" :key="index">
+                :class="{'current':item.value === priceValue.bath}"
+                @click="setPriceValue(item, 'bath')"
+                v-for="(item, index) in bathOptions" :key="index">
                 {{ item.label }}
               </div>
+            </div>
+          </div>
+          <div class="foot">
+            <div class="left">
+              <el-button text @click="onCancel">
+                Cancel
+              </el-button>
+            </div>
+            <div class="right">
+              <el-button class="btn-apply" text @click="onApply">
+                Apply
+              </el-button>
             </div>
           </div>
         </div>
@@ -162,7 +181,7 @@ function onBack() {
 </template>
 
 <style scoped lang="scss">
-.price-com-main {
+.bed-bath-com-main {
   .responsive-input {
     cursor: pointer;
     :deep(.el-input__wrapper) {
@@ -173,25 +192,42 @@ function onBack() {
     }
   }
 }
-.price-com-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  .left, 
-  .right {
-    flex: 1; /* 平均分配剩余空间 */
-  }
+.bed-bath-com-content {
   .title {
     color: #000;
+    margin-bottom: 5px;
   }
   .list {
     .item {
       line-height: 22px;
       cursor: pointer;
+      display: inline-block;
+      background: #eee;
+      color: #333;
+      border: 1px solid #ddd;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      padding: 0 5px;
+      text-align: center;
+      border-radius: 3px;
       &.current {
-        background: #eee;
-        color: #333;
+        background: rgb(154, 137, 187);
+        border: 1px solid rgb(154, 137, 187);
+        color: #fff;
       }
+    }
+  }
+  .foot{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .left, .right {
+      flex: 1;
+    }
+    .btn-apply {
+      background: rgb(154, 137, 187);
+      border: 1px solid rgb(154, 137, 187);
+      color: #fff;
     }
   }
 }

@@ -24,7 +24,7 @@ const {
   zonedcodelocalOptions,
   pagination,
   searchAreaParams,
-  Empty,
+  isRestData,
   onSort,
   onTableRowIndex,
   onSearchArea,
@@ -131,6 +131,7 @@ watch(
       <div class="list-box">
         <WelcomeTable :loading="loading" :whereParams="whereParams" :sortState="sortState" :columns="columns"
           :houses="houses" :height="mapHeight" :index="currentRowIndex" :curPage="pagination.currentPage"
+          :isRestData="isRestData"
           :dataTotal="pagination.total" @onRowIndex="onTableRow" @onSort="onSortTableData" @onPage="onSearchPage" />
       </div>
     </div>
