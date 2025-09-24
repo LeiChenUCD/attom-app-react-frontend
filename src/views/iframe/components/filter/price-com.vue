@@ -165,6 +165,12 @@ function onBack() {
 .price-com-main {
   .responsive-input {
     cursor: pointer;
+    :deep(.el-input__wrapper) {
+      cursor: pointer;
+    }
+    :deep(.el-input__inner) {
+      cursor: pointer;
+    }
   }
 }
 .price-com-content {
