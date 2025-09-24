@@ -214,8 +214,8 @@ function resetForm() {
 }
 
 function onFilerPrice(data: any) {
-  formValue.value.closePriceLower = data?.min || '';
-  formValue.value.closePriceUpper = data?.max || '';
+  formValue.value.closePriceLower = data?.min? data?.min + '000' : '';
+  formValue.value.closePriceUpper = data?.max? data?.max + '000' : '';
   onBack();
 }
 

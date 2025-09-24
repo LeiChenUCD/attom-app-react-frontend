@@ -86,9 +86,16 @@ const isShowPopover = ref(false);
 function setPriceValue(item: any, filed: string) {
   priceValue.value[filed] = item.value; 
   priceValueText.value[filed] = item.label; 
+}
+
+function onApply() {
   priceValueDisplay.value = `${priceValueText.value.min} ~ ${priceValueText.value.max}`;
   onHidePopover();
   onBack();
+}
+
+function onCancel() {
+  onHidePopover();
 }
 
 function onShowPopover() {
@@ -156,6 +163,18 @@ function onBack() {
             </div>
           </div>
         </div>
+        <div class="foot">
+          <div class="left">
+            <el-button text @click="onCancel">
+              Cancel
+            </el-button>
+          </div>
+          <div class="right">
+            <el-button class="btn-apply" text @click="onApply">
+              Apply
+            </el-button>
+          </div>
+        </div>
       </template>
     </el-popover>
   </div>
@@ -195,4 +214,17 @@ function onBack() {
     }
   }
 }
+.foot{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .left, .right {
+      flex: 1;
+    }
+    .btn-apply {
+      background: rgb(154, 137, 187);
+      border: 1px solid rgb(154, 137, 187);
+      color: #fff;
+    }
+  }
 </style>
