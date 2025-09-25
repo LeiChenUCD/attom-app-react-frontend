@@ -19,13 +19,7 @@ import { TableV2SortOrder, ElLoading } from "element-plus";
 import type { SortBy } from "element-plus";
 import { cloneDeep } from "@pureadmin/utils";
 import { objectParamsToQueryString } from "@/utils/common";
-import {
-  ElButton,
-  ElIcon,
-  ElLink,
-  ElTooltip,
-  TableV2FixedDir
-} from "element-plus";
+import { zoningMap } from "../filter/options";
 
 export function useColumns() {
   const houses = ref([]);
@@ -343,10 +337,15 @@ export function useColumns() {
     }
 
     if (params.zoning && params.zoning !== "All") {
+      const list = zoningMap[params.zoning];
+      const result = list.map(item => `zoning = '${item}'`).join(' or ');
       if (res) {
-        res += ` and`;
+        res += ` and ( ${result} )`;
+      } else {
+        res += ` ${result} `;
       }
-      res += ` zoning='${params.zoning.toUpperCase()}'`;
+      //res += ` zoning='${params.zoning.toUpperCase()}'`;
+
     }
 
     if (params.addrFilter) {

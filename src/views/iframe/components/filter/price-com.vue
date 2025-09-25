@@ -182,6 +182,7 @@ function onBack() {
 
 <style scoped lang="scss">
 .price-com-main {
+  width: 100%;
   .responsive-input {
     cursor: pointer;
     :deep(.el-input__wrapper) {
