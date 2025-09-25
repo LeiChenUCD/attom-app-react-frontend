@@ -872,13 +872,13 @@ watch(
       />
     </div-->
     <div ref="mapContainer" class="map-container" />
-    <el-button
+    <!--el-button
       v-if="isShowSearchBtnArea"
       type="primary"
       class="btn-search-area"
       @click="onSearchThisArea()"
       >Search this area</el-button
-    >
+  -->
   </div>
 </template>
 
