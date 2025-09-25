@@ -4,6 +4,7 @@ import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { getCityListApi, getZoneListApi } from "@/api/welcome";
+import LocationCom from "./location-com.vue";
 import PriceCom from "./price-com.vue";
 import BedBathCom from "./bed-bath-com.vue";
 import { zoningOptions } from "./options";
@@ -226,6 +227,15 @@ function onFilerBedBath(data: any) {
   onBack();
 }
 
+function onFilerLocation(data: any) {
+  if (data) {
+    formValue.value.location = `${data.field}#${data.value}`;
+  } else {
+    formValue.value.location = '';
+  }
+  onBack();
+}
+
 function onChangeStatus() {
   onBack();
 }
@@ -258,12 +268,13 @@ function onBack() {
             <span>Location</span>
           </div>
         </template>
-        <el-input
+        <!--el-input
           v-model="formValue.location"
           placeholder="Please enter"
           clearable
           style="width: 100%"
-        />
+        /-->
+        <LocationCom @onFiler="onFilerLocation"/>
       </el-form-item>
       <el-form-item prop="mlsstatus">
         <template #label>

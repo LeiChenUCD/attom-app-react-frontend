@@ -49,6 +49,14 @@ export const getCensusListApi3 = (queryString: string, data: any) => {
   );
 };
 
+export const getPropertiesList = (queryString: string, data: any) => {
+  return http.request<any>(
+    "post",
+    `${baseApiUrl}/api/properties?${queryString}`,
+    { data }
+  );
+};
+
 export const getHouseDetailApi = (queryString: string, data: any) => {
   return http.request<any>(
     "post",

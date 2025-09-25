@@ -383,6 +383,17 @@ export function useColumns() {
       res += ` alphaxheld=true`;
     }
 
+    if (params.location) {
+      if (res) {
+        res += " and";
+      }
+      const locationValue = params.location;
+      if (locationValue.indexOf('#') !== -1) {
+        const attr = locationValue.split('#');
+        res += ` ${attr[0]}='${attr[1]}'`;
+      }
+    }
+
     return res;
   }
 

@@ -616,9 +616,10 @@ function initData() {
     //mapCom.value.setView([center[0], center[1]], zoomLevel);
     //mapCom.panTo([center[0], center[1]]);
     const houseList: any = props.houses;
-    const index = houseList.findIndex(item => item.lat !== null && item.lat !== undefined)
-    currentPoint.value = props.houses[index || 0];
-    mapCom.panTo([currentPoint.value.lat, currentPoint.value.lon]);
+    let index = houseList.findIndex(item => item.lat !== null && item.lat !== undefined)
+    index = index || 0;
+    currentPoint.value = props.houses[index];
+    currentPoint.value.lat?mapCom.panTo([currentPoint.value.lat, currentPoint.value.lon]):null;
     buildAllPoints(props.houses);
     /*const subsetOnMap = props.houses.filter(house => {
       return isBetween(house['lat'], top, bottom) && isBetween(house['lon'], left, right)
