@@ -149,7 +149,7 @@ defineExpose({ getRef });
 <template>
   <div class="view-detail-box" :style="{ height: bodyHeight + 'px' }">
     <DetailsBanner :detailData="detail" />
-    <div class="content">
+    <!--div class="content">
       <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
         <el-tab-pane
           v-for="(tab, index) in tabList"
@@ -195,7 +195,7 @@ defineExpose({ getRef });
           <el-empty v-else description="No data" />
         </el-tab-pane>
       </el-tabs>
-    </div>
+    </div-->
   </div>
 </template>
 <style lang="scss" scoped>
