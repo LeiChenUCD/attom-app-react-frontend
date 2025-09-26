@@ -19,7 +19,7 @@ import { TableV2SortOrder, ElLoading } from "element-plus";
 import type { SortBy } from "element-plus";
 import { cloneDeep } from "@pureadmin/utils";
 import { objectParamsToQueryString } from "@/utils/common";
-import { propertytypeMap } from "../filter/options";
+import { propertytypeMap, mlsstatusMap } from "../filter/options";
 
 export function useColumns() {
   const houses = ref([]);
@@ -375,11 +375,22 @@ export function useColumns() {
       res += ` closeprice<=${params.closePriceUpper}`;
     }
 
-    if (params.mlsstatus) {
+    /*if (params.mlsstatus) {
       if (res) {
         res += " and";
       }
       res += ` mlsstatus='${params.mlsstatus}'`;
+    }*/
+
+    if (params.mlsstatus) {
+      const list = mlsstatusMap[params.mlsstatus];
+      const result = list.map(item => `'${item}'`).join(',');
+      const sql = `mlsstatus IN (${result})`;
+      if (res) {
+        res += ` and ( ${sql} )`;
+      } else {
+        res += ` ${sql} `;
+      }
     }
 
     if (params.alphaxheld) {

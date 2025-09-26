@@ -22,3 +22,24 @@ export const propertytypeMap = {
   'Townhouse': ['TOWNHOUSE'],
   'Condo': ['CONDOMINIUM'],
 }
+
+export const statusOptions = [{
+  value: 'All',
+  label: 'All'
+}, {
+  value: 'Active',
+  label: 'Active',
+}, {
+  value: 'Pending',
+  label: 'Pending'
+}, {
+  value: 'Sold',
+  label: 'Sold'
+}]
+
+export const mlsstatusMap = {
+  'All': ['Active', 'Pending', 'Sold'],
+  'Active': ['Active'],
+  'Pending': ['Pending'],
+  'Sold': ['Sold'],
+}

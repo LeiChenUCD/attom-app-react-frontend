@@ -7,7 +7,7 @@ import { getCityListApi, getZoneListApi } from "@/api/welcome";
 import LocationCom from "./location-com.vue";
 import PriceCom from "./price-com.vue";
 import BedBathCom from "./bed-bath-com.vue";
-import { propertytypeOptions } from "./options";
+import { propertytypeOptions, statusOptions } from "./options";
 
 defineOptions({
   name: "Filter"
@@ -145,7 +145,7 @@ const formValue = ref({
   closePriceUpper: null,
   lotSizeAreaLower: null,
   lotSizeAreaUpper: null,
-  mlsstatus: null,
+  mlsstatus: 'All',
   sellerReplyAddr: "Both",
   dueDiligence: "Both",
   noted: "Both",
@@ -206,7 +206,7 @@ function resetForm() {
     closePriceUpper: null,
     lotSizeAreaLower: null,
     lotSizeAreaUpper: null,
-    mlsstatus: null,
+    mlsstatus: 'All',
     sellerReplyAddr: "Both",
     dueDiligence: "Both",
     noted: "Both",
@@ -290,8 +290,7 @@ onBack()
           v-model="formValue.mlsstatus"
           @change="onChangeStatus"
           filterable
-          clearable
-          :options="mlsstatusOptions"
+          :options="statusOptions"
           placeholder="Please select"
           style="width: 100%"
         />
