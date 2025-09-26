@@ -172,7 +172,7 @@ onMounted(() => {
     boxHeight.value = parentContainer.value.offsetHeight - 62;
     boxWidth.value = parentContainer.value.offsetWidth;
   }
-  loadListData();
+  //loadListData();
 });
 
 watch(

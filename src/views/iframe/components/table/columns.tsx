@@ -19,7 +19,7 @@ import { TableV2SortOrder, ElLoading } from "element-plus";
 import type { SortBy } from "element-plus";
 import { cloneDeep } from "@pureadmin/utils";
 import { objectParamsToQueryString } from "@/utils/common";
-import { zoningMap } from "../filter/options";
+import { propertytypeMap } from "../filter/options";
 
 export function useColumns() {
   const houses = ref([]);
@@ -336,16 +336,22 @@ export function useColumns() {
       res += ` bedrooms<=${params.bedroomsUpper}`;
     }
 
-    if (params.zoning && params.zoning !== "All") {
-      const list = zoningMap[params.zoning];
-      const result = list.map(item => `zoning = '${item}'`).join(' or ');
+    /*if (params.zoning && params.zoning !== "All") {
       if (res) {
-        res += ` and ( ${result} )`;
-      } else {
-        res += ` ${result} `;
+        res += ` and `;
       }
       //res += ` zoning='${params.zoning.toUpperCase()}'`;
+    }*/
 
+    if (params.propertytype) {
+      const list = propertytypeMap[params.propertytype];
+      const result = list.map(item => `'${item}'`).join(',');
+      const sql = `propertytype IN (${result})`;
+      if (res) {
+        res += ` and ( ${sql} )`;
+      } else {
+        res += ` ${sql} `;
+      }
     }
 
     if (params.addrFilter) {
@@ -788,7 +794,7 @@ export function useColumns() {
   }
 
   onMounted(() => {
-    initTableData(true);
+    //initTableData(true);
   });
 
   return {

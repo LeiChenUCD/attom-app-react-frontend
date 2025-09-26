@@ -7,7 +7,7 @@ import { getCityListApi, getZoneListApi } from "@/api/welcome";
 import LocationCom from "./location-com.vue";
 import PriceCom from "./price-com.vue";
 import BedBathCom from "./bed-bath-com.vue";
-import { zoningOptions } from "./options";
+import { propertytypeOptions } from "./options";
 
 defineOptions({
   name: "Filter"
@@ -134,6 +134,7 @@ const formValue = ref({
   lotAreaLower: null,
   lotAreaUpper: null,
   zoning: "",
+  propertytype: "All",
   bedroomsLower: null,
   bedroomsUpper: null,
   bathcountLower: null,
@@ -194,6 +195,7 @@ function resetForm() {
     lotAreaLower: null,
     lotAreaUpper: null,
     zoning: "",
+    propertytype: "All",
     bedroomsLower: null,
     bedroomsUpper: null,
     bathcountLower: null,
@@ -240,7 +242,7 @@ function onChangeStatus() {
   onBack();
 }
 
-function onChangeZoning() {
+function onChangePropertytype() {
   onBack();
 }
 
@@ -250,6 +252,7 @@ function onBack() {
 
 //queryCityList();
 //queryZoneList();
+onBack()
 </script>
 
 <template>
@@ -318,7 +321,7 @@ function onBack() {
         <BedBathCom @onFiler="onFilerBedBath"/>
       </el-form-item>
 
-      <el-form-item label="Property Type" prop="zoning">
+      <el-form-item label="Property Type" prop="propertytype">
         <template #label>
           <div style="display: flex; align-items: center; gap: 8px;">
             <svg t="1758771083635" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12362" width="20" height="20"><path d="M768 810.666667h-85.333333v-170.666667c0-94.122667-76.544-170.666667-170.666667-170.666667s-170.666667 76.544-170.666667 170.666667v170.666667H256v-355.370667l256-227.541333 256 227.541333V810.666667z m-341.333333 0v-170.666667c0-47.061333 38.272-85.333333 85.333333-85.333333s85.333333 38.272 85.333333 85.333333v170.666667h-170.666666z m497.706666-330.581334l-384-341.333333a42.794667 42.794667 0 0 0-56.746666 0l-384 341.333333a42.794667 42.794667 0 0 0-3.541334 60.288c15.701333 17.578667 42.581333 19.157333 60.288 3.541334L170.666667 531.157333V853.333333a42.666667 42.666667 0 0 0 42.666666 42.666667h597.333334a42.666667 42.666667 0 0 0 42.666666-42.666667v-322.176l14.293334 12.757334a42.666667 42.666667 0 0 0 60.288-3.541334 42.794667 42.794667 0 0 0-3.541334-60.288z" fill="#000000" p-id="12363"></path></svg>
@@ -326,11 +329,10 @@ function onBack() {
           </div>
         </template>
         <el-select-v2
-          v-model="formValue.zoning"
-          @change="onChangeZoning"
+          v-model="formValue.propertytype"
+          @change="onChangePropertytype"
           filterable
-          clearable
-          :options="zoningOptions"
+          :options="propertytypeOptions"
           placeholder="Please select"
           style="width: 100%"
         />

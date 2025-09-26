@@ -122,7 +122,7 @@ async function loadGoogleMaps() {
 watch(
   () => props.detailData,
   () => {
-    if (props.detailData?.MediaURLs.length > 0) {
+    if (props.detailData?.MediaURLs?.length > 0) {
       imageList.value = props.detailData?.MediaURLs;
     } else {
       imageList.value = [];

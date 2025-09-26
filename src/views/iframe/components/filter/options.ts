@@ -1,5 +1,5 @@
-export const zoningOptions = [{
-  value: '',
+export const propertytypeOptions = [{
+  value: 'All',
   label: 'All'
 }, {
   value: 'House',
@@ -15,9 +15,10 @@ export const zoningOptions = [{
   label: 'Condo'
 }]
 
-export const zoningMap = {
-  'House': ['R-1', 'RS', 'R-Single', 'SFH'],
-  'Multifamily': ['R-2', 'R-3', 'RM', 'MF', 'R-Multi'],
-  'Townhouse': ['RT', 'R-TH', 'R3T', 'R-M'],
-  'Condo': ['RM', 'RC', 'R-4', 'R-5', 'CD'],
+export const propertytypeMap = {
+  'All': ['SINGLE FAMILY RESIDENCE', 'TOWNHOUSE', 'CONDOMINIUM', 'DUPLEX', 'TRIPLEX', 'FOURPLEX', 'FIVE OR MORE UNITS'],
+  'House': ['SINGLE FAMILY RESIDENCE'],
+  'Multifamily': ['DUPLEX', 'TRIPLEX', 'FOURPLEX', 'FIVE OR MORE UNITS'],
+  'Townhouse': ['TOWNHOUSE'],
+  'Condo': ['CONDOMINIUM'],
 }
