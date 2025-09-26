@@ -445,7 +445,8 @@ export function useColumns() {
     const queryString = objectParamsToQueryString(params);
     const houseRes = await getCensusListApi3(queryString, params);
     pagination.total = houseRes?.totalSize || 0;
-    return houseRes?.result || [];
+    const filtered = houseRes?.result.filter(item => item.lat != null)
+    return filtered || [];
   }
 
   async function getNotedATTOMIDSet() {
