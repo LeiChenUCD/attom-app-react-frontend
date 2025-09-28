@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { onClickOutside } from '@vueuse/core'
 import { ArrowDown } from '@element-plus/icons-vue'
 
 defineOptions({
@@ -82,10 +83,14 @@ const priceValue = ref({
 })
 const priceValueDisplay = ref('');
 const isShowPopover = ref(false);
+const virtualRef = ref()
+const popoverRef = ref()
+const popoverTrigger = computed(() => 'manual' as const)
 
 function setPriceValue(item: any, filed: string) {
   priceValue.value[filed] = item.value; 
   priceValueText.value[filed] = item.label; 
+  onApply()
 }
 
 function onApply() {
@@ -110,6 +115,10 @@ function onBack() {
   emit("onFiler", priceValue.value);
 }
 
+onClickOutside(popoverRef, () => {
+  isShowPopover.value = false
+})
+
 </script>
 
 <template>
@@ -117,6 +126,7 @@ function onBack() {
     <el-popover
       class="box-item"
       placement="bottom"
+      ref="popoverRef"
       :width="200"
       :visible="isShowPopover"
       trigger="click"
@@ -218,6 +228,7 @@ function onBack() {
 .foot{
     display: flex;
     align-items: center;
+    display: none;
     gap: 10px;
     .left, .right {
       flex: 1;
