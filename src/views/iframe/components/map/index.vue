@@ -45,7 +45,7 @@ const filterStyle = ref({
   position: "relative",
   top: 0 + "px"
 });
-const emit = defineEmits(["onRowIndex", "onSearchArea"]);
+const emit = defineEmits(["onRowIndex", "onSearchArea","onViewDetail"]);
 let mapCom = null;
 const zoomLevel = ref(10);
 const isShowSearchBtnArea = ref(false);
@@ -897,7 +897,7 @@ function getElemTop() {
 }
 
 function onShowViewDetail() {
-
+  emit("onViewDetail", props.detailData);
 }
 
 onMounted(() => {

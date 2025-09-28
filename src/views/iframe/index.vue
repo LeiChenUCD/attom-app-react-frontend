@@ -126,7 +126,7 @@ watch(
     <div class="page-conent">
       <div class="map-box" :style="{ height: mapHeight + 'px' }">
         <MapBox :detailData="currentRowData" :isResetPoint="isResetPoint" :isSearch="searchAreaParams" :houses="houses"
-          @onRowIndex="onMapRowIndex" @onSearchArea="onSearchArea" />
+          @onRowIndex="onMapRowIndex" @onSearchArea="onSearchArea"  @onViewDetail="openViewDetailDialog"/>
       </div>
       <div class="list-box">
         <WelcomeTable :loading="loading" :whereParams="whereParams" :sortState="sortState" :columns="columns"
