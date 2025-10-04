@@ -27,5 +27,27 @@ export default [
         component: () => import("@/layout/redirect.vue")
       }
     ]
+  },
+  {
+    path: "/iframe",
+    redirect: "/iframe/index",
+    meta: {
+      title: "Home",
+      showLink: false,
+      noRequiresAuth: true,
+      rank: 103
+    },
+    children: [
+      {
+        path: "/iframe/index",
+        name: "iframeIndex",
+        meta: {
+          title: "Home",
+          noRequiresAuth: true,
+          showLink: false
+        },
+        component: () => import("@/views/iframe/index.vue")
+      }
+    ]
   }
 ] satisfies Array<RouteConfigsTable>;
