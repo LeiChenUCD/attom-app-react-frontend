@@ -23,23 +23,28 @@ const bannerHeight = ref("350px");
 const loadingMap = ref(true);
 const chartData = ref([
   {
+    key: 'yearbuilt',
     name: "Built in",
     value: 36000,
   },
   {
+    key: 'bedrooms',
     name: "Bedrooms",
     value: 36000,
   },
   {
+    key: 'bathcount',
     name: "Bathrooms",
     value: 36000,
   },
   {
+    key: 'livingarea',
     name: "Living Area",
     value: 36000,
     unit: 'sq.ft'
   },
   {
+    key: 'lotsize',
     name: "Lot Size",
     value: 36000,
     unit: 'sq.ft'
@@ -182,12 +187,12 @@ watch(
         <dl>
           <dt>Property Highlights</dt>
           <dd>
-            <div class="flex-container-5">
+            <div class="flex-container-5" v-if="detailData">
               <div class="item" 
                 v-for="(item, index) in chartData"
                 :key="index">
                 <div class="value">
-                  {{ item.value }}<span v-if="item.unit" style="margin-left: 5px;">{{ item.unit }}</span>
+                  {{ detailData[item.key] }}<span v-if="item.unit" style="margin-left: 5px;">{{ item.unit }}</span>
                 </div>
                 <div class="name">
                   {{ item.name }}
@@ -200,9 +205,7 @@ watch(
         <dl>
           <dt>Property Overview</dt>
           <dd>
-            <div style="margin-top: 10px;">Welcome to this stunning contemporary home in the heart of Palo Alto. This beautifully renovated residence offers the perfect blend of modern design and comfortable living. With 5 bedrooms and 3.5 bathrooms spread across 2,450 square feet, this home provides ample space for both family living and entertaining.</div>
-            <div style="margin-top: 10px;">The open floor plan features a gourmet kitchen with high-end appliances, a spacious living room with a fireplace, and large windows that flood the space with natural light. The primary suite includes a luxurious bathroom and walk-in closet. Outside, you'll find a beautifully landscaped yard with a patio perfect for outdoor dining.</div>
-            <div style="margin-top: 10px;">Located in a highly sought-after neighborhood, this property is just minutes from top-rated schools, parks, shopping, and dining. Don't miss this opportunity to own a piece of Palo Alto luxury.</div>
+            <div style="margin-top: 10px;">{{ detailData?.publicremarks }}</div>
           </dd>
         </dl>
 
