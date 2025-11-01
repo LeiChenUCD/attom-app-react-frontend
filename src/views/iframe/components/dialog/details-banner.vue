@@ -93,6 +93,10 @@ function onShowAddComment() {
   emit("onComment", props.detailData);
 }
 
+function goToSchedulePage() {
+  window.open('https://calendly.com/axisrealty-30min-meeting/30min');
+}
+
 async function loadGoogleMaps() {
   if (
     !(
@@ -179,8 +183,15 @@ watch(
             ${{ detailData?.closeprice }}
           </div>
           <div class="right btn-box">
-            <el-button class="btn-schedule">Schedule A Tour</el-button>
-            <el-button class="btn-call-us">Call Us Directly</el-button>
+            <el-button class="btn-schedule" @click="goToSchedulePage">Schedule A Tour</el-button>
+            <el-popover placement="bottom" :width="260" trigger="click">
+              <template #reference>
+                <el-button class="btn-call-us">Call Us Directly</el-button>
+              </template>
+              <div>
+                (833) 888-AXIS｜ (833) 888-2947
+              </div>
+            </el-popover>
           </div>
         </div>
         <div class="address">{{ detailData?.address }}</div>
@@ -256,8 +267,15 @@ watch(
             Don't miss out on properties like this! Our expert agents are ready to help you navigate the market and find the perfect match for your lifestyle.
           </dd>
           <dd class="btn-box">
-            <el-button class="btn-schedule">Schedule A Consultation</el-button>
-            <el-button class="btn-schedule">Call Us Today</el-button>
+            <el-button class="btn-schedule" @click="goToSchedulePage">Schedule A Consultation</el-button>
+            <el-popover placement="top" :width="260" trigger="click">
+              <template #reference>
+                <el-button class="btn-schedule">Call Us Today</el-button>
+              </template>
+              <div>
+                (833) 888-AXIS｜ (833) 888-2947
+              </div>
+            </el-popover>
           </dd>
         </dl>
 
