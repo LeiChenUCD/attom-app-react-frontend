@@ -31,7 +31,8 @@ const remoteMethod = async (query: string) => {
   const queryString = objectParamsToQueryString(params);
   const res = await getPropertiesList(queryString, params);
   const result = res?.result || [];
-  options.value = result;
+  const sorted = result.sort((a, b) => (a.field === 'city' ? -1 : b.field === 'city' ? 1 : 0));
+  options.value = sorted;
   loading.value = false
 }
 
