@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { onClickOutside } from '@vueuse/core'
-import { ArrowDown } from '@element-plus/icons-vue'
+import { onClickOutside } from "@vueuse/core";
+import { ArrowDown } from "@element-plus/icons-vue";
 
 defineOptions({
   name: "PriceCom"
 });
-const props = defineProps({
-});
+const props = defineProps({});
 const emit = defineEmits(["onFiler"]);
-
 
 const minOptions = ref([
   {
@@ -75,26 +73,32 @@ const maxOptions = ref([
 
 const priceValueText = ref({
   min: minOptions.value[0].label,
-  max: maxOptions.value[0].label,
+  max: maxOptions.value[0].label
 });
 const priceValue = ref({
-  min: '',
-  max: ''
-})
-const priceValueDisplay = ref('');
+  min: "",
+  max: ""
+});
+const priceValueDisplay = ref("");
 const isShowPopover = ref(false);
-const virtualRef = ref()
-const popoverRef = ref()
-const popoverTrigger = computed(() => 'manual' as const)
+const virtualRef = ref();
+const popoverRef = ref();
+const popoverTrigger = computed(() => "manual" as const);
 
 function setPriceValue(item: any, filed: string) {
-  priceValue.value[filed] = item.value; 
-  priceValueText.value[filed] = item.label; 
-  onApply()
+  priceValue.value[filed] = item.value;
+  priceValueText.value[filed] = item.label;
+  onApply();
 }
 
 function onApply() {
-  priceValueDisplay.value = `${priceValueText.value.min} ~ ${priceValueText.value.max}`;
+  const minText = priceValue.value?.min
+    ? priceValue.value?.min + "K"
+    : "No Min.";
+  const maxText = priceValue.value?.max
+    ? priceValue.value?.max + "K"
+    : "No Max.";
+  priceValueDisplay.value = `${minText} ~ ${maxText}`;
   onHidePopover();
   onBack();
 }
@@ -112,32 +116,33 @@ function onHidePopover() {
 }
 
 function onBack() {
+  priceValue.value.min = priceValue.value?.min || "";
+  priceValue.value.max = priceValue.value?.max || "";
   emit("onFiler", priceValue.value);
 }
 
 onClickOutside(popoverRef, () => {
-  isShowPopover.value = false
-})
-
+  //isShowPopover.value = false;
+});
 </script>
 
 <template>
   <div class="price-com-main">
     <el-popover
+      ref="popoverRef"
       class="box-item"
       placement="bottom"
-      ref="popoverRef"
-      :width="200"
+      :width="300"
       :visible="isShowPopover"
       trigger="click"
     >
-      <template #reference> 
+      <template #reference>
         <el-input
           v-model="priceValueDisplay"
           class="responsive-input"
           :readonly="true"
-          @click="onShowPopover"
           placeholder="Price"
+          @click="onShowPopover"
         >
           <template #suffix>
             <el-icon><ArrowDown /></el-icon>
@@ -147,39 +152,63 @@ onClickOutside(popoverRef, () => {
       <template #default>
         <div class="price-com-content">
           <div class="left">
-            <div class="title">
-              Min. Price
-            </div>
+            <div class="title">Min. Price</div>
             <div class="list">
-              <div class="item" 
-                :class="{'current':item.value === priceValue.min}"
+              <!--div
+                v-for="(item, index) in minOptions"
+                :key="index"
+                class="item"
+                :class="{ current: item.value === priceValue.min }"
                 @click="setPriceValue(item, 'min')"
-                v-for="(item, index) in minOptions" :key="index">
+              >
                 {{ item.label }}
-              </div>
+              </div-->
+              <el-input-number
+                v-model="priceValue.min"
+                placeholder=" "
+                :min="0"
+                :max="9999999999"
+                style="width: 100%"
+                controls-position="right"
+              >
+                <template #suffix>
+                  <span>K</span>
+                </template>
+              </el-input-number>
             </div>
           </div>
           <div class="right">
-            <div class="title">
-              Max. Price
-            </div>
+            <div class="title">Max. Price</div>
             <div class="list">
-              <div class="item" 
-                :class="{'current':item.value === priceValue.max}"
+              <!--div
+                v-for="(item, index) in maxOptions"
+                :key="index"
+                class="item"
+                :class="{ current: item.value === priceValue.max }"
                 @click="setPriceValue(item, 'max')"
-                v-for="(item, index) in maxOptions" :key="index">
+              >
                 {{ item.label }}
-              </div>
+              </div-->
+              <el-input-number
+                v-model="priceValue.max"
+                placeholder=" "
+                :min="0"
+                :max="9999999999"
+                style="width: 100%"
+                controls-position="right"
+              >
+                <template #suffix>
+                  <span>K</span>
+                </template>
+              </el-input-number>
             </div>
           </div>
         </div>
         <div class="foot">
           <div class="left">
-            <el-button text @click="onCancel">
-              Cancel
-            </el-button>
+            <el-button text @click="onCancel"> Cancel </el-button>
           </div>
-          <div class="right">
+          <div class="right" style="text-align: right;">
             <el-button class="btn-apply" text @click="onApply">
               Apply
             </el-button>
@@ -207,12 +236,14 @@ onClickOutside(popoverRef, () => {
   display: flex;
   align-items: center;
   gap: 10px;
-  .left, 
+  margin-bottom: 10px;
+  .left,
   .right {
     flex: 1; /* 平均分配剩余空间 */
   }
   .title {
     color: #000;
+    margin-bottom: 10px;
   }
   .list {
     .item {
@@ -225,18 +256,19 @@ onClickOutside(popoverRef, () => {
     }
   }
 }
-.foot{
-    display: flex;
-    align-items: center;
-    display: none;
-    gap: 10px;
-    .left, .right {
-      flex: 1;
-    }
-    .btn-apply {
-      background: rgb(154, 137, 187);
-      border: 1px solid rgb(154, 137, 187);
-      color: #fff;
-    }
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  .left,
+  .right {
+    flex: 1;
   }
+  .btn-apply,
+  .btn-apply:hover {
+    background: rgb(154, 137, 187);
+    border: 1px solid rgb(154, 137, 187);
+    color: #fff;
+  }
+}
 </style>

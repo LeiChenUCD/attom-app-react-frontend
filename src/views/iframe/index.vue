@@ -97,11 +97,11 @@ function getHouseById(id: string, list: any) {
 
 onMounted(() => {
   calculateMapHeight(); // 初始计算
-  window.addEventListener('resize', calculateMapHeight); // 监听窗口变化
+  window.addEventListener("resize", calculateMapHeight); // 监听窗口变化
 });
 
 onUnmounted(() => {
-  window.removeEventListener('resize', calculateMapHeight); // 组件卸载时移除监听
+  window.removeEventListener("resize", calculateMapHeight); // 组件卸载时移除监听
 });
 
 watch(
@@ -120,19 +120,40 @@ watch(
     <div ref="filterElement">
       <div class="page-title">Explore Your ldeal Home Now</div>
       <div class="filter-box">
-        <FilterBox :zonedcodelocalOptions="zonedcodelocalOptions" @onFiler="onFilerData" />
+        <FilterBox
+          :zonedcodelocalOptions="zonedcodelocalOptions"
+          @onFiler="onFilerData"
+        />
       </div>
     </div>
     <div class="page-conent">
       <div class="map-box" :style="{ height: mapHeight + 'px' }">
-        <MapBox :detailData="currentRowData" :isResetPoint="isResetPoint" :isSearch="searchAreaParams" :houses="houses"
-          @onRowIndex="onMapRowIndex" @onSearchArea="onSearchArea"  @onViewDetail="openViewDetailDialog"/>
+        <MapBox
+          :detailData="currentRowData"
+          :isResetPoint="isResetPoint"
+          :isSearch="searchAreaParams"
+          :houses="houses"
+          @onRowIndex="onMapRowIndex"
+          @onSearchArea="onSearchArea"
+          @onViewDetail="openViewDetailDialog"
+        />
       </div>
       <div class="list-box">
-        <WelcomeTable :loading="loading" :whereParams="whereParams" :sortState="sortState" :columns="columns"
-          :houses="houses" :height="mapHeight" :index="currentRowIndex" :curPage="pagination.currentPage"
+        <WelcomeTable
+          :loading="loading"
+          :whereParams="whereParams"
+          :sortState="sortState"
+          :columns="columns"
+          :houses="houses"
+          :height="mapHeight"
+          :index="currentRowIndex"
+          :curPage="pagination.currentPage"
           :isRestData="isRestData"
-          :dataTotal="pagination.total" @onRowIndex="onTableRow" @onSort="onSortTableData" @onPage="onSearchPage" />
+          :dataTotal="pagination.total"
+          @onRowIndex="onTableRow"
+          @onSort="onSortTableData"
+          @onPage="onSearchPage"
+        />
       </div>
     </div>
   </div>
@@ -159,9 +180,10 @@ watch(
   }
   /* 移动端适配（如屏幕宽度 ≤ 768px） */
   @media (max-width: 768px) {
-    .map-box, .list-box {
-      width: 100%;          /* 左右均占满整行 */
-      flex: none;           /* 取消 flex 伸缩 */
+    .map-box,
+    .list-box {
+      width: 100%; /* 左右均占满整行 */
+      flex: none; /* 取消 flex 伸缩 */
     }
     .list-box {
       margin-left: 0;

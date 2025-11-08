@@ -117,7 +117,7 @@ function onBack() {
     <el-popover
       class="box-item"
       placement="bottom"
-      :width="200"
+      :width="300"
       :visible="isShowPopover"
       trigger="click"
     >
@@ -168,7 +168,7 @@ function onBack() {
                 Cancel
               </el-button>
             </div>
-            <div class="right">
+            <div class="right" style="text-align: right;">
               <el-button class="btn-apply" text @click="onApply">
                 Apply
               </el-button>
@@ -206,8 +206,8 @@ function onBack() {
       background: #eee;
       color: #333;
       border: 1px solid #ddd;
-      margin-right: 5px;
-      margin-bottom: 5px;
+      margin-right: 10px;
+      margin-bottom: 10px;
       padding: 0 5px;
       text-align: center;
       border-radius: 3px;
@@ -222,6 +222,7 @@ function onBack() {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-top: 10px;
     .left, .right {
       flex: 1;
     }
