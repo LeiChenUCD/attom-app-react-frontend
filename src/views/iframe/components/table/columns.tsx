@@ -427,7 +427,7 @@ export function useColumns() {
       rightLong: "",
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
-      outFields: `bathcount,bedrooms,yearbuilt,livingarea,lotsize,publicremarks,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice,comments`
+      outFields: `listprice,bathcount,bedrooms,yearbuilt,livingarea,lotsize,publicremarks,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice,comments`
     };
 
     if (searchAreaParams.value) {

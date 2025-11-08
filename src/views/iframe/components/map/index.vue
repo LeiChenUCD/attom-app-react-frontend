@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from "vue";
 import L from "leaflet";
-import { CloseBold } from '@element-plus/icons-vue'
+import { CloseBold } from "@element-plus/icons-vue";
 //import * as L from 'leaflet';
 import "proj4leaflet";
 import "leaflet.markercluster";
@@ -35,17 +35,17 @@ const props = defineProps({
 const mapContainer = ref(null);
 const activePopover = reactive({
   show: false,
-  placement: 'top',
+  placement: "top",
   width: 240,
   virtualRef: null,
   data: null
-})
+});
 const offsetTop = ref(0);
 const filterStyle = ref({
   position: "relative",
   top: 0 + "px"
 });
-const emit = defineEmits(["onRowIndex", "onSearchArea","onViewDetail"]);
+const emit = defineEmits(["onRowIndex", "onSearchArea", "onViewDetail"]);
 let mapCom = null;
 const zoomLevel = ref(10);
 const isShowSearchBtnArea = ref(false);
@@ -569,9 +569,9 @@ function addCurrentPoint(data: any, isMax: boolean) {
     title: data.address //鼠标hover显示
   }).addTo(mapCom);*/
   currentMarker = L.marker([data.lat, data.lon], {
-      icon: createCustomMarkerIcon(data),
-      riseOnHover: true,
-      title: data.address
+    icon: createCustomMarkerIcon(data),
+    riseOnHover: true,
+    title: data.address
   });
   //secondaryPointsLayers.push(currentMarker);
 
@@ -590,38 +590,36 @@ function addCurrentPoint(data: any, isMax: boolean) {
 }
 
 const openPopoverAtMarker = (markerData, event) => {
-
   // 关闭之前的 popover
   closeAllPopovers();
-  
+
   // 设置虚拟引用（使用 Leaflet 的坐标转像素方法）
   activePopover.virtualRef = {
     getBoundingClientRect: () => {
       // 将经纬度转换为地图容器上的像素坐标
       const latLng = L.latLng(markerData.lat, markerData.lon); // Leaflet 的经纬度对象
       const point = mapCom.latLngToContainerPoint(latLng); // 转换为像素坐标
-      
+
       // 获取地图容器的边界矩形
       const mapRect = mapCom.getContainer().getBoundingClientRect();
-      
+
       return {
         width: 0,
         height: 0,
-        top: mapRect.top + point.y - 10,  // 像素 Y 坐标 + 地图容器顶部偏移
+        top: mapRect.top + point.y - 10, // 像素 Y 坐标 + 地图容器顶部偏移
         left: mapRect.left + point.x, // 像素 X 坐标 + 地图容器左侧偏移
         right: mapRect.left + point.x,
-        bottom: mapRect.top + point.y,
+        bottom: mapRect.top + point.y
       };
-    
-    },
+    }
   };
-  
+
   activePopover.data = markerData;
   setTimeout(() => {
     activePopover.show = true;
   }, 300);
 };
- 
+
 const closeAllPopovers = () => {
   activePopover.show = false;
   activePopover.data = null;
@@ -660,10 +658,14 @@ function initData() {
     //mapCom.value.setView([center[0], center[1]], zoomLevel);
     //mapCom.panTo([center[0], center[1]]);
     const houseList: any = props.houses;
-    let index = houseList.findIndex(item => item.lat !== null && item.lat !== undefined)
+    let index = houseList.findIndex(
+      item => item.lat !== null && item.lat !== undefined
+    );
     index = index || 0;
     currentPoint.value = props.houses[index];
-    currentPoint.value.lat?mapCom.panTo([currentPoint.value.lat, currentPoint.value.lon]):null;
+    currentPoint.value.lat
+      ? mapCom.panTo([currentPoint.value.lat, currentPoint.value.lon])
+      : null;
     buildAllPoints(props.houses);
     /*const subsetOnMap = props.houses.filter(house => {
       return isBetween(house['lat'], top, bottom) && isBetween(house['lon'], left, right)
@@ -709,7 +711,7 @@ function bindMarkerEvent() {
         }
         // const latLng = marker.getLatLng();
         // const curHouseIndex = getCurHouseIndex(latLng, props.houses);
-        openPopoverAtMarker(props.houses[i], e)
+        openPopoverAtMarker(props.houses[i], e);
         emit("onRowIndex", i);
       });
     }
@@ -753,18 +755,17 @@ function buildAllPoints(list: any) {
             //opacity: 0.9 // 提示框的透明度
           });*/
           layer = L.marker([item.lat, item.lon], {
-              icon: createCustomMarkerIcon(item),
-              riseOnHover: true,
-              title: item.address
+            icon: createCustomMarkerIcon(item),
+            riseOnHover: true,
+            title: item.address
           });
         } else {
-
           layer = L.marker([item.lat, item.lon], {
-              icon: createCustomMarkerIcon(item),
-              riseOnHover: true,
-              title: item.address
+            icon: createCustomMarkerIcon(item),
+            riseOnHover: true,
+            title: item.address
           });
-          
+
           /*layer = L.marker(point, { icon: highlightIcon }).bindPopup(
             item.address,
             {
@@ -791,25 +792,30 @@ function buildAllPoints(list: any) {
 
 // Function to format price for marker display (remains unchanged, used by map markers)
 function formatPriceForMarker(price) {
-    if (price === null || isNaN(price)) return "";
-    if (price >= 1000000) {
-        return `$${(price / 1000000).toFixed(1)}M`;
-    } else if (price >= 1000) {
-        return `$${(price / 1000).toFixed(0)}K`;
-    }
-    return `$${price}`;
+  if (price === null || isNaN(price)) return "";
+  if (price >= 1000000) {
+    return `$${(price / 1000000).toFixed(1)}M`;
+  } else if (price >= 1000) {
+    return `$${(price / 1000).toFixed(0)}K`;
+  }
+  return `$${price}`;
 }
 
 // Custom marker icon creator (remains unchanged)
 function createCustomMarkerIcon(property) {
-    const formattedPrice = formatPriceForMarker(property.closeprice);
-    return L.divIcon({
-        className: 'price-marker',
-        html: formattedPrice,
-        iconSize: [65, 32],
-        iconAnchor: [32, 16],
-        popupAnchor: [0, -16]
-    });
+  const status = property?.mlsstatus;
+  const price =
+    status === "Active" || status === "PendingDoNotShow"
+      ? property.listprice
+      : property.closeprice;
+  const formattedPrice = formatPriceForMarker(price);
+  return L.divIcon({
+    className: "price-marker",
+    html: formattedPrice,
+    iconSize: [65, 32],
+    iconAnchor: [32, 16],
+    popupAnchor: [0, -16]
+  });
 }
 
 function rendWmsLayer() {
@@ -963,32 +969,100 @@ watch(
       @click="onSearchThisArea()"
       >Search this area</el-button
   -->
-      <el-popover
-        v-model:visible="activePopover.show"
-        :placement="activePopover.placement"
-        :width="activePopover.width"
-        :trigger="null"
-        popper-class="dynamic-popover"
-        :virtual-ref="activePopover.virtualRef"
-        virtual-triggering
-      >
-        <div class="popover-content">
-          <h4 class="title">{{ activePopover.data?.title }}</h4>
-          <div class="address">{{ activePopover.data?.address }}</div>
-          <div class="price">${{ activePopover.data?.closeprice }}</div>
-          <div class="bed-bath">
-            <svg data-v-4a17f7ac="" data-v-1d2a0c97="" data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:181:15:svg" t="1755761273208" class="icon" viewBox="0 0 1280 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6052" width="20" height="20"><path data-v-4a17f7ac="" data-v-1d2a0c97="" data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:181:187:path" d="M352 512c88.22 0 160-71.78 160-160s-71.78-160-160-160-160 71.78-160 160 71.78 160 160 160z m704-256H608c-17.68 0-32 14.32-32 32v288H128V160c0-17.68-14.32-32-32-32H32C14.32 128 0 142.32 0 160v704c0 17.68 14.32 32 32 32h64c17.68 0 32-14.32 32-32v-96h1024v96c0 17.68 14.32 32 32 32h64c17.68 0 32-14.32 32-32V480c0-123.72-100.28-224-224-224z" p-id="6053"></path></svg>
-             {{ activePopover.data?.bedrooms }} Beds
-             <span class="line">|</span>
-             <svg data-v-4a17f7ac="" data-v-1d2a0c97="" data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:189:15:svg" t="1755761642535" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7503" width="20" height="20"><path data-v-4a17f7ac="" data-v-1d2a0c97="" data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:189:187:path" d="M950.857143 621.714286v109.714285q0 96.571429-73.142857 163.428572v110.857143q0 8-5.142857 13.142857t-13.142858 5.142857h-36.571428q-8 0-13.142857-5.142857t-5.142857-13.142857v-67.428572q-36 12.571429-73.142858 12.571429H292.571429q-37.142857 0-73.142858-12.571429v62.857143q0 9.714286-5.428571 16.285714T201.142857 1024h-36.571428q-7.428571 0-12.857143-6.571429T146.285714 1001.142857v-106.285714q-73.142857-66.857143-73.142857-163.428572v-109.714285h877.714286zM402.285714 384q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m36.571429-36.571429q0 8-5.142857 13.142858t-13.142857 5.142857-13.142858-5.142857-5.142857-13.142858 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m73.142857 0q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571428-36.571429q0 8-5.142857 13.142857t-13.142857 5.142858-13.142858-5.142858-5.142857-13.142857 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142857 13.142857z m621.714286 292.571428v36.571429q0 8-5.142857 13.142857t-13.142857 5.142857H18.285714q-8 0-13.142857-5.142857t-5.142857-13.142857v-36.571429q0-8 5.142857-13.142857t13.142857-5.142857h54.857143V146.285714q0-60.571429 42.857143-103.428571T219.428571 0q61.714286 0 105.142858 44.571429 26.285714-10.857143 56-6.857143t53.142857 22.285714l12.571428-12.571429q6.285714-6.285714 12.571429 0l24 24q6.285714 6.285714 0 12.571429L303.428571 263.428571q-6.285714 6.285714-12.571428 0l-24-24q-6.285714-6.285714 0-12.571428l12.571428-12.571429q-20.571429-26.285714-23.142857-59.428571T269.714286 93.142857q-21.142857-20-50.285715-20-30.285714 0-51.714285 21.428572T146.285714 146.285714v365.714286h859.428572q8 0 13.142857 5.142857t5.142857 13.142857zM512 274.285714q0 8-5.142857 13.142857t-13.142857 5.142858-13.142857-5.142858-5.142858-13.142857 5.142858-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142857 13.142857z m-36.571428-36.571429q0 8-5.142857 13.142857t-13.142857 5.142857-13.142858-5.142857-5.142857-13.142857 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m109.714286 36.571429q0 8-5.142858 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142858 13.142857z m-36.571429-36.571429q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142858-13.142857 5.142858-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142857 5.142857 5.142857 13.142858z m109.714286 36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571428-36.571428q0 8-5.142858 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142857 5.142857 5.142858 13.142858z m73.142857 0q0 8-5.142857 13.142857t-13.142858 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142858 5.142857 5.142857 13.142858z" p-id="7504"></path></svg>
-             {{ activePopover.data?.bathcount }} Baths
-          </div>
-          <div class="view-detail">
-            <el-button class="btn-view-detail" style="width: 100%;background: rgb(154, 137, 187);color: rgb(255, 255, 255);" @click="onShowViewDetail()">View Detail</el-button>
-          </div>
-          <el-icon class="btn-close" @click="closeAllPopovers"><CloseBold /></el-icon>
+    <el-popover
+      v-model:visible="activePopover.show"
+      :placement="activePopover.placement"
+      :width="activePopover.width"
+      :trigger="null"
+      popper-class="dynamic-popover"
+      :virtual-ref="activePopover.virtualRef"
+      virtual-triggering
+    >
+      <div class="popover-content">
+        <h4 class="title">{{ activePopover.data?.title }}</h4>
+        <div class="address">{{ activePopover.data?.address }}</div>
+        <div class="price">
+          <span
+            v-if="
+              activePopover.data?.mlsstatus == 'Active' ||
+              activePopover.data?.mlsstatus == 'PendingDoNotShow'
+            "
+            >${{ activePopover.data?.listprice }}</span
+          >
+          <span v-else>${{ activePopover.data?.closeprice }}</span>
         </div>
-      </el-popover>
+        <div class="bed-bath">
+          <svg
+            data-v-4a17f7ac=""
+            data-v-1d2a0c97=""
+            data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:181:15:svg"
+            t="1755761273208"
+            class="icon"
+            viewBox="0 0 1280 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="6052"
+            width="20"
+            height="20"
+          >
+            <path
+              data-v-4a17f7ac=""
+              data-v-1d2a0c97=""
+              data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:181:187:path"
+              d="M352 512c88.22 0 160-71.78 160-160s-71.78-160-160-160-160 71.78-160 160 71.78 160 160 160z m704-256H608c-17.68 0-32 14.32-32 32v288H128V160c0-17.68-14.32-32-32-32H32C14.32 128 0 142.32 0 160v704c0 17.68 14.32 32 32 32h64c17.68 0 32-14.32 32-32v-96h1024v96c0 17.68 14.32 32 32 32h64c17.68 0 32-14.32 32-32V480c0-123.72-100.28-224-224-224z"
+              p-id="6053"
+            />
+          </svg>
+          {{
+            activePopover.data?.bedrooms
+              ? Number(activePopover.data?.bedrooms).toFixed(0) + " Beds"
+              : "--"
+          }}
+          <span class="line">|</span>
+          <svg
+            data-v-4a17f7ac=""
+            data-v-1d2a0c97=""
+            data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:189:15:svg"
+            t="1755761642535"
+            class="icon"
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="7503"
+            width="20"
+            height="20"
+          >
+            <path
+              data-v-4a17f7ac=""
+              data-v-1d2a0c97=""
+              data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:189:187:path"
+              d="M950.857143 621.714286v109.714285q0 96.571429-73.142857 163.428572v110.857143q0 8-5.142857 13.142857t-13.142858 5.142857h-36.571428q-8 0-13.142857-5.142857t-5.142857-13.142857v-67.428572q-36 12.571429-73.142858 12.571429H292.571429q-37.142857 0-73.142858-12.571429v62.857143q0 9.714286-5.428571 16.285714T201.142857 1024h-36.571428q-7.428571 0-12.857143-6.571429T146.285714 1001.142857v-106.285714q-73.142857-66.857143-73.142857-163.428572v-109.714285h877.714286zM402.285714 384q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m36.571429-36.571429q0 8-5.142857 13.142858t-13.142857 5.142857-13.142858-5.142857-5.142857-13.142858 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m73.142857 0q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571428-36.571429q0 8-5.142857 13.142857t-13.142857 5.142858-13.142858-5.142858-5.142857-13.142857 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142857 13.142857z m621.714286 292.571428v36.571429q0 8-5.142857 13.142857t-13.142857 5.142857H18.285714q-8 0-13.142857-5.142857t-5.142857-13.142857v-36.571429q0-8 5.142857-13.142857t13.142857-5.142857h54.857143V146.285714q0-60.571429 42.857143-103.428571T219.428571 0q61.714286 0 105.142858 44.571429 26.285714-10.857143 56-6.857143t53.142857 22.285714l12.571428-12.571429q6.285714-6.285714 12.571429 0l24 24q6.285714 6.285714 0 12.571429L303.428571 263.428571q-6.285714 6.285714-12.571428 0l-24-24q-6.285714-6.285714 0-12.571428l12.571428-12.571429q-20.571429-26.285714-23.142857-59.428571T269.714286 93.142857q-21.142857-20-50.285715-20-30.285714 0-51.714285 21.428572T146.285714 146.285714v365.714286h859.428572q8 0 13.142857 5.142857t5.142857 13.142857zM512 274.285714q0 8-5.142857 13.142857t-13.142857 5.142858-13.142857-5.142858-5.142858-13.142857 5.142858-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142857 13.142857z m-36.571428-36.571429q0 8-5.142857 13.142857t-13.142857 5.142857-13.142858-5.142857-5.142857-13.142857 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m109.714286 36.571429q0 8-5.142858 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142858 13.142857z m-36.571429-36.571429q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142858-13.142857 5.142858-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142857 5.142857 5.142857 13.142858z m109.714286 36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571428-36.571428q0 8-5.142858 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142857 5.142857 5.142858 13.142858z m73.142857 0q0 8-5.142857 13.142857t-13.142858 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142858 5.142857 5.142857 13.142858z"
+              p-id="7504"
+            />
+          </svg>
+          {{
+            activePopover.data?.bathcount
+              ? Number(activePopover.data?.bathcount).toFixed(0) + " Baths"
+              : "--"
+          }}
+        </div>
+        <div class="view-detail">
+          <el-button
+            class="btn-view-detail"
+            style="
+              width: 100%;
+              background: rgb(154, 137, 187);
+              color: rgb(255, 255, 255);
+            "
+            @click="onShowViewDetail()"
+            >View Detail</el-button
+          >
+        </div>
+        <el-icon class="btn-close" @click="closeAllPopovers"
+          ><CloseBold
+        /></el-icon>
+      </div>
+    </el-popover>
   </div>
 </template>
 
@@ -1007,8 +1081,12 @@ watch(
   text-align: center;
   white-space: nowrap;
   border: 1px solid #ccc;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
   position: relative;
   display: flex;
   align-items: center;

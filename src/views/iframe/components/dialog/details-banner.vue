@@ -23,67 +23,84 @@ const bannerHeight = ref("350px");
 const loadingMap = ref(true);
 const chartData = ref([
   {
-    key: 'yearbuilt',
+    key: "yearbuilt",
     name: "Built in",
-    value: 36000,
+    value: 36000
   },
   {
-    key: 'bedrooms',
+    key: "bedrooms",
     name: "Bedrooms",
-    value: 36000,
+    value: 36000
   },
   {
-    key: 'bathcount',
+    key: "bathcount",
     name: "Bathrooms",
-    value: 36000,
+    value: 36000
   },
   {
-    key: 'livingarea',
+    key: "livingarea",
     name: "Living Area",
     value: 36000,
-    unit: 'sq.ft'
+    unit: "sq.ft"
   },
   {
-    key: 'lotsize',
+    key: "lotsize",
     name: "Lot Size",
     value: 36000,
-    unit: 'sq.ft'
+    unit: "sq.ft"
   }
 ]);
 
-const interiorFeatures = ref([{
-  name: "Hardwood floors throughout"
-},{
-  name: "Gourmet kitchen with island"
-},{
-  name: "Stainless steel appliances"
-},{
-  name: "Quartz countertops"
-},{
-  name: "Walk-in closets"
-},{
-  name: "Fireplace in living room"
-},{
-  name: "Home office/den"
-},{
-  name: "Smart home features"
-}])
+const interiorFeatures = ref([
+  {
+    name: "Hardwood floors throughout"
+  },
+  {
+    name: "Gourmet kitchen with island"
+  },
+  {
+    name: "Stainless steel appliances"
+  },
+  {
+    name: "Quartz countertops"
+  },
+  {
+    name: "Walk-in closets"
+  },
+  {
+    name: "Fireplace in living room"
+  },
+  {
+    name: "Home office/den"
+  },
+  {
+    name: "Smart home features"
+  }
+]);
 
-const exteriorFeatures = ref([{
-  name: "Landscaped garden"
-},{
-  name: "Outdoor patio"
-},{
-  name: "lrrigation system"
-},{
-  name: "Two-car garage"
-},{
-  name: "EV charging station"
-},{
-  name: "Solar panels"
-},{
-  name: "Security system"
-}])
+const exteriorFeatures = ref([
+  {
+    name: "Landscaped garden"
+  },
+  {
+    name: "Outdoor patio"
+  },
+  {
+    name: "lrrigation system"
+  },
+  {
+    name: "Two-car garage"
+  },
+  {
+    name: "EV charging station"
+  },
+  {
+    name: "Solar panels"
+  },
+  {
+    name: "Security system"
+  }
+]);
 
 function onShowViewDetail() {
   emit("onViewDetail", props.detailData);
@@ -94,7 +111,7 @@ function onShowAddComment() {
 }
 
 function goToSchedulePage() {
-  window.open('https://calendly.com/axisrealty-30min-meeting/30min');
+  window.open("https://calendly.com/axisrealty-30min-meeting/30min");
 }
 
 async function loadGoogleMaps() {
@@ -180,17 +197,20 @@ watch(
       <div class="item right">
         <div class="flex-container price-box">
           <div class="left price">
-            ${{ detailData?.closeprice }}
+            <span v-if="detailData?.mlsstatus == 'Active' || detailData?.mlsstatus == 'PendingDoNotShow'"
+              >${{ detailData?.listprice }}</span
+            >
+            <span v-else>${{ detailData?.closeprice }}</span>
           </div>
           <div class="right btn-box">
-            <el-button class="btn-schedule" @click="goToSchedulePage">Schedule A Tour</el-button>
+            <el-button class="btn-schedule" @click="goToSchedulePage"
+              >Schedule A Tour</el-button
+            >
             <el-popover placement="bottom" :width="260" trigger="click">
               <template #reference>
                 <el-button class="btn-call-us">Call Us Directly</el-button>
               </template>
-              <div>
-                (833) 888-AXIS｜ (833) 888-2947
-              </div>
+              <div>(833) 888-AXIS｜ (833) 888-2947</div>
             </el-popover>
           </div>
         </div>
@@ -198,12 +218,17 @@ watch(
         <dl>
           <dt>Property Highlights</dt>
           <dd>
-            <div class="flex-container-5" v-if="detailData">
-              <div class="item" 
-                v-for="(item, index) in chartData"
-                :key="index">
+            <div v-if="detailData" class="flex-container-5">
+              <div v-for="(item, index) in chartData" :key="index" class="item">
                 <div class="value">
-                  {{ detailData[item.key] }}<span v-if="item.unit" style="margin-left: 5px;">{{ item.unit }}</span>
+                  <span>{{
+                    detailData[item.key]
+                      ? Number(detailData[item.key]).toFixed(0)
+                      : "--"
+                  }}</span>
+                  <span v-if="item.unit" style="margin-left: 5px">{{
+                    item.unit
+                  }}</span>
                 </div>
                 <div class="name">
                   {{ item.name }}
@@ -216,7 +241,7 @@ watch(
         <dl>
           <dt>Property Overview</dt>
           <dd>
-            <div style="margin-top: 10px;">{{ detailData?.publicremarks }}</div>
+            <div style="margin-top: 10px">{{ detailData?.publicremarks }}</div>
           </dd>
         </dl>
 
@@ -227,8 +252,7 @@ watch(
               <div class="item">
                 <div class="title">Interior Features</div>
                 <ul>
-                  <li v-for="(item, index) in interiorFeatures"
-                    :key="index">
+                  <li v-for="(item, index) in interiorFeatures" :key="index">
                     {{ item.name }}
                   </li>
                 </ul>
@@ -236,13 +260,11 @@ watch(
               <div class="item">
                 <div class="title">Exterior Features</div>
                 <ul>
-                   <li v-for="(item, index) in exteriorFeatures"
-                    :key="index">
+                  <li v-for="(item, index) in exteriorFeatures" :key="index">
                     {{ item.name }}
                   </li>
                 </ul>
               </div>
-             
             </div>
           </dd>
         </dl>
@@ -250,35 +272,34 @@ watch(
         <dl>
           <dt>Location & Neighborhood</dt>
           <dd>
-            <DetailsMap :detailData="detailData"/>
+            <DetailsMap :detailData="detailData" />
           </dd>
         </dl>
 
-         <dl>
+        <dl>
           <dt>Schools</dt>
-          <dd>
-
-          </dd>
+          <dd />
         </dl>
 
-        <dl style="text-align: center;">
+        <dl style="text-align: center">
           <dt>Ready to Find Your Dream Home?</dt>
-          <dd style="padding: 20px 10%;">
-            Don't miss out on properties like this! Our expert agents are ready to help you navigate the market and find the perfect match for your lifestyle.
+          <dd style="padding: 20px 10%">
+            Don't miss out on properties like this! Our expert agents are ready
+            to help you navigate the market and find the perfect match for your
+            lifestyle.
           </dd>
           <dd class="btn-box">
-            <el-button class="btn-schedule" @click="goToSchedulePage">Schedule A Consultation</el-button>
+            <el-button class="btn-schedule" @click="goToSchedulePage"
+              >Schedule A Consultation</el-button
+            >
             <el-popover placement="top" :width="260" trigger="click">
               <template #reference>
                 <el-button class="btn-schedule">Call Us Today</el-button>
               </template>
-              <div>
-                (833) 888-AXIS｜ (833) 888-2947
-              </div>
+              <div>(833) 888-AXIS｜ (833) 888-2947</div>
             </el-popover>
           </dd>
         </dl>
-
       </div>
     </div>
   </div>
@@ -333,14 +354,15 @@ watch(
   }
 
   @media (max-width: 768px) {
-  .flex-container {
-    flex-direction: column;
-    .left, .right {
-      width: 100%; /* 占满整行 */
-      text-align: left; /* 移动端统一左对齐（可选） */
+    .flex-container {
+      flex-direction: column;
+      .left,
+      .right {
+        width: 100%; /* 占满整行 */
+        text-align: left; /* 移动端统一左对齐（可选） */
+      }
     }
   }
-}
 
   .price-box {
     .price {
@@ -352,7 +374,7 @@ watch(
 
   .btn-box {
     .btn-schedule {
-      background: #1F274B;
+      background: #1f274b;
       color: #fff;
     }
   }
@@ -362,7 +384,6 @@ watch(
     color: #000;
     margin-top: 10px;
   }
-
 }
 
 .flex-container-5 {
@@ -417,5 +438,4 @@ watch(
     width: 100%; /* 每个 item 占满整行 */
   }
 }
-
 </style>
