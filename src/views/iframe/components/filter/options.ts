@@ -48,7 +48,7 @@ export const statusOptions = [
   },
   {
     value: "PendingDoNotShow",
-    label: "PendingDoNotShow"
+    label: "Pending"
   },
   {
     value: "Sold",

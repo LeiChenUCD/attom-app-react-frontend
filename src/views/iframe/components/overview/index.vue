@@ -4,6 +4,7 @@ import { objectParamsToQueryString } from "@/utils/common";
 import { ref, onMounted, watch } from "vue";
 const { VITE_GOOGLE_MAP_API_KEY } = import.meta.env;
 import { Loader } from "@googlemaps/js-api-loader";
+import { mlsstatusMap } from "../filter/options";
 
 defineOptions({
   name: "Overview"
@@ -151,7 +152,12 @@ watch(
         <div v-if="imageList?.length > 0">
           <el-carousel indicator-position="none" :height="bannerHeight">
             <el-carousel-item v-for="(item, index) in imageList" :key="index">
-              <img style="width: 100%; height: 100%" :src="item" />
+              <el-image
+                style="width: 100%; height: 100%"
+                :src="item"
+                fit="cover"
+                lazy
+              />
             </el-carousel-item>
           </el-carousel>
         </div>
@@ -165,7 +171,10 @@ watch(
         </el-skeleton>
         <div v-else ref="mapContainer" style="width: 100%; height: 100%" />
         <div v-if="detailData?.mlsstatus" class="mlsstatus">
-          {{ detailData?.mlsstatus }}
+          <span v-if="detailData?.mlsstatus == 'PendingDoNotShow'"
+            >Pending
+          </span>
+          <span v-else>{{ detailData?.mlsstatus }}</span>
         </div>
       </div>
       <div class="item right">
