@@ -180,7 +180,6 @@ watch(
                 show-progress
                 :initial-index="index"
                 fit="cover"
-                lazy
               />
             </el-carousel-item>
           </el-carousel>

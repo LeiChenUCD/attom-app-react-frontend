@@ -156,7 +156,6 @@ watch(
                 style="width: 100%; height: 100%"
                 :src="item"
                 fit="cover"
-                lazy
               />
             </el-carousel-item>
           </el-carousel>
