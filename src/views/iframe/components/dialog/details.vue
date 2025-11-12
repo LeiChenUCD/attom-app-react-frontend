@@ -5,7 +5,8 @@ import { CommentFormProps } from "./utils/types";
 import {
   getCensusListApi,
   getHouseDetailApi,
-  queryContactInfo
+  queryContactInfo,
+  getImagesListApi
 } from "@/api/welcome";
 import { objectParamsToQueryString } from "@/utils/common";
 import DetailsBanner from "./details-banner.vue";
@@ -64,6 +65,7 @@ const tabList = ref([
     label: "Alphax"
   }
 ]);
+const imageList = ref([]);
 
 function getRef() {
   return ruleFormRef.value;
@@ -127,6 +129,11 @@ async function getHouseDetail() {
   houseDetail.value = res;
   detailData.value[activeTab.value] = res.mls || [];
   isLoading.value = false;
+  if (res?.mls?.length > 0) {
+    getDataImages(res.mls[0].listingkeynumeric);
+  } else {
+    imageList.value = [];
+  }
 }
 
 const calculateMapHeight = () => {
@@ -134,6 +141,18 @@ const calculateMapHeight = () => {
   let height = windowHeight - 80;
   bodyHeight.value = height;
 };
+
+async function getDataImages(listingkeynumeric: any) {
+  const params = {
+    attomId: listingkeynumeric || "" //"16945068"
+  };
+  imageList.value = [];
+  const res = await getImagesListApi(params);
+  if (res?.pictures?.length > 0) {
+    imageList.value = res.pictures.filter(item => !item.includes("/1/"));
+  } else {
+  }
+}
 
 function init() {
   getHouseDetail();
@@ -148,7 +167,7 @@ defineExpose({ getRef });
 
 <template>
   <div class="view-detail-box" :style="{ height: bodyHeight + 'px' }">
-    <DetailsBanner :detailData="detail" />
+    <DetailsBanner :detailData="detail" :images="imageList" />
     <!--div class="content">
       <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
         <el-tab-pane
