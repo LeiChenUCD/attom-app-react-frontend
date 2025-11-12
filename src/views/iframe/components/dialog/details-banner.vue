@@ -13,6 +13,12 @@ const props = defineProps({
     default: () => {
       return {};
     }
+  },
+  images: {
+    type: Array,
+    default: () => {
+      return [];
+    }
   }
 });
 const emit = defineEmits(["onComment", "onViewDetail"]);
@@ -153,6 +159,20 @@ watch(
     } else {
       imageList.value = [];
       loadGoogleMaps();
+    }
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+);
+
+watch(
+  () => props.images,
+  () => {
+    if (props.images?.length > 0) {
+      imageList.value = props.images;
+    } else {
     }
   },
   {

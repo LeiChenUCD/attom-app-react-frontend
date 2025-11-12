@@ -125,15 +125,29 @@ async function loadListData() {
   // 关键修改：根据页码决定是覆盖还是合并数据
   if (currentPage.value === 1) {
     // 第一页：直接覆盖
-    housesData.value = houseRes?.result || [];
+    housesData.value = buildHouseData(houseRes?.result);
   } else {
     // 非第一页：合并结果（避免重复数据）
     const newData = houseRes?.result || [];
-    housesData.value = [...housesData.value, ...newData];
+    housesData.value = buildHouseData([...housesData.value, ...newData]);
   }
   currentPage.value++;
   totalSize.value = houseRes?.totalSize || 0;
   loading.value = false;
+}
+
+function buildHouseData(list) {
+  const res = [];
+  if (list?.length > 0) {
+    for (let i = 0; i < list.length; i++) {
+      const data = list[i];
+      if (data.MediaURLs?.length > 0) {
+        data.MediaURLs = data.MediaURLs.filter(item => !item.includes("/1/"));
+      }
+      res.push(data);
+    }
+  }
+  return res;
 }
 
 function calculateOffset(page: number, pageSize: number) {
@@ -212,7 +226,6 @@ watch(
     immediate: true
   }
 );
-
 </script>
 
 <template>
