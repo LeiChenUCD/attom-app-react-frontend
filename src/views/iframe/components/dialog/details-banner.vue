@@ -298,7 +298,9 @@ watch(
 
         <dl>
           <dt>Schools</dt>
-          <dd />
+          <dd>{{ detailData?.elementaryschool }}</dd>
+          <dd>{{ detailData?.middleorjuniorschool }}</dd>
+          <dd>{{ detailData?.highschool }}</dd>
         </dl>
 
         <dl style="text-align: center">

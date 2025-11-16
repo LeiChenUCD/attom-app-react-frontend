@@ -425,6 +425,8 @@ export function useColumns() {
       bottomLat: "",
       leftLong: "",
       rightLong: "",
+      school: true,
+      detail: true,
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]"`
       //outFields: `propertyusegroup,propertyaddressfull,fid,"[attom id]",propertylatitude,propertylongitude,arealotsf,bathcount,bedroomscount,censustract,zonedcodelocal,PropertyAddressCity,parcelnumberraw`
       outFields: `listprice,bathcount,bedrooms,yearbuilt,livingarea,lotsize,publicremarks,address,city,state,zip,zoning,alphaxheld,fid,lat,lon,mlsstatus,closeprice,comments`
