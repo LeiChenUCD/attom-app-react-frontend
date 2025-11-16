@@ -111,6 +111,8 @@ async function loadListData() {
     objectIds: "",
     resultOffset: queryOffset.value || 0,
     pic: true,
+    school: true,
+    detail: true,
     //topLat: "",
     //bottomLat: "",
     //leftLong: "",
