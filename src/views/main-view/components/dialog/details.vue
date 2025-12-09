@@ -8,6 +8,7 @@ import {
   queryContactInfo
 } from "@/api/welcome";
 import { objectParamsToQueryString } from "@/utils/common";
+import DueDiligenceReport from "./report.vue";
 
 const props = withDefaults(defineProps<CommentFormProps>(), {
   formInline: () => ({
@@ -40,6 +41,10 @@ const tabList = ref([
   {
     name: "mls",
     label: "MLS"
+  },
+  {
+    name: "DueDiligenceReport",
+    label: "Due Diligence Report"
   },
   {
     name: "amortizedEquity",
@@ -139,7 +144,10 @@ defineExpose({ getRef });
 
 <template>
   <div class="view-detail-box">
-    <div class="address" />
+    <div class="address">
+      {{ detail.address }}, {{ detail.city || "" }}, {{ detail.state || "" }}
+      {{ detail.zip || "" }}, USA
+    </div>
     <div class="content">
       <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
         <el-tab-pane
@@ -150,6 +158,10 @@ defineExpose({ getRef });
           :name="tab.name"
         >
           <div v-if="isLoading" v-loading="isLoading" class="loading-box" />
+          <DueDiligenceReport
+            v-else-if="tab.name == 'DueDiligenceReport'"
+            :detail="detail"
+          />
           <el-collapse
             v-else-if="detailData[tab.name]?.length > 0"
             v-model="activeName"
@@ -192,6 +204,10 @@ defineExpose({ getRef });
 <style lang="scss" scoped>
 .view-detail-box {
   .address {
+    font-weight: bold;
+    font-weight: 16px;
+    color: #333;
+    margin-bottom: 10px;
   }
   .content {
     margin-bottom: 20px;

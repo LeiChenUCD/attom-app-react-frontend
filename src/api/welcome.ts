@@ -78,6 +78,16 @@ export const getNotedATTOMID = (params: any) => {
   });
 };
 
+export const getDueDiligenceReportApi = (params: any) => {
+  return http.request<any>(
+    "get",
+    `${baseApiUrl}/api/getDueDiligenceReportApi`,
+    {
+      params
+    }
+  );
+};
+
 export const queryContactInfo = (params: any) => {
   return http.request<any>("get", `${baseApiUrl}/api/contactInfo`, { params });
 };
