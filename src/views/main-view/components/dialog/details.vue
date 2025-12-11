@@ -213,7 +213,7 @@ defineExpose({ getRef });
   }
   .address {
     font-weight: bold;
-    font-weight: 16px;
+    font-size: 16px;
     color: #333;
     margin-bottom: 10px;
   }
