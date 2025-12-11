@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { getDueDiligenceReportApi } from "@/api/welcome";
+import DynamicMap from "./dynamic-map.vue";
 
 defineOptions({
   name: "DueDiligenceReport"
@@ -17,6 +18,7 @@ const props = defineProps({
 const isLoading = ref(false);
 const reportData = ref({});
 const summaryData = ref({});
+const parcelAssessorMapUrl = ref("");
 
 async function getDueDiligenceReport() {
   const address = props.detail.address || "";
@@ -69,6 +71,7 @@ async function getDueDiligenceReport() {
     ]
   };
   reportData.value = res;
+  parcelAssessorMapUrl.value = `https://docs.google.com/gview?url=https://www.sccassessor.org/apps/ShowMapBook.aspx?apn=${res.apn}&embedded=true`;
   summaryData.value = {
     apn: res.apn,
     jurisdiction: res.jurisdiction,
@@ -105,9 +108,34 @@ init();
         >{{ value }}
       </el-descriptions-item>
     </el-descriptions>
+    <div class="title">Parcel Assessor's Map</div>
+    <iframe
+      v-if="reportData?.apn"
+      :src="parcelAssessorMapUrl"
+      width="100%"
+      height="500px"
+      title="Parcel Assessor's Map"
+    />
+    <div v-else className="p-4 text-gray-500">
+      Parcel Assessor's Map not available.
+    </div>
+    <div class="title">Parcel Map</div>
+    <div v-if="reportData.parcel || reportData.footprints">
+      <DynamicMap
+        :center="[reportData.latitude, reportData.longitude]"
+        :unidata="reportData"
+      />
+    </div>
+    <div v-else className="p-4 text-gray-500">No map data available.</div>
   </div>
 </template>
 <style lang="scss" scoped>
 .due-diligence-report {
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 20px 0;
+  }
 }
 </style>
