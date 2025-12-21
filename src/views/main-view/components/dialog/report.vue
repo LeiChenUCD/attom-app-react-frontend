@@ -119,14 +119,14 @@ init();
     <div v-else className="p-4 text-gray-500">
       Parcel Assessor's Map not available.
     </div>
-    <div class="title">Parcel Map</div>
+    <!--div class="title">Parcel Map</div>
     <div v-if="reportData.parcel || reportData.footprints">
       <DynamicMap
         :center="[reportData.latitude, reportData.longitude]"
         :unidata="reportData"
       />
     </div>
-    <div v-else className="p-4 text-gray-500">No map data available.</div>
+    <div v-else className="p-4 text-gray-500">No map data available.</div-->
   </div>
 </template>
 <style lang="scss" scoped>

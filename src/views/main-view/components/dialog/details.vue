@@ -21,7 +21,7 @@ const isLoading = ref(false);
 const ruleFormRef = ref();
 const newFormInline = ref(props.formInline);
 const detail: any = ref(newFormInline.value?.detail || {});
-const activeTab = ref("mls");
+const activeTab = ref("DueDiligenceReport");
 const detailData = ref({
   amortizedequity: null,
   amortizedEquity: null,
@@ -39,12 +39,12 @@ const houseDetail = ref({
 const activeName = ref("1");
 const tabList = ref([
   {
-    name: "mls",
-    label: "MLS"
-  },
-  {
     name: "DueDiligenceReport",
     label: "Due Diligence Report"
+  },
+  {
+    name: "mls",
+    label: "MLS"
   },
   {
     name: "amortizedEquity",
