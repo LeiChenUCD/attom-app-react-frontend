@@ -81,7 +81,7 @@ export const getNotedATTOMID = (params: any) => {
 export const getDueDiligenceReportApi = (params: any) => {
   return http.request<any>(
     "get",
-    `${baseApiUrl}/api/getDueDiligenceReportApi`,
+    `${baseApiUrl}/api/dd-toolkit-search`,
     {
       params
     }
