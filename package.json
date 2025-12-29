@@ -43,6 +43,7 @@
     "@pureadmin/descriptions": "1.2.1",
     "@pureadmin/table": "3.2.1",
     "@pureadmin/utils": "2.5.0",
+    "@vue-leaflet/vue-leaflet": "^0.10.1",
     "@vueuse/core": "12.0.0",
     "@vueuse/motion": "2.2.6",
     "@wangeditor/editor": "5.1.23",
