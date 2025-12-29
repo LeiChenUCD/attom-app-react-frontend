@@ -8,6 +8,7 @@ import {
   queryContactInfo
 } from "@/api/welcome";
 import { objectParamsToQueryString } from "@/utils/common";
+import DueDiligenceReport from "./report.vue";
 
 const props = withDefaults(defineProps<CommentFormProps>(), {
   formInline: () => ({
@@ -20,7 +21,7 @@ const isLoading = ref(false);
 const ruleFormRef = ref();
 const newFormInline = ref(props.formInline);
 const detail: any = ref(newFormInline.value?.detail || {});
-const activeTab = ref("mls");
+const activeTab = ref("DueDiligenceReport");
 const detailData = ref({
   amortizedequity: null,
   amortizedEquity: null,
@@ -37,6 +38,10 @@ const houseDetail = ref({
 });
 const activeName = ref("1");
 const tabList = ref([
+  {
+    name: "DueDiligenceReport",
+    label: "Due Diligence Report"
+  },
   {
     name: "mls",
     label: "MLS"
@@ -139,7 +144,10 @@ defineExpose({ getRef });
 
 <template>
   <div class="view-detail-box">
-    <div class="address" />
+    <div class="address">
+      {{ detail.address }}, {{ detail.city || "" }}, {{ detail.state || "" }}
+      {{ detail.zip || "" }}, USA
+    </div>
     <div class="content">
       <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
         <el-tab-pane
@@ -149,41 +157,49 @@ defineExpose({ getRef });
           :label="tab.label"
           :name="tab.name"
         >
-          <div v-if="isLoading" v-loading="isLoading" class="loading-box" />
-          <el-collapse
-            v-else-if="detailData[tab.name]?.length > 0"
-            v-model="activeName"
-            accordion
-          >
-            <el-collapse-item
-              v-for="(row, index) in detailData[tab.name]"
-              :key="index"
-              :title="'Record' + (index + 1).toString()"
-              :name="(index + 1).toString()"
+          <div class="tab-content">
+            <div v-if="isLoading" v-loading="isLoading" class="loading-box" />
+            <DueDiligenceReport
+              v-else-if="
+                tab.name == 'DueDiligenceReport' && activeTab == tab.name
+              "
+              :detail="detail"
+            />
+            <el-collapse
+              v-else-if="detailData[tab.name]?.length > 0"
+              v-model="activeName"
+              accordion
             >
-              <div style="overflow: auto">
-                <el-descriptions
-                  v-if="
-                    activeTab == tab.name &&
-                    activeName == (index + 1).toString()
-                  "
-                  title=""
-                  direction="vertical"
-                  :column="4"
-                  size="default"
-                  border
-                >
-                  <el-descriptions-item
-                    v-for="(value, key) in row"
-                    :key="key"
-                    :label="key.toString()"
-                    >{{ value }}
-                  </el-descriptions-item>
-                </el-descriptions>
-              </div>
-            </el-collapse-item>
-          </el-collapse>
-          <el-empty v-else description="No data" />
+              <el-collapse-item
+                v-for="(row, index) in detailData[tab.name]"
+                :key="index"
+                :title="'Record' + (index + 1).toString()"
+                :name="(index + 1).toString()"
+              >
+                <div style="overflow: auto">
+                  <el-descriptions
+                    v-if="
+                      activeTab == tab.name &&
+                      activeName == (index + 1).toString()
+                    "
+                    title=""
+                    direction="vertical"
+                    :column="4"
+                    size="default"
+                    border
+                  >
+                    <el-descriptions-item
+                      v-for="(value, key) in row"
+                      :key="key"
+                      :label="key.toString()"
+                      >{{ value }}
+                    </el-descriptions-item>
+                  </el-descriptions>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+            <el-empty v-else description="No data" />
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -191,7 +207,15 @@ defineExpose({ getRef });
 </template>
 <style lang="scss" scoped>
 .view-detail-box {
+  .tab-content {
+    height: calc(100vh - 280px);
+    overflow: auto;
+  }
   .address {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
   }
   .content {
     margin-bottom: 20px;
