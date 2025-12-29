@@ -213,7 +213,7 @@ const crs2227 = new L.Proj.CRS(
 );
 
 function createWMSLegend(layerName, layerTitle) {
-  const legend = L.control({ position: "bottomright" });
+  const legend = L.control({ position: "topright" });
 
   legend.onAdd = function () {
     const div = L.DomUtil.create("div", "wms-legend");
@@ -921,6 +921,23 @@ watch(
 .leaflet-control-zoom {
   display: none;
 }
+.wms-legend {
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+  font-size: 12px;
+}
+
+.wms-legend img {
+  max-width: 200px;
+}
+
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: none;
+}
 </style>
 
 <style scoped lang="scss">
@@ -962,20 +979,4 @@ watch(
   }
 }
 
-.wms-legend {
-  background: white;
-  padding: 8px;
-  border-radius: 4px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.3);
-  font-size: 12px;
-}
-
-.wms-legend img {
-  max-width: 200px;
-}
-
-.legend-title {
-  font-weight: bold;
-  margin-bottom: 4px;
-}
 </style>
