@@ -51,6 +51,7 @@ let currentMarker;
 let pointMarkers;
 
 let currentWMSLayer: L.TileLayer | null = null;
+let wmsLegendControl = null;
 
 const wmsBaseUrl = `${wmsApiBaseUrl}/geoserver/mygis/wms`;
 const wsmLayerService = {
@@ -211,6 +212,31 @@ const crs2227 = new L.Proj.CRS(
   }
 );
 
+function createWMSLegend(layerName, layerTitle) {
+  const legend = L.control({ position: "bottomright" });
+
+  legend.onAdd = function () {
+    const div = L.DomUtil.create("div", "wms-legend");
+
+    const legendUrl =
+      `${wmsBaseUrl}?` +
+      `SERVICE=WMS&` +
+      `REQUEST=GetLegendGraphic&` +
+      `VERSION=1.1.1&` +
+      `FORMAT=image/png&` +
+      `LAYER=${layerName}`;
+
+    div.innerHTML = `
+      <div class="legend-title">${layerTitle}</div>
+      <img src="${legendUrl}" alt="legend" />
+    `;
+
+    return div;
+  };
+
+  return legend;
+}
+
 const loadWMSLayer2 = () => {
   const wsmData = wsmLayerService[currentWms.value];
   if (!wsmData) {
@@ -228,6 +254,11 @@ const loadWMSLayer2 = () => {
   if (currentWMSLayer) {
     mapCom?.removeLayer(currentWMSLayer);
     currentWMSLayer = null;
+  }
+
+  if (wmsLegendControl && mapCom) {
+    mapCom.removeControl(wmsLegendControl);
+    wmsLegendControl = null;
   }
 
   // 为不同CRS的图层设置不同参数
@@ -266,6 +297,10 @@ const loadWMSLayer2 = () => {
 
   if (mapCom) {
     currentWMSLayer.addTo(mapCom);
+
+    // === 新增：Legend ===
+    wmsLegendControl = createWMSLegend(layerName, layerTitle);
+    wmsLegendControl.addTo(mapCom);
 
     // 如果是EPSG:2227图层，设置合适的地图视图
     if (wsmData.key !== "floodZone" && options.srs === "EPSG:2227") {
@@ -883,7 +918,7 @@ watch(
 </template>
 
 <style lang="scss">
-.leaflet-control-container {
+.leaflet-control-zoom {
   display: none;
 }
 </style>
@@ -925,5 +960,22 @@ watch(
       border-radius: 5px;
     }
   }
+}
+
+.wms-legend {
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+  font-size: 12px;
+}
+
+.wms-legend img {
+  max-width: 200px;
+}
+
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 </style>
