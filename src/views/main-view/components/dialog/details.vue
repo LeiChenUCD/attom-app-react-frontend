@@ -9,6 +9,7 @@ import {
 } from "@/api/welcome";
 import { objectParamsToQueryString } from "@/utils/common";
 import DueDiligenceReport from "./report.vue";
+import Parcelz from "./parcelz.vue";
 
 const props = withDefaults(defineProps<CommentFormProps>(), {
   formInline: () => ({
@@ -41,6 +42,10 @@ const tabList = ref([
   {
     name: "DueDiligenceReport",
     label: "Due Diligence Report"
+  },
+  {
+    name: "Parcelz",
+    label: "Parcel.z"
   },
   {
     name: "mls",
@@ -165,6 +170,8 @@ defineExpose({ getRef });
               "
               :detail="detail"
             />
+            <Parcelz v-else-if="tab.name == 'Parcelz' && activeTab == tab.name"
+              :detail="detail"/>
             <el-collapse
               v-else-if="detailData[tab.name]?.length > 0"
               v-model="activeName"
