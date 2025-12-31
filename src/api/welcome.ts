@@ -88,6 +88,26 @@ export const getDueDiligenceReportApi = (params: any) => {
   );
 };
 
+export const getParcelzSanJoseApi = (params: any) => {
+  return http.request<any>(
+    "get",
+    `${baseApiUrl}/api/aduplus-search`,
+    {
+      params
+    }
+  );
+};
+
+export const getNotParcelzSanJoseApi = (params: any) => {
+  return http.request<any>(
+    "get",
+    `${baseApiUrl}/api/parcel-z-search`,
+    {
+      params
+    }
+  );
+};
+
 export const queryContactInfo = (params: any) => {
   return http.request<any>("get", `${baseApiUrl}/api/contactInfo`, { params });
 };
