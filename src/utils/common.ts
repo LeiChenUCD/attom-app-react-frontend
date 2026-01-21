@@ -103,3 +103,11 @@ export function objectParamsToQueryString(obj) {
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]))
     .join('&');
 }
+
+//格式化价格
+export function FormatPrice(value, locale = 'en-US', currency = 'USD') {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency
+  }).format(value)?.replace(/\.00$/, '');
+}
