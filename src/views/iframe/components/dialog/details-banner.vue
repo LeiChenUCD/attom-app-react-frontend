@@ -3,6 +3,7 @@ import DetailsMap from "./map.vue";
 import { ref, onMounted, watch } from "vue";
 const { VITE_GOOGLE_MAP_API_KEY } = import.meta.env;
 import { Loader } from "@googlemaps/js-api-loader";
+import { FormatPrice } from "@/utils/common";
 
 defineOptions({
   name: "Overview"
@@ -218,9 +219,9 @@ watch(
         <div class="flex-container price-box">
           <div class="left price">
             <span v-if="detailData?.mlsstatus == 'Active' || detailData?.mlsstatus == 'PendingDoNotShow'"
-              >${{ detailData?.listprice }}</span
+              >{{ FormatPrice(detailData?.listprice) }}</span
             >
-            <span v-else>${{ detailData?.closeprice }}</span>
+            <span v-else>{{ FormatPrice(detailData?.closeprice) }}</span>
           </div>
           <div class="right btn-box">
             <el-button class="btn-schedule" @click="goToSchedulePage"

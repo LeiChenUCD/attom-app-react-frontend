@@ -6,6 +6,7 @@ import { CloseBold } from "@element-plus/icons-vue";
 import "proj4leaflet";
 import "leaflet.markercluster";
 import { wmsApiBaseUrl } from "@/api/base";
+import { FormatPrice } from "@/utils/common";
 
 defineOptions({
   name: "MapComponent"
@@ -987,9 +988,9 @@ watch(
               activePopover.data?.mlsstatus == 'Active' ||
               activePopover.data?.mlsstatus == 'PendingDoNotShow'
             "
-            >${{ activePopover.data?.listprice }}</span
+            >{{ FormatPrice(activePopover.data?.listprice) }}</span
           >
-          <span v-else>${{ activePopover.data?.closeprice }}</span>
+          <span v-else>{{ FormatPrice(activePopover.data?.closeprice) }}</span>
         </div>
         <div class="bed-bath">
           <svg

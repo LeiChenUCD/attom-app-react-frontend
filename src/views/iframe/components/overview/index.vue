@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getImagesListApi, getHouseDetailApi } from "@/api/welcome";
-import { objectParamsToQueryString } from "@/utils/common";
+import { FormatPrice, objectParamsToQueryString } from "@/utils/common";
 import { ref, onMounted, watch } from "vue";
 const { VITE_GOOGLE_MAP_API_KEY } = import.meta.env;
 import { Loader } from "@googlemaps/js-api-loader";
@@ -185,9 +185,9 @@ watch(
                 detailData?.mlsstatus == 'Active' ||
                 detailData?.mlsstatus == 'PendingDoNotShow'
               "
-              >${{ detailData?.listprice }}</span
+              >{{ FormatPrice(detailData?.listprice) }}</span
             >
-            <span v-else>${{ detailData?.closeprice }}</span>
+            <span v-else>{{ FormatPrice(detailData?.closeprice) }}</span>
           </dd>
           <dd
             class="text"
