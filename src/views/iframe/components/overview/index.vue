@@ -191,7 +191,7 @@ watch(
           </dd>
           <dd
             class="text"
-            style="display: flex; align-items: center; margin-bottom: 20px"
+            style="display: flex; align-items: center; margin-bottom: 10px"
           >
             <svg
               t="1755760665346"
@@ -209,6 +209,9 @@ watch(
               />
             </svg>
             {{ detailData?.fullAddress }}
+          </dd>
+          <dd v-if="detailData?.lotsize" style="margin-bottom: 10px;padding-left: 20px;">
+            Lot(sqft) {{ Number(detailData?.lotsize).toFixed(0) }}
           </dd>
           <dd class="text" style="display: flex; align-items: center">
             <div style="flex: 1; display: flex; align-items: center">
