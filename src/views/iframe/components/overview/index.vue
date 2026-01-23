@@ -210,8 +210,13 @@ watch(
             </svg>
             {{ detailData?.fullAddress }}
           </dd>
-          <dd v-if="detailData?.lotsize" style="margin-bottom: 10px;padding-left: 20px;">
-            Lot(sqft) {{ Number(detailData?.lotsize).toFixed(0) }}
+          <dd style="margin-bottom: 10px;display: flex;justify-content: space-between;">
+            <!--div v-if="detailData?.livingarea">
+              Living Area <strong>{{ Number(detailData?.livingarea).toFixed(0) }} sq.ft</strong>
+            </div-->
+            <div v-if="detailData?.lotsize">
+              Lot Size <strong>{{ Number(detailData?.lotsize).toFixed(0) }} sq.ft</strong>
+            </div>
           </dd>
           <dd class="text" style="display: flex; align-items: center">
             <div style="flex: 1; display: flex; align-items: center">
