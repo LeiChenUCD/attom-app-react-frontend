@@ -235,7 +235,7 @@ watch(
             </el-popover>
           </div>
         </div>
-        <div class="address">{{ detailData?.address }}</div>
+        <div class="address">{{ detailData?.fullAddress }}</div>
         <dl>
           <dt>Property Highlights</dt>
           <dd>

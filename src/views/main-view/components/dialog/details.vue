@@ -150,8 +150,7 @@ defineExpose({ getRef });
 <template>
   <div class="view-detail-box">
     <div class="address">
-      {{ detail.address }}, {{ detail.city || "" }}, {{ detail.state || "" }}
-      {{ detail.zip || "" }}, USA
+      {{ detail.fullAddress }}
     </div>
     <div class="content">
       <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">

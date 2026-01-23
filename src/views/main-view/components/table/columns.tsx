@@ -57,10 +57,10 @@ export function useColumns() {
   const currentRowIndex = ref(0);
   const columns: Column<any>[] = [
     {
-      key: "address",
+      key: "fullAddress",
       title: "Address",
-      dataKey: "address",
-      slotName: "address",
+      dataKey: "fullAddress",
+      slotName: "fullAddress",
       width: 200,
       sortable: true,
       fixed: true
@@ -546,6 +546,22 @@ export function useColumns() {
 
   function queryDataByCensustractId() { }
 
+  function buildHousesData(list: any) {
+    const res = [];
+    if (list?.length > 0) {
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i];
+        const address = item.address || '';
+        const city = item.city || '';
+        const state = item.state || '';
+        const zip = item.zip || '';
+        item.fullAddress = `${address}, ${city}, ${state} ${zip}`;
+        res.push(item);
+      }
+    }
+    return res;
+  }
+
   async function initTableData(init: boolean) {
     loading.value = true;
     const loadingData = ElLoading.service({
@@ -560,7 +576,7 @@ export function useColumns() {
     if (censustractId.value === "0") {
       if (init || isNeedLoadData()) {
         const housesRes = await queryAllData();
-        housesResData.value = housesRes || [];
+        housesResData.value = buildHousesData(housesRes);
       }
       /*if (init) {
         notedATTOMIDSetData.value = await getNotedATTOMIDSet();
