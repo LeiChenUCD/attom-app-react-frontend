@@ -594,11 +594,11 @@ function addCurrentPoint(data: any, isMax: boolean) {
   // 添加标记
   currentMarker = L.marker([data.lat, data.lon], {
     icon: highlightIcon,
-    title: data.address //鼠标hover显示
+    title: data.fullAddress //鼠标hover显示
   }).addTo(mapCom);
   //secondaryPointsLayers.push(currentMarker);
   // 绑定工具提示
-  currentMarker.bindPopup(data.address, {
+  currentMarker.bindPopup(data.fullAddress, {
     permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
     direction: "top" // 提示框显示的方向（top, bottom, left, right）
     //offset: [0, -65], //偏移量
@@ -736,7 +736,7 @@ function buildAllPoints(list: any) {
           if (item["alphaxheld"]) {
             icon = skyIcon;
           }
-          layer = L.marker(point, { icon: icon }).bindPopup(item.address, {
+          layer = L.marker(point, { icon: icon }).bindPopup(item.fullAddress, {
             permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
             direction: "top" // 提示框显示的方向（top, bottom, left, right）
             //offset: [0, -65], //偏移量
@@ -744,7 +744,7 @@ function buildAllPoints(list: any) {
           });
         } else {
           layer = L.marker(point, { icon: highlightIcon }).bindPopup(
-            item.address,
+            item.fullAddress,
             {
               permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
               direction: "top" // 提示框显示的方向（top, bottom, left, right）

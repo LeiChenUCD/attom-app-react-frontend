@@ -149,7 +149,7 @@ watch(
                 filterable
                 :options="houses"
                 :props="{
-                  label: 'address',
+                  label: 'fullAddress',
                   value: 'fid'
                 }"
                 placeholder="Please select"
