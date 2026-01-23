@@ -733,7 +733,52 @@ function getCurHouseIndex(latLng: any, list: any) {
   return res;
 }
 
-function buildAllPoints(list: any) {
+function createPriceMarker(property: any) {
+  const status = property?.mlsstatus;
+  const price =
+    status === "Active" || status === "PendingDoNotShow"
+      ? property.listprice
+      : property.closeprice;
+  const formattedPrice = formatPriceForMarker(price);
+  return L.divIcon({
+    html: `<div class="price-marker">${formattedPrice}</div>`,
+    className: '',
+    iconSize: [80, 32],          // 必须给
+    iconAnchor: [40, 32],        // x = 宽度/2，y = 高度
+  });
+}
+
+function buildAllPoints(list: any[]) {
+  secondaryPointsLayers = [];
+
+  // 不要 markerClusterGroup
+  const layerGroup = L.layerGroup();
+
+  if (!list?.length) return;
+
+  list.forEach(item => {
+    if (!item.lat) return;
+
+    const marker = L.marker([item.lat, item.lon], {
+      icon: createPriceMarker(item),
+      riseOnHover: true
+    });
+
+    marker.on('click', () => {
+      console.log('clicked:', item);
+      // 可联动右侧列表
+    });
+
+    secondaryPointsLayers.push(marker);
+    layerGroup.addLayer(marker);
+  });
+
+  layerGroup.addTo(mapCom);
+
+  loadWMSLayer2();
+}
+
+/*function buildAllPoints(list: any) {
   secondaryPointsLayers = [];
   pointMarkers = L.markerClusterGroup();
   if (list?.length > 0) {
@@ -749,12 +794,7 @@ function buildAllPoints(list: any) {
           if (item["alphaxheld"]) {
             icon = skyIcon;
           }
-          /*layer = L.marker(point, { icon: icon }).bindPopup(item.fullAddress, {
-            permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
-            direction: "top" // 提示框显示的方向（top, bottom, left, right）
-            //offset: [0, -65], //偏移量
-            //opacity: 0.9 // 提示框的透明度
-          });*/
+   
           layer = L.marker([item.lat, item.lon], {
             icon: createCustomMarkerIcon(item),
             riseOnHover: true,
@@ -766,16 +806,6 @@ function buildAllPoints(list: any) {
             riseOnHover: true,
             title: item.fullAddress
           });
-
-          /*layer = L.marker(point, { icon: highlightIcon }).bindPopup(
-            item.fullAddress,
-            {
-              permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
-              direction: "top" // 提示框显示的方向（top, bottom, left, right）
-              //offset: [0, -65], //偏移量
-              //opacity: 0.9 // 提示框的透明度
-            }
-          );*/
         }
         secondaryPointsLayers.push(layer);
         pointMarkers.addLayer(layer);
@@ -783,13 +813,12 @@ function buildAllPoints(list: any) {
     }
     pointMarkers.addTo(mapCom);
     //画多边形
-    /*const polygon = L.polygon(points, {color: '#aa0000',fillColor:'#ff15c9',
-	              weight:1}).addTo(mapCom);*/
     // 添加 GeoServer WMS 图层
     //rendWmsLayer();
     loadWMSLayer2();
   }
 }
+*/
 
 // Function to format price for marker display (remains unchanged, used by map markers)
 function formatPriceForMarker(price) {
@@ -1105,6 +1134,33 @@ watch(
 </style>
 
 <style scoped lang="scss">
+
+  .price-bubble {
+    background: #fff;
+    color: #111;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all .2s ease;
+  }
+
+  .price-bubble:hover {
+    background: #1a73e8;
+    color: #fff;
+    transform: scale(1.1);
+    z-index: 999;
+  }
+
+  .price-bubble.active {
+    background: #e53935;
+    color: #fff;
+  }
+
+
 .popover-content {
   font-size: 14px;
   position: relative;
