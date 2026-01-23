@@ -201,7 +201,7 @@ watch(
     <div class="content">
       <div class="item left">
         <div v-if="imageList?.length > 0">
-          <el-carousel indicator-position="none" :autoplay="false" trigger="click" :height="bannerHeight">
+          <el-carousel indicator-position="none" :autoplay="true" trigger="click" :height="bannerHeight">
             <el-carousel-item
               v-for="(group, groupIndex) in imageList"
               :key="groupIndex"
