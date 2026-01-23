@@ -152,11 +152,23 @@ async function loadGoogleMaps() {
   }, 200);
 }
 
+function splitImages(images: any, size = 5) {
+  const result = [];
+  if (images?.length > 0) {
+    for (let i = 0; i < images.length; i += size) {
+      result.push({
+        list: images.slice(i, i + size),
+      });
+    }
+  }
+  return result;
+}
+
 watch(
   () => props.detailData,
   () => {
     if (props.detailData?.MediaURLs?.length > 0) {
-      imageList.value = props.detailData?.MediaURLs;
+      imageList.value = splitImages(props.detailData?.MediaURLs);
     } else {
       imageList.value = [];
       loadGoogleMaps();
@@ -172,7 +184,7 @@ watch(
   () => props.images,
   () => {
     if (props.images?.length > 0) {
-      imageList.value = props.images;
+      imageList.value = splitImages(props.images);
     } else {
     }
   },
@@ -189,19 +201,30 @@ watch(
     <div class="content">
       <div class="item left">
         <div v-if="imageList?.length > 0">
-          <el-carousel indicator-position="none" :height="bannerHeight">
-            <el-carousel-item v-for="(item, index) in imageList" :key="index">
-              <el-image
-                style="width: 100%; height: 100%"
-                :src="item"
-                :zoom-rate="1.2"
-                :max-scale="7"
-                :min-scale="0.2"
-                :preview-src-list="imageList"
-                show-progress
-                :initial-index="index"
-                fit="cover"
-              />
+          <el-carousel indicator-position="none" :autoplay="false" trigger="click" :height="bannerHeight">
+            <el-carousel-item
+              v-for="(group, groupIndex) in imageList"
+              :key="groupIndex"
+            >
+              <div class="img-layout">
+                <div
+                  v-for="(img, imgIndex) in group.list"
+                  :key="imgIndex"
+                  :class="imgIndex === 0 ? 'big' : 'small'"
+                >
+                  <el-image
+                    style="width: 100%; height: 100%"
+                    :src="img"
+                    :zoom-rate="1.2"
+                    :max-scale="7"
+                    :min-scale="0.2"
+                    :preview-src-list="group.list"
+                    show-progress
+                    :initial-index="Number(imgIndex)"
+                    fit="cover"
+                  />
+                </div>
+              </div>
             </el-carousel-item>
           </el-carousel>
         </div>
@@ -329,6 +352,32 @@ watch(
 </template>
 
 <style scoped lang="scss">
+
+  .img-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+    height: 350px;
+    .big {
+      grid-column: 1 / 2;
+      grid-row: 1 / 3;
+      height: 350px;
+    }
+
+    .small {
+      height: 175px;
+    }
+
+    .big,
+    .small {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
 .overview-container {
   .content {
     width: 100%;
