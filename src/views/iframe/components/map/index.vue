@@ -572,7 +572,7 @@ function addCurrentPoint(data: any, isMax: boolean) {
   currentMarker = L.marker([data.lat, data.lon], {
     icon: createCustomMarkerIcon(data),
     riseOnHover: true,
-    title: data.address
+    title: data.fullAddress
   });
   //secondaryPointsLayers.push(currentMarker);
 
@@ -749,7 +749,7 @@ function buildAllPoints(list: any) {
           if (item["alphaxheld"]) {
             icon = skyIcon;
           }
-          /*layer = L.marker(point, { icon: icon }).bindPopup(item.address, {
+          /*layer = L.marker(point, { icon: icon }).bindPopup(item.fullAddress, {
             permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
             direction: "top" // 提示框显示的方向（top, bottom, left, right）
             //offset: [0, -65], //偏移量
@@ -758,17 +758,17 @@ function buildAllPoints(list: any) {
           layer = L.marker([item.lat, item.lon], {
             icon: createCustomMarkerIcon(item),
             riseOnHover: true,
-            title: item.address
+            title: item.fullAddress
           });
         } else {
           layer = L.marker([item.lat, item.lon], {
             icon: createCustomMarkerIcon(item),
             riseOnHover: true,
-            title: item.address
+            title: item.fullAddress
           });
 
           /*layer = L.marker(point, { icon: highlightIcon }).bindPopup(
-            item.address,
+            item.fullAddress,
             {
               permanent: true, // 是否永久显示（false 表示鼠标悬停时显示）
               direction: "top" // 提示框显示的方向（top, bottom, left, right）
@@ -981,7 +981,7 @@ watch(
     >
       <div class="popover-content">
         <h4 class="title">{{ activePopover.data?.title }}</h4>
-        <div class="address">{{ activePopover.data?.address }}</div>
+        <div class="address">{{ activePopover.data?.fullAddress }}</div>
         <div class="price">
           <span
             v-if="

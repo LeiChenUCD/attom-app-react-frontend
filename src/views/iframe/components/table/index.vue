@@ -146,6 +146,11 @@ function buildHouseData(list) {
       if (data.MediaURLs?.length > 0) {
         data.MediaURLs = data.MediaURLs.filter(item => !item.includes("/1/"));
       }
+      const address = data.address || '';
+      const city = data.city || '';
+      const state = data.state || '';
+      const zip = data.zip || '';
+      data.fullAddress = `${address}, ${city}, ${state} ${zip}`;
       res.push(data);
     }
   }

@@ -448,7 +448,23 @@ export function useColumns() {
     const houseRes = await getCensusListApi3(queryString, params);
     pagination.total = houseRes?.totalSize || 0;
     const filtered = houseRes?.result.filter(item => item.lat != null)
-    return filtered || [];
+    return buildHousesData(filtered);
+  }
+
+  function buildHousesData(list: any) {
+    const res = [];
+    if (list?.length > 0) {
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i];
+        const address = item.address || '';
+        const city = item.city || '';
+        const state = item.state || '';
+        const zip = item.zip || '';
+        item.fullAddress = `${address}, ${city}, ${state} ${zip}`;
+        res.push(item);
+      }
+    }
+    return res;
   }
 
   async function getNotedATTOMIDSet() {

@@ -208,7 +208,7 @@ watch(
                 p-id="5056"
               />
             </svg>
-            {{ detailData?.address }}
+            {{ detailData?.fullAddress }}
           </dd>
           <dd class="text" style="display: flex; align-items: center">
             <div style="flex: 1; display: flex; align-items: center">

@@ -89,11 +89,11 @@ function addCurrentPoint(data: any, isMax: boolean) {
   // 添加新标记
   currentMarker = L.marker([data.lat, data.lon], {
     icon: highlightIcon,
-    title: data.address
+    title: data.fullAddress
   }).addTo(mapCom);
  
   // 绑定弹出框（可选关闭 permanent）
-  currentMarker.bindPopup(data.address, {
+  currentMarker.bindPopup(data.fullAddress, {
     permanent: false, // 避免永久弹出框影响
     direction: "top",
     offset: L.point(0, -10)
