@@ -157,13 +157,18 @@ function splitImages(images: any, size = 5) {
   if (images?.length > 0) {
     for (let i = 0; i < images.length; i += size) {
       result.push({
-        list: images.slice(i, i + size),
+        list: images.slice(i, i + size)
       });
     }
   }
   return result;
 }
 
+function goToViewTour() {
+  if (props.detailData?.address === "2974 BELL AVE") {
+    window.open(`https://my.matterport.com/show/?m=fASRYDxSPyn`);
+  }
+}
 watch(
   () => props.detailData,
   () => {
@@ -201,7 +206,12 @@ watch(
     <div class="content">
       <div class="item left">
         <div v-if="imageList?.length > 0">
-          <el-carousel indicator-position="none" :autoplay="true" trigger="click" :height="bannerHeight">
+          <el-carousel
+            indicator-position="none"
+            :autoplay="true"
+            trigger="click"
+            :height="bannerHeight"
+          >
             <el-carousel-item
               v-for="(group, groupIndex) in imageList"
               :key="groupIndex"
@@ -223,6 +233,16 @@ watch(
                     :initial-index="Number(imgIndex)"
                     fit="cover"
                   />
+                  <div
+                    v-if="
+                      imgIndex === 0 && detailData?.address === '2974 BELL AVE'
+                    "
+                    class="btns-operator"
+                  >
+                    <el-button class="btn-3d-tour" @click="goToViewTour()"
+                      >3D Tour</el-button
+                    >
+                  </div>
                 </div>
               </div>
             </el-carousel-item>
@@ -241,7 +261,11 @@ watch(
       <div class="item right">
         <div class="flex-container price-box">
           <div class="left price">
-            <span v-if="detailData?.mlsstatus == 'Active' || detailData?.mlsstatus == 'PendingDoNotShow'"
+            <span
+              v-if="
+                detailData?.mlsstatus == 'Active' ||
+                detailData?.mlsstatus == 'PendingDoNotShow'
+              "
               >{{ FormatPrice(detailData?.listprice) }}</span
             >
             <span v-else>{{ FormatPrice(detailData?.closeprice) }}</span>
@@ -352,31 +376,37 @@ watch(
 </template>
 
 <style scoped lang="scss">
-
-  .img-layout {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 8px;
-    width: 100%;
+.img-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  height: 350px;
+  .big {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
     height: 350px;
-    .big {
-      grid-column: 1 / 2;
-      grid-row: 1 / 3;
-      height: 350px;
-    }
-
-    .small {
-      height: 175px;
-    }
-
-    .big,
-    .small {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    position: relative;
+    .btns-operator {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      z-index: 1;
     }
   }
+
+  .small {
+    height: 175px;
+  }
+
+  .big,
+  .small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 
 .overview-container {
   .content {
