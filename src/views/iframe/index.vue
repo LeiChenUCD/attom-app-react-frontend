@@ -174,8 +174,8 @@ watch(
   }
 
   .list-box {
-    width: 600px;
-    margin-left: 20px;
+    width: 610px;
+    margin-left: 10px;
     /* 右边固定宽度 */
   }
   /* 移动端适配（如屏幕宽度 ≤ 768px） */

@@ -313,7 +313,7 @@ watch(
           </dd>
         </dl>
 
-        <dl>
+        <dl style="display: none">
           <dt>Property Details</dt>
           <dd>
             <div class="flex-container-2">
