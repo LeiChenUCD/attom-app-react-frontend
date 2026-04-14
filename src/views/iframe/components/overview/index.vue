@@ -193,7 +193,7 @@ watch(
             class="text"
             style="display: flex; align-items: center; margin-bottom: 10px"
           >
-            <svg
+            <!--svg
               t="1755760665346"
               class="icon"
               viewBox="0 0 1024 1024"
@@ -207,15 +207,24 @@ watch(
                 d="M512 64C317.92 64 160 221.92 160 416c0 187.36 315.424 520.032 328.832 534.08C494.88 956.448 503.264 960 512 960c0.224 0 0.48 0 0.704 0 8.992 0 17.472-4.192 23.392-10.944l109.216-125.12C790.432 646.176 864 508.928 864 416 864 221.92 706.08 64 512 64zM512 576c-88.384 0-160-71.616-160-160s71.616-160 160-160 160 71.616 160 160S600.384 576 512 576z"
                 p-id="5056"
               />
-            </svg>
+            </svg-->
             {{ detailData?.fullAddress }}
           </dd>
-          <dd style="margin-bottom: 10px;display: flex;justify-content: space-between;">
+          <dd
+            style="
+              margin-bottom: 10px;
+              display: flex;
+              justify-content: space-between;
+            "
+          >
             <!--div v-if="detailData?.livingarea">
               Living Area <strong>{{ Number(detailData?.livingarea).toFixed(0) }} sq.ft</strong>
             </div-->
             <div v-if="detailData?.lotsize">
-              Lot Size <strong>{{ Number(detailData?.lotsize).toFixed(0) }} sq.ft</strong>
+              Lot Size
+              <strong
+                >{{ Number(detailData?.lotsize).toFixed(0) }} sq.ft</strong
+              >
             </div>
           </dd>
           <dd class="text" style="display: flex; align-items: center">
