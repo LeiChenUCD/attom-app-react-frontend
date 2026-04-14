@@ -737,8 +737,8 @@ function getCurHouseIndex(latLng: any, list: any) {
 }
 
 function initMapEvents() {
-  mapCom.off('zoomend'); // 保险
-  mapCom.on('zoomend', handleZoomChange);
+  mapCom.off("zoomend"); // 保险
+  mapCom.on("zoomend", handleZoomChange);
 }
 
 function handleZoomChange() {
@@ -754,21 +754,16 @@ function handleZoomChange() {
 
     marker._showPrice = showPrice;
 
-    marker.setIcon(
-      showPrice
-        ? createPriceMarker(property)
-        : createDotMarker()
-    );
+    marker.setIcon(showPrice ? createPriceMarker(property) : createDotMarker());
   });
 }
-
 
 function createDotMarker() {
   return L.divIcon({
     html: `<div class="dot-marker"></div>`,
-    className: 'dot-marker-wrapper',
+    className: "dot-marker-wrapper",
     iconSize: [10, 10],
-    iconAnchor: [5, 5],
+    iconAnchor: [5, 5]
   });
 }
 
@@ -781,9 +776,9 @@ function createPriceMarker(property: any) {
   const formattedPrice = formatPriceForMarker(price);
   return L.divIcon({
     html: `<div class="price-marker">${formattedPrice}</div>`,
-    className: '',
-    iconSize: [80, 32],          // 必须给
-    iconAnchor: [40, 32],        // x = 宽度/2，y = 高度
+    className: "",
+    iconSize: [80, 32], // 必须给
+    iconAnchor: [40, 32] // x = 宽度/2，y = 高度
   });
 }
 
@@ -806,17 +801,15 @@ function buildAllPoints(list: any[]) {
     if (!item.lat) return;
 
     const marker = L.marker([item.lat, item.lon], {
-      icon: showPrice
-        ? createPriceMarker(item)
-        : createDotMarker(),
+      icon: showPrice ? createPriceMarker(item) : createDotMarker(),
       riseOnHover: true
     });
 
     marker.property = item;
     marker._showPrice = showPrice; // 记录当前状态
 
-    marker.on('click', () => {
-      console.log('clicked:', item);
+    marker.on("click", () => {
+      console.log("clicked:", item);
     });
 
     secondaryPointsLayers.push(marker);
@@ -825,7 +818,6 @@ function buildAllPoints(list: any[]) {
 
   loadWMSLayer2();
 }
-
 
 /*function buildAllPoints(list: any) {
   secondaryPointsLayers = [];
@@ -1048,27 +1040,49 @@ watch(
       @click="onSearchThisArea()"
       >Search this area</el-button
   -->
-    <el-popover v-model:visible="activePopover.show" :placement="activePopover.placement" :width="activePopover.width"
-      :trigger="null" popper-class="dynamic-popover" :virtual-ref="activePopover.virtualRef" virtual-triggering>
+    <el-popover
+      v-model:visible="activePopover.show"
+      :placement="activePopover.placement"
+      :width="activePopover.width"
+      :trigger="null"
+      popper-class="dynamic-popover"
+      :virtual-ref="activePopover.virtualRef"
+      virtual-triggering
+    >
       <div class="popover-content">
         <h4 class="title">{{ activePopover.data?.title }}</h4>
         <div class="address">{{ activePopover.data?.fullAddress }}</div>
         <div class="price">
-          <span v-if="
-            activePopover.data?.mlsstatus == 'Active' ||
-            activePopover.data?.mlsstatus == 'PendingDoNotShow'
-          ">{{ FormatPrice(activePopover.data?.listprice) }}</span>
+          <span
+            v-if="
+              activePopover.data?.mlsstatus == 'Active' ||
+              activePopover.data?.mlsstatus == 'PendingDoNotShow'
+            "
+            >{{ FormatPrice(activePopover.data?.listprice) }}</span
+          >
           <span v-else>{{ FormatPrice(activePopover.data?.closeprice) }}</span>
         </div>
         <div class="bed-bath">
-          <svg data-v-4a17f7ac="" data-v-1d2a0c97=""
+          <svg
+            data-v-4a17f7ac=""
+            data-v-1d2a0c97=""
             data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:181:15:svg"
-            t="1755761273208" class="icon" viewBox="0 0 1280 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-            p-id="6052" width="20" height="20">
-            <path data-v-4a17f7ac="" data-v-1d2a0c97=""
+            t="1755761273208"
+            class="icon"
+            viewBox="0 0 1280 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="6052"
+            width="20"
+            height="20"
+          >
+            <path
+              data-v-4a17f7ac=""
+              data-v-1d2a0c97=""
               data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:181:187:path"
               d="M352 512c88.22 0 160-71.78 160-160s-71.78-160-160-160-160 71.78-160 160 71.78 160 160 160z m704-256H608c-17.68 0-32 14.32-32 32v288H128V160c0-17.68-14.32-32-32-32H32C14.32 128 0 142.32 0 160v704c0 17.68 14.32 32 32 32h64c17.68 0 32-14.32 32-32v-96h1024v96c0 17.68 14.32 32 32 32h64c17.68 0 32-14.32 32-32V480c0-123.72-100.28-224-224-224z"
-              p-id="6053" />
+              p-id="6053"
+            />
           </svg>
           {{
             activePopover.data?.bedrooms
@@ -1076,14 +1090,26 @@ watch(
               : "--"
           }}
           <span class="line">|</span>
-          <svg data-v-4a17f7ac="" data-v-1d2a0c97=""
+          <svg
+            data-v-4a17f7ac=""
+            data-v-1d2a0c97=""
             data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:189:15:svg"
-            t="1755761642535" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-            p-id="7503" width="20" height="20">
-            <path data-v-4a17f7ac="" data-v-1d2a0c97=""
+            t="1755761642535"
+            class="icon"
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="7503"
+            width="20"
+            height="20"
+          >
+            <path
+              data-v-4a17f7ac=""
+              data-v-1d2a0c97=""
               data-insp-path="D:/project/attom-app-react-frontend/src/views/iframe/components/overview/index.vue:189:187:path"
               d="M950.857143 621.714286v109.714285q0 96.571429-73.142857 163.428572v110.857143q0 8-5.142857 13.142857t-13.142858 5.142857h-36.571428q-8 0-13.142857-5.142857t-5.142857-13.142857v-67.428572q-36 12.571429-73.142858 12.571429H292.571429q-37.142857 0-73.142858-12.571429v62.857143q0 9.714286-5.428571 16.285714T201.142857 1024h-36.571428q-7.428571 0-12.857143-6.571429T146.285714 1001.142857v-106.285714q-73.142857-66.857143-73.142857-163.428572v-109.714285h877.714286zM402.285714 384q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m36.571429-36.571429q0 8-5.142857 13.142858t-13.142857 5.142857-13.142858-5.142857-5.142857-13.142858 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m73.142857 0q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571428-36.571429q0 8-5.142857 13.142857t-13.142857 5.142858-13.142858-5.142858-5.142857-13.142857 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142857 13.142857z m621.714286 292.571428v36.571429q0 8-5.142857 13.142857t-13.142857 5.142857H18.285714q-8 0-13.142857-5.142857t-5.142857-13.142857v-36.571429q0-8 5.142857-13.142857t13.142857-5.142857h54.857143V146.285714q0-60.571429 42.857143-103.428571T219.428571 0q61.714286 0 105.142858 44.571429 26.285714-10.857143 56-6.857143t53.142857 22.285714l12.571428-12.571429q6.285714-6.285714 12.571429 0l24 24q6.285714 6.285714 0 12.571429L303.428571 263.428571q-6.285714 6.285714-12.571428 0l-24-24q-6.285714-6.285714 0-12.571428l12.571428-12.571429q-20.571429-26.285714-23.142857-59.428571T269.714286 93.142857q-21.142857-20-50.285715-20-30.285714 0-51.714285 21.428572T146.285714 146.285714v365.714286h859.428572q8 0 13.142857 5.142857t5.142857 13.142857zM512 274.285714q0 8-5.142857 13.142857t-13.142857 5.142858-13.142857-5.142858-5.142858-13.142857 5.142858-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142857 13.142857z m-36.571428-36.571429q0 8-5.142857 13.142857t-13.142857 5.142857-13.142858-5.142857-5.142857-13.142857 5.142857-13.142857 13.142858-5.142857 13.142857 5.142857 5.142857 13.142857z m109.714286 36.571429q0 8-5.142858 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142858 13.142857 5.142858 5.142858 13.142857z m-36.571429-36.571429q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142858-13.142857 5.142858-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571429-36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142857 5.142857 5.142857 13.142858z m109.714286 36.571428q0 8-5.142857 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142857 13.142857-5.142857 13.142857 5.142857 5.142857 13.142857z m-36.571428-36.571428q0 8-5.142858 13.142857t-13.142857 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142857 5.142857 5.142858 13.142858z m73.142857 0q0 8-5.142857 13.142857t-13.142858 5.142857-13.142857-5.142857-5.142857-13.142857 5.142857-13.142858 13.142857-5.142857 13.142858 5.142857 5.142857 13.142858z"
-              p-id="7504" />
+              p-id="7504"
+            />
           </svg>
           {{
             activePopover.data?.bathcount
@@ -1092,11 +1118,16 @@ watch(
           }}
         </div>
         <div class="view-detail">
-          <el-button class="btn-view-detail" style="
+          <el-button
+            class="btn-view-detail"
+            style="
               width: 100%;
               background: rgb(154, 137, 187);
               color: rgb(255, 255, 255);
-            " @click="onShowViewDetail()">View Detail</el-button>
+            "
+            @click="onShowViewDetail()"
+            >View Detail</el-button
+          >
         </div>
         <el-icon class="btn-close" @click="closeAllPopovers">
           <CloseBold />
@@ -1107,7 +1138,6 @@ watch(
 </template>
 
 <style lang="scss">
-
 .dot-marker-wrapper {
   background: transparent !important;
 }
@@ -1115,7 +1145,7 @@ watch(
 .dot-marker {
   width: 10px;
   height: 10px;
-  background: #ff3b30;
+  background: rgb(154, 137, 187);
   border-radius: 50%;
 }
 
@@ -1157,7 +1187,6 @@ watch(
 </style>
 
 <style scoped lang="scss">
-
 .price-bubble {
   background: #fff;
   color: #111;
@@ -1165,10 +1194,10 @@ watch(
   border-radius: 16px;
   font-weight: 600;
   font-size: 13px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   white-space: nowrap;
   cursor: pointer;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .price-bubble:hover {
@@ -1182,7 +1211,6 @@ watch(
   background: #e53935;
   color: #fff;
 }
-
 
 .popover-content {
   font-size: 14px;
