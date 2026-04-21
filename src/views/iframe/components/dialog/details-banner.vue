@@ -4,6 +4,7 @@ import { ref, onMounted, watch } from "vue";
 const { VITE_GOOGLE_MAP_API_KEY } = import.meta.env;
 import { Loader } from "@googlemaps/js-api-loader";
 import { FormatPrice } from "@/utils/common";
+import { getNearbySchoolsListApi } from "@/api/welcome";
 
 defineOptions({
   name: "Overview"
@@ -28,6 +29,7 @@ const comments = ref([]);
 const imageList = ref([]);
 const bannerHeight = ref("350px");
 const loadingMap = ref(true);
+const nearbySchoolsList = ref([]);
 const chartData = ref([
   {
     key: "yearbuilt",
@@ -169,6 +171,18 @@ function goToViewTour() {
     window.open(`https://my.matterport.com/show/?m=fASRYDxSPyn`);
   }
 }
+
+async function getNearbySchoolsList() {
+  const params = {
+    page: 1,
+    limit: 10,
+    lon: props.detailData.lon,
+    lat: props.detailData.lat
+  };
+  const res = await getNearbySchoolsListApi(params);
+  nearbySchoolsList.value = res?.schools || [];
+}
+
 watch(
   () => props.detailData,
   () => {
@@ -178,6 +192,7 @@ watch(
       imageList.value = [];
       loadGoogleMaps();
     }
+    getNearbySchoolsList();
   },
   {
     deep: true,
@@ -344,11 +359,17 @@ watch(
           </dd>
         </dl>
 
-        <dl>
+        <dl class="flex-container-schools">
           <dt>Schools</dt>
-          <dd>{{ detailData?.elementaryschool }}</dd>
-          <dd>{{ detailData?.middleorjuniorschool }}</dd>
-          <dd>{{ detailData?.highschool }}</dd>
+          <div class="dd-wrapper">
+            <dd
+              v-for="(options, index) in nearbySchoolsList"
+              :key="index"
+              class="dd-item"
+            >
+              <div>{{ options.name }}</div>
+            </dd>
+          </div>
         </dl>
 
         <dl style="text-align: center">
@@ -538,6 +559,29 @@ watch(
   }
   .item {
     width: 100%; /* 每个 item 占满整行 */
+  }
+}
+
+.flex-container-schools {
+  dt {
+    margin-bottom: 20px;
+  }
+  .dd-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .dd-item {
+    width: calc(50% - 10px); /* 减去间距 */
+    margin-bottom: 20px; /* 底部间距 */
+  }
+
+  /* 移动端适配 */
+  @media (max-width: 768px) {
+    .dd-item {
+      width: 100%; /* 小屏单列 */
+    }
   }
 }
 </style>
