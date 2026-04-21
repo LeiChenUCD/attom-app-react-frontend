@@ -211,38 +211,9 @@ watch(
             {{ detailData?.fullAddress }}
           </dd>
           <dd
-            style="
-              margin-bottom: 10px;
-              display: flex;
-              justify-content: space-between;
-            "
+            class="text"
+            style="display: flex; align-items: center; margin-bottom: 10px"
           >
-            <!--div v-if="detailData?.livingarea">
-              Living Area <strong>{{ Number(detailData?.livingarea).toFixed(0) }} sq.ft</strong>
-            </div-->
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
-              "
-            >
-              <div v-if="detailData?.lotsize">
-                Lot Size
-                <strong
-                  >{{ Number(detailData?.lotsize).toFixed(0) }} sq.ft</strong
-                >
-              </div>
-              <div>
-                Living Area
-                <strong
-                  >{{ Number(detailData?.livingarea).toFixed(0) }} sq.ft</strong
-                >
-              </div>
-            </div>
-          </dd>
-          <dd class="text" style="display: flex; align-items: center">
             <div style="flex: 1; display: flex; align-items: center">
               <svg
                 style="margin-right: 10px"
@@ -290,6 +261,32 @@ watch(
                   : "--"
               }}
               Baths
+            </div>
+          </dd>
+          <dd style="display: flex; justify-content: space-between">
+            <!--div v-if="detailData?.livingarea">
+              Living Area <strong>{{ Number(detailData?.livingarea).toFixed(0) }} sq.ft</strong>
+            </div-->
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+              "
+            >
+              <div>
+                Living Area
+                <strong
+                  >{{ Number(detailData?.livingarea).toFixed(0) }} sq.ft</strong
+                >
+              </div>
+              <div v-if="detailData?.lotsize">
+                Lot Size
+                <strong
+                  >{{ Number(detailData?.lotsize).toFixed(0) }} sq.ft</strong
+                >
+              </div>
             </div>
           </dd>
         </dl>

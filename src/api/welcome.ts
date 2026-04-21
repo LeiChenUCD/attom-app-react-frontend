@@ -65,6 +65,17 @@ export const getHouseDetailApi = (queryString: string, data: any) => {
   );
 };
 
+/** 获取附近学校列表 */
+export const getNearbySchoolsListApi = (params: any) => {
+  return http.request<any>(
+    "get",
+    `${baseApiUrl}/api/greatschools-nearby-schools`,
+    {
+      params
+    }
+  );
+};
+
 /** 获取列表 */
 export const getCensusTractInfoListApi = (params: any) => {
   return http.request<any>("get", `${baseApiUrl}/api/getCensusTractInfo`, {
@@ -79,33 +90,21 @@ export const getNotedATTOMID = (params: any) => {
 };
 
 export const getDueDiligenceReportApi = (params: any) => {
-  return http.request<any>(
-    "get",
-    `${baseApiUrl}/api/dd-toolkit-search`,
-    {
-      params
-    }
-  );
+  return http.request<any>("get", `${baseApiUrl}/api/dd-toolkit-search`, {
+    params
+  });
 };
 
 export const getParcelzSanJoseApi = (params: any) => {
-  return http.request<any>(
-    "get",
-    `${baseApiUrl}/api/aduplus-search`,
-    {
-      params
-    }
-  );
+  return http.request<any>("get", `${baseApiUrl}/api/aduplus-search`, {
+    params
+  });
 };
 
 export const getNotParcelzSanJoseApi = (params: any) => {
-  return http.request<any>(
-    "get",
-    `${baseApiUrl}/api/parcel-z-search`,
-    {
-      params
-    }
-  );
+  return http.request<any>("get", `${baseApiUrl}/api/parcel-z-search`, {
+    params
+  });
 };
 
 export const queryContactInfo = (params: any) => {
