@@ -191,7 +191,12 @@ watch(
           </dd>
           <dd
             class="text"
-            style="display: flex; align-items: center; margin-bottom: 10px"
+            style="
+              display: flex;
+              align-items: center;
+              margin-bottom: 10px;
+              min-height: 42px;
+            "
           >
             <!--svg
               t="1755760665346"
