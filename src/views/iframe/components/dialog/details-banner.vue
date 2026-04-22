@@ -29,7 +29,14 @@ const comments = ref([]);
 const imageList = ref([]);
 const bannerHeight = ref("350px");
 const loadingMap = ref(true);
-const nearbySchoolsList = ref([]);
+const publicNearbySchoolsList = ref([]);
+const privateNearbySchoolsList = ref([]);
+const schoolNearbySchoolsList = ref([]);
+const schoolLevelMap = {
+  e: "Elementary",
+  m: "Middle",
+  h: "High"
+};
 const chartData = ref([
   {
     key: "yearbuilt",
@@ -172,17 +179,64 @@ function goToViewTour() {
   }
 }
 
-async function getNearbySchoolsList() {
-  const params = {
-    page: 1,
-    limit: 10,
-    lon: props.detailData.lon,
-    lat: props.detailData.lat
+function findSchools(list) {
+  const result = {
+    e: null,
+    m: null,
+    h: null
   };
-  const res = await getNearbySchoolsListApi(params);
-  nearbySchoolsList.value = res?.schools || [];
+
+  const used = new Set(); // 防止重复选同一个对象
+
+  for (const item of list) {
+    if (!item["level-codes"]) continue;
+
+    // 拆分 + 去空格 + 小写
+    const codes = item["level-codes"]
+      .split(",")
+      .map(s => s.trim().toLowerCase());
+
+    for (const code of codes) {
+      if (
+        (code === "e" || code === "m" || code === "h") &&
+        !result[code] &&
+        !used.has(item)
+      ) {
+        result[code] = item;
+        used.add(item);
+      }
+    }
+
+    // 如果都找齐了就提前结束
+    if (result.e && result.m && result.h) break;
+  }
+
+  return result;
 }
 
+async function getNearbySchoolsList(type?: string) {
+  const params = {
+    page: 1,
+    //limit: 10,
+    lon: props.detailData.lon,
+    lat: props.detailData.lat,
+    school_type: type || "public"
+  };
+  const group = {
+    list: [],
+    title: type === "public" ? "Public Schools" : "Private Schools"
+  };
+  const res = await getNearbySchoolsListApi(params);
+  if (type === "public") {
+    publicNearbySchoolsList.value = findSchools(res?.schools || []);
+    group.list = publicNearbySchoolsList.value;
+    schoolNearbySchoolsList.value[0] = group;
+  } else {
+    privateNearbySchoolsList.value = findSchools(res?.schools || []);
+    group.list = privateNearbySchoolsList.value;
+    schoolNearbySchoolsList.value[1] = group;
+  }
+}
 watch(
   () => props.detailData,
   () => {
@@ -192,7 +246,9 @@ watch(
       imageList.value = [];
       loadGoogleMaps();
     }
-    getNearbySchoolsList();
+    schoolNearbySchoolsList.value = [];
+    getNearbySchoolsList("public");
+    getNearbySchoolsList("private");
   },
   {
     deep: true,
@@ -359,17 +415,130 @@ watch(
           </dd>
         </dl>
 
-        <dl class="flex-container-schools">
-          <dt>Schools</dt>
-          <div class="dd-wrapper">
-            <dd
-              v-for="(options, index) in nearbySchoolsList"
-              :key="index"
-              class="dd-item"
-            >
-              <div>{{ options.name }}</div>
-            </dd>
-          </div>
+        <dl
+          v-for="group in schoolNearbySchoolsList"
+          :key="group.title"
+          class="flex-container-schools"
+        >
+          <dt>{{ group.title }}</dt>
+          <dd>
+            <el-row :gutter="20">
+              <el-col v-for="(options, key) in group.list" :key="key" :span="8">
+                <el-card style="margin-bottom: 20px">
+                  <div>
+                    <el-tag type="primary">{{ schoolLevelMap[key] }}</el-tag>
+                  </div>
+                  <div style="margin-top: 10px; font-weight: bold">
+                    {{ options.name }}
+                  </div>
+                  <div
+                    style="
+                      color: #666;
+                      font-size: 12px;
+                      margin-top: 5px;
+                      margin-bottom: 10px;
+                    "
+                  >
+                    {{ options["district-name"] }}
+                  </div>
+                  <div>
+                    <el-row>
+                      <el-col :span="10">
+                        <div
+                          style="display: flex; align-items: center; gap: 10px"
+                        >
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              style="width: 16px; height: 16px"
+                              viewBox="0 0 16 16"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M1 2.828c.885-.37 2.154-.769 3.388-.893c1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493c-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752c1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81c-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02c1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877c1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <div style="color: #666">Grades</div>
+                            <div>{{ options.level }}</div>
+                          </div>
+                        </div>
+                      </el-col>
+                      <el-col :span="7">
+                        <div
+                          style="display: flex; align-items: center; gap: 10px"
+                        >
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M12 13.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5"
+                              />
+                              <path
+                                fill="currentColor"
+                                d="M19.071 3.429h.001c3.905 3.905 3.905 10.237 0 14.142l-5.403 5.403a2.36 2.36 0 0 1-3.336 0l-5.375-5.375l-.028-.028c-3.905-3.905-3.905-10.237 0-14.142s10.236-3.905 14.141 0M5.99 4.489v.001a8.5 8.5 0 0 0 0 12.02l.023.024l.002.002l5.378 5.378a.86.86 0 0 0 1.214 0l5.403-5.404a8.5 8.5 0 0 0-.043-11.977A8.5 8.5 0 0 0 5.99 4.489"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <div style="color: #666">Distance</div>
+                            <div>{{ options.distance.toFixed(2) }} mi</div>
+                          </div>
+                        </div>
+                      </el-col>
+                      <el-col :span="7">
+                        <div
+                          style="display: flex; align-items: center; gap: 10px"
+                        >
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 1024 1024"
+                              width="16"
+                              height="16"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M224 128v704h576V128zm-32-64h640a32 32 0 0 1 32 32v768a32 32 0 0 1-32 32H192a32 32 0 0 1-32-32V96a32 32 0 0 1 32-32"
+                              />
+                              <path
+                                fill="currentColor"
+                                d="M64 832h896v64H64zm256-640h128v96H320z"
+                              />
+                              <path
+                                fill="currentColor"
+                                d="M384 832h256v-64a128 128 0 1 0-256 0zm128-256a192 192 0 0 1 192 192v128H320V768a192 192 0 0 1 192-192M320 384h128v96H320zm256-192h128v96H576zm0 192h128v96H576z"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <div style="color: #666">School district</div>
+                            <div>{{ options["type"] || "--" }}</div>
+                          </div>
+                        </div>
+                      </el-col>
+                    </el-row>
+                  </div>
+                  <template #footer>
+                    <el-link
+                      type="primary"
+                      :href="options['overview-url']"
+                      target="_blank"
+                      >View school profile -&gt;
+                    </el-link>
+                  </template>
+                </el-card>
+              </el-col>
+            </el-row>
+          </dd>
         </dl>
 
         <dl style="text-align: center">
