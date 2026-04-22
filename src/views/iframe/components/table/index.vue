@@ -146,10 +146,10 @@ function buildHouseData(list) {
       if (data.MediaURLs?.length > 0) {
         data.MediaURLs = data.MediaURLs.filter(item => !item.includes("/1/"));
       }
-      const address = data.address || '';
-      const city = data.city || '';
-      const state = data.state || '';
-      const zip = data.zip || '';
+      const address = data.address || "";
+      const city = data.city || "";
+      const state = data.state || "";
+      const zip = data.zip || "";
       data.fullAddress = `${address}, ${city}, ${state} ${zip}`;
       res.push(data);
     }
@@ -305,6 +305,7 @@ watch(
       width: 50%;
       display: inline-block;
       margin-bottom: 10px;
+      vertical-align: top;
     }
     /* 移动端适配（如屏幕宽度 ≤ 768px） */
     @media (max-width: 768px) {
